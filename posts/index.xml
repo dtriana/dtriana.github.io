@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on David Triana</title>
+    <link>./posts/</link>
+    <description>Recent content in Posts on David Triana</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 26 Nov 2016 03:54:00 +0000</lastBuildDate>
+    
+	<atom:link href="./posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Continuous Integration &amp; Deployment of a NuGet Package with VSTS</title>
+      <link>./posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</link>
+      <pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate>
+      
+      <guid>./posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</guid>
+      <description>In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.
+To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (http://nugetserver.net/) and hosted it on a free tier Azure Web Site. Having that, I’m all set.</description>
+    </item>
+    
+    <item>
+      <title>The nokia 920 killer</title>
+      <link>./posts/2015/the-nokia-920-killer/</link>
+      <pubDate>Sun, 03 May 2015 16:48:00 +0000</pubDate>
+      
+      <guid>./posts/2015/the-nokia-920-killer/</guid>
+      <description>I frequently move my SIMCARD from phone to phone, testing applications, OS features and things like that.
+With the iPhone 5 and it’s nano SIMCARD I found myself with a small form size dilemma:
+
+The iPhone uses nano, the Nokia micro and sometimes I need a full simcard so I started using small plastic adapters as my “solution”
+What seemed like a good idea at first turned out to be the Nokia 920 Killer!</description>
+    </item>
+    
+    <item>
+      <title>Running the Microsoft ALM Training Virtual Machine in Azure April 2015 Edition</title>
+      <link>./posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</link>
+      <pubDate>Thu, 09 Apr 2015 21:37:42 +0000</pubDate>
+      
+      <guid>./posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</guid>
+      <description>Last month I found myself doing ALM training and demos for a couple of customers, of course using the great ALM Virtual Machine by Brian Keller. With laptops having less and less RAM I choose to set it up in the cloud and found a few web pages with the steps to do it, however with Azure evolving every day I felt the need to put out this blog post with the guidance for Azure in April 2015</description>
+    </item>
+    
+    <item>
+      <title>Google 2nd Step Verification and Windows Phone 8</title>
+      <link>./posts/2012/google-2nd-step-verification-and-windows-phone-8/</link>
+      <pubDate>Fri, 11 Jan 2013 17:48:14 +0000</pubDate>
+      
+      <guid>./posts/2012/google-2nd-step-verification-and-windows-phone-8/</guid>
+      <description>I’m moving from iOS 6 (iPhone 4) to Windows Phone 8 (HTC 8x).
+One of the apps I’m missing from iOS is the Google Authenticator that provides one time passwords to authenticate to google.
+Looked around and found the Authenticator application:
+http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0
+Recommended on the Karspersky blog
+http://blog.kaspersky.com/the-best-windows-phone-security-apps/
+Immediately installed it, then proceeded to Google to configure it. As expected Google doesn’t offer Windows Phone as an option since them don’t produce an app for that:</description>
+    </item>
+    
+    <item>
+      <title>Fixing Configuration Error– &#39;oracleDBBinding&#39; could not be found</title>
+      <link>./posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</link>
+      <pubDate>Thu, 20 Dec 2012 16:45:55 +0000</pubDate>
+      
+      <guid>./posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</guid>
+      <description>This error shows up with web applications and/or web services that use the Biztalk LOB Adapters for Oracle and the server doesn´t have the required assemblies.
+
+To fix it just install:
+The WCF LOB Adapter
+
+Then the biztalk adapter pack
+
+And declare the binding either on the machine.config for the whole server or in the web.config of the particular web app
+&amp;lt;system.serviceModel&amp;gt; &amp;lt;extensions&amp;gt; &amp;lt;bindingElementExtensions&amp;gt; &amp;lt;add name=&amp;#34;oracleDBAdapter&amp;#34; type=&amp;#34;Microsoft.Adapters.OracleDB.OracleDBAdapterExtensionElement,Microsoft.Adapters.OracleDB, Version=3.</description>
+    </item>
+    
+    <item>
+      <title>CCA Hosted Controls and Focus</title>
+      <link>./posts/2012/cca-hosted-controls-and-focus/</link>
+      <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
+      
+      <guid>./posts/2012/cca-hosted-controls-and-focus/</guid>
+      <description>Scenario  CCA R2 for Dynamics CRM 2011 A non global dynamic hosted control whose panel is the main panel A workflow step that produce changes on that hosted control  Use case The user is in a session, start a workflow that activates the hosted application. The user choose other application from the main panel. The user start a workflow step that interacts with the hosted application and expects the application to get focus in the main panel.</description>
+    </item>
+    
+    <item>
+      <title>Messenger &#43; Skype all in one with the new skype</title>
+      <link>./posts/2012/messenger-skype-all-in-one-with-the-new-skype/</link>
+      <pubDate>Fri, 14 Sep 2012 01:40:47 +0000</pubDate>
+      
+      <guid>./posts/2012/messenger-skype-all-in-one-with-the-new-skype/</guid>
+      <description>As announced by Paul Thurrott (@thurrott) the new skype has Messenger Integration
+
+How it Works?
+First, install the new version. It’s the 5.11 Beta Version,
+http://www.skype.com/go/getskype-beta
+Run the setup and after the install, if you have it previously running sign out, then sign in with your Live Id Account:
+
+
+And then, SKYPE offers to sign in with the SKYPE account:
+
+After signed in, SKYPE offers to ‘merge’ the accounts:</description>
+    </item>
+    
+    <item>
+      <title>All you need to know when installing Dynamics CRM 2011</title>
+      <link>./posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</link>
+      <pubDate>Wed, 27 Jun 2012 18:41:36 +0000</pubDate>
+      
+      <guid>./posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</guid>
+      <description>When dealing with installing the on premise version of Microsoft Dynamics CRM 2011 you will find a couple documents on MSDN, Microsoft Dynamics CRM Planning Guide and Microsoft Dynamics CRM Installing Guide. I find those lacking a lot of detail with the real steps and requirement for the installation, however I found this excellent and very detailed technical step by step guide, with just one flaw,
+http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx
+The flaw is when SQL Server is on another server and a TCP port other than the default and the Windows Firewall is on.</description>
+    </item>
+    
+    <item>
+      <title>Who needs a pdf reader when you have google chrome</title>
+      <link>./posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</link>
+      <pubDate>Mon, 11 Jun 2012 15:22:00 +0000</pubDate>
+      
+      <guid>./posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</guid>
+      <description>When settting up a new Windows PC one of most boring and time consuming task is setting up all the required utilities, 7Zip, Antivirus, Lastpass, …,
+Yeah, I know of Ninite, http://ninite.com/ , it can automate most of the process, however I prefer to run the installers myself so I won’t end up with lots of undesired autorunners and toolbars.
+One of those must have utilities is a PDF reader since it’s only included since Windows 8.</description>
+    </item>
+    
+    <item>
+      <title>Moving tfs 2010 databases from sql 2005 to sql 2008r2</title>
+      <link>./posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</link>
+      <pubDate>Mon, 04 Jun 2012 02:59:06 +0000</pubDate>
+      
+      <guid>./posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</guid>
+      <description>During the weekend I assisted a customer in the move of TFS 2010 databases from SQL 2005 to SQL 2008R2. The scenario also included Sharepoint Fundation 2010 and SQL Reporting Services.
+MSDN offers a very complete guide about this procedure, http://msdn.microsoft.com/en-us/library/ms252516.aspx , however the guide warns about possible problems if the SQL Server version is different. The guide says:
+“The version of SQL Server that you install must exactly match the version on the original server that hosted the databases.</description>
+    </item>
+    
+    <item>
+      <title>Migrating from local TFS to TFSPreview</title>
+      <link>./posts/2012/migrating-from-local-tfs-to-tfspreview/</link>
+      <pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate>
+      
+      <guid>./posts/2012/migrating-from-local-tfs-to-tfspreview/</guid>
+      <description>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.
+It’s currently free and invite only but the invite codes are relatively easy to get. I asked for one in the page and got it in two days.
+www.tfspreview.com
+Account activated, TFS available but what about my existing projects in my local TFS?,
+The official word is that there’s no supported way to migrate, but, there’re some reports of success using the TFS Integration tools, well, I’m about to confirm or deny that reports!</description>
+    </item>
+    
+    <item>
+      <title>Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications</title>
+      <link>./posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</link>
+      <pubDate>Tue, 20 Sep 2011 19:56:00 +0000</pubDate>
+      
+      <guid>./posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</guid>
+      <description>Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
+How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software.</description>
+    </item>
+    
+    <item>
+      <title>Using AzMan to provide role membership in ASP.NET</title>
+      <link>./posts/2011/using-azman-to-provide-role-membership-in-asp-net/</link>
+      <pubDate>Thu, 15 Sep 2011 16:43:28 +0000</pubDate>
+      
+      <guid>./posts/2011/using-azman-to-provide-role-membership-in-asp-net/</guid>
+      <description>The membership services provided in ASP.NET are very rich and flexible. As part of that flexibility they allow to store the identities and roles of your web site users in a variety of providers, typically SQL Server or Active Directory.
+What if the requirement of your application make it so the best place for the identities is an LDAP repository but you don’t want Active Directory? Well, Windows Server provides a role called AD LDS – Active Directory Lightweight Directory Services.</description>
+    </item>
+    
+    <item>
+      <title>Using Windows Server AppFabric Cache with WCF</title>
+      <link>./posts/2011/using-windows-server-appfabric-cache-with-wcf/</link>
+      <pubDate>Mon, 12 Sep 2011 15:57:00 +0000</pubDate>
+      
+      <guid>./posts/2011/using-windows-server-appfabric-cache-with-wcf/</guid>
+      <description>When it comes to the need for speed nothing better than a Cache, much better if it’s from Microsoft and is part of Windows as it’s the case with Windows AppFabric Cache.
+So how about implementing a cache for WCF?, well, BING will find a couple well written and well explain articles about the matter, the better one being this one:
+http://blogical.se/blogs/mikael/archive/2010/09/12/use-appfabric-cache-to-cache-your-wcf-service-response.aspx?CommentPosted=true#commentmessage
+At first the code doesn’t work because of the use of a timespan as an attribute, just remark that and it will compile and work great, however there is one little problem.</description>
+    </item>
+    
+    <item>
+      <title>Missing management server delegation, 401 error and 403.14 error when deploying a new IIS7.5 for Web Deploy and ASP.NET MVC 2/3</title>
+      <link>./posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</link>
+      <pubDate>Fri, 10 Jun 2011 19:25:00 +0000</pubDate>
+      
+      <guid>./posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</guid>
+      <description>Last night I was setting up a new box for a web site migration and lost a lot of time with that 3 issues.
+I used Web Platform Installer to setup most of the server hoping that it will leave everything working as expected, however I found that is not the case.
+First I needed to setup the Web Deploy service to install the web application from visual studio, however the Web Platform Installer leaves a few things missing when it deals with the Web Deploy.</description>
+    </item>
+    
+    <item>
+      <title>Random pictures for your Website</title>
+      <link>./posts/2011/random-pictures-for-your-website/</link>
+      <pubDate>Mon, 14 Feb 2011 19:55:00 +0000</pubDate>
+      
+      <guid>./posts/2011/random-pictures-for-your-website/</guid>
+      <description>Have you ever been working on a website and the pictures are not ready yet? End up spending hours in paint.net adjusting sizes only to fill a placeholder while the final layout is defined? Well, looks like you’re not alone, certainty I have been there myself and looking for a solution I find this great and free service:
+lorempixum.com
+The service is very straightforward, self explained, and all you need to do is as the apropiated img src in your html and ta-da!</description>
+    </item>
+    
+    <item>
+      <title>Installing JungleDisk desktop in a Godaddy VPS</title>
+      <link>./posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</link>
+      <pubDate>Sat, 04 Sep 2010 19:53:00 +0000</pubDate>
+      
+      <guid>./posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</guid>
+      <description>So I got this Virtual Private Server in godaddy with Windows Server 2003 and everything works and looks normal but some things just doesn’t work. Well, one of those is JungleDisk Desktop. Godaddy setups up the server with 10Gb of storage which is more than plenty for most web needs, however for a business requirement I need a lot of extra space in that server so my solution was Amazon S3 + JungleDisk, that should give a new drive letter with all the space I can possibly need, and paying only for what I’m using, however JungleDisk was unable to create the new drive letter.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading Business Contact Manager for Outlook 2007 to 2010</title>
+      <link>./posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</link>
+      <pubDate>Wed, 30 Jun 2010 19:50:00 +0000</pubDate>
+      
+      <guid>./posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</guid>
+      <description>This upgrade steps are for the scenario where there is a central shared database.
+1. Download the Business Contact Manager for Outlook 2010 Database tool from microsoft:
+http://www.microsoft.com/downloads/details.aspx?familyid=5F83D55E-1CC5-49DD-9B5F-06A7C08C00C2&amp;amp;displaylang=en
+2. Make sure there is no users using the shared database by letting them know in advance that using the shared database during the upgrade will cause a catastrophic disruption on the time space continuum, or just remove the server from the network if you are doing this locally.</description>
+    </item>
+    
+    <item>
+      <title>Creating a digital lossless movie library</title>
+      <link>./posts/2010/creating-a-digital-lossless-movie-library/</link>
+      <pubDate>Tue, 29 Jun 2010 19:47:00 +0000</pubDate>
+      
+      <guid>./posts/2010/creating-a-digital-lossless-movie-library/</guid>
+      <description>I got a bunch of original movies in DVD. They look fine in the shelve but they are DVDs, so they need to be taken of the case and put on the player, plus they get dusty and scratched. My dream is to be able to have them in my hard drive and play then whenever i want. Well, that dream came true in the form of trialware / freeware.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading from Nvidia 8800GT to ATI 5830</title>
+      <link>./posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</link>
+      <pubDate>Sun, 09 May 2010 19:45:00 +0000</pubDate>
+      
+      <guid>./posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</guid>
+      <description>Luego de 2 años a mi fiel 8800GT le llegó la hora de jubilarse para dar paso a esta ATI con mejor desempeño y soporte para DirectX 11.
+Habia tenido este upgrade en espera, atento a que iba a lanzar NVIDIA con su nueva serie Fermi, las GTX 470 y 480. No iba a gastarle mas de U$300 al asunto a no ser que la diferencia en desempeño respecto a una ATI de precio comparable fuese dramáticamente superior, sin embargo a principios de abril cuando por fin salieron al mercado resultaron muy costosas, con un consumo muy elevado de energia y con un desempeño dificilmente superior a las ATI de precio comparable o menor entonces con esa descepción me decidí por ATI.</description>
+    </item>
+    
+    <item>
+      <title>Skype 4.1 with desktop sharing</title>
+      <link>./posts/2009/skype-4-1-with-desktop-sharing/</link>
+      <pubDate>Wed, 05 Aug 2009 19:44:00 +0000</pubDate>
+      
+      <guid>./posts/2009/skype-4-1-with-desktop-sharing/</guid>
+      <description>Bueno, no exáctamente desktop sharing como lo conocemos a traves de herramientas como remote desktop o sharedview pero si permite brindarle al interlocutor una especie de pantalla compartida.
+Ventajas frente a Microsoft Sharedview o Microsoft Office Live Meeting
+ No se necesita otro producto aparte para el audio y otro para la presentación No degrada el video a Vista Basic como si ocurre con los productos de Microsoft al ejecutarlos en Vista con Aero Permite compartir la otra pantalla en el caso de configuraciones Dual Screen (Cosa que no hacen los productos de Microsoft)  Limitaciones</description>
+    </item>
+    
+    <item>
+      <title>Windows 7 RC Virtual XP Rocks!!!</title>
+      <link>./posts/2009/windows-7-rc-virtual-xp-rocks/</link>
+      <pubDate>Fri, 01 May 2009 19:43:00 +0000</pubDate>
+      
+      <guid>./posts/2009/windows-7-rc-virtual-xp-rocks/</guid>
+      <description>Hoy instalé el RC y una de las caracteristicas nuevas que mas me llamaba la atención era la maquina virtual de XP. La razón es que en mi laptop me vi obligado a tener dual boot con XP porque necesito utilizar un adaptador de RS-232 a USB, cuyo driver solo funciona en XP y la anterior tecnologia de virtualización de Microsoft no permitia acceso a los USB.
+Pues luego de instalar el RC y bajar los dos componentes adicionales, grata sorporesa, soporte para USB.</description>
+    </item>
+    
+    <item>
+      <title>Katmouse – Freeing mouse wheel scrolling from the keyboard focus</title>
+      <link>./posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</link>
+      <pubDate>Tue, 10 Feb 2009 19:42:00 +0000</pubDate>
+      
+      <guid>./posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</guid>
+      <description>En security now 182 Steve recomendó esta utilidad luego de una breve discusión sobre su dependencia en el mouse wheel y sus características como parte de la interfaz de usuario.
+Ciertamente he venido compartiendo el dolor de Steve en mi configuración dual – screen, no hay nada más frustrante de mover el cursor de una pantalla a la otra y tratar de hacer scroll para darse cuenta que primero hay que darle foco a la aplicación para que el scroll funcione, a pesar de que aparentemente la aplicación está en primer plano.</description>
+    </item>
+    
+    <item>
+      <title>Fixing sound issues with Bioshock in Vista</title>
+      <link>./posts/2009/fixing-sound-issues-with-bioshock-in-vista/</link>
+      <pubDate>Wed, 04 Feb 2009 19:41:00 +0000</pubDate>
+      
+      <guid>./posts/2009/fixing-sound-issues-with-bioshock-in-vista/</guid>
+      <description>Feliz con mi Bioshock y luego de haberlo jugado unas 8 horas sin problemas, ayer resultó que no tenía audio. Revisé los setting en el juego y en las propiedades de sonido del sistema operativo y nada …
+Luego de reiniciar el juego y el pc acudí a google encontrando la desagradable sorpresa de que es un problema común y según el foro en el sitio del fabricante, sin resolver.</description>
+    </item>
+    
+    <item>
+      <title>El Tiempo fights portafolio.com and lose!!!</title>
+      <link>./posts/2009/el-tiempo-fights-portafolio-com-and-lose/</link>
+      <pubDate>Fri, 30 Jan 2009 19:40:00 +0000</pubDate>
+      
+      <guid>./posts/2009/el-tiempo-fights-portafolio-com-and-lose/</guid>
+      <description>Como sabemos, el periódico el tiempo, dueño entre otras cosas de eltiempo.com , motor.com y metrocuadrado.com publica en Colombia el magazine económico portafolio, acompañado por supuesto de su página portafolio.com.co . Qué pasó con portafolio.com ?
+Pues resulta que lo peleó y perdió!!!
+La página hoy día apunta a lo que conocemos como un clic farm, es decir una página parqueada, llena de links provistos por alguna agencia dedicada a publicidad en web y que seguramente le genera algún ingreso al dueño del dominio según los clics que se hagan en los links.</description>
+    </item>
+    
+    <item>
+      <title>Teracopy</title>
+      <link>./posts/2008/teracopy/</link>
+      <pubDate>Wed, 17 Sep 2008 19:38:00 +0000</pubDate>
+      
+      <guid>./posts/2008/teracopy/</guid>
+      <description>Hace un par de podcasts Paul Thurrott de Windows Weekly recomendó una utilidad llamada Teracopy como algo indispensable para reemplazar el abusurdamente lento proceso de copia en Windows Vista.
+Tuve que hacer espacio para instalar un dual boot con Windows XP en el Tablet para poder utilizar un cable USB - Serial que requiero para configurar unos equipos de un cliente. Como necesitaba tanto espacio tuve que borrar las imágenes de las máquinas virtuales (40Gb) que utilizo tanto el el desktop como en el tablet.</description>
+    </item>
+    
+    <item>
+      <title>Finally, 5.9</title>
+      <link>./posts/2008/finally-5-9/</link>
+      <pubDate>Fri, 22 Aug 2008 19:33:00 +0000</pubDate>
+      
+      <guid>./posts/2008/finally-5-9/</guid>
+      <description>Finalmente, 4 meses despues de haber armado este PC hoy logré que marcara 5.9 en el windows vista performance index.
+
+Los problemas? primero como ya habia comentado el RAID de la board; resulta que en este modelo el RAID no esta soportado para todos los puertos SATA y solo se puede hacer combinando un puerto SATA especial con el puerto externo eSATA, entonces hasta que no traje el cable SATA2eSATA desde EU no lo pude hacer.</description>
+    </item>
+    
+    <item>
+      <title>My new desk</title>
+      <link>./posts/2008/my-new-desk/</link>
+      <pubDate>Thu, 21 Aug 2008 19:32:00 +0000</pubDate>
+      
+      <guid>./posts/2008/my-new-desk/</guid>
+      <description>Trabajar desde la casa tiene un montón de retos y aprovechando que cambio de apartamento es la mejor oportunidad para abordar el reto de la comodidad del sitio de trabajo.
+Luego de ver los escritorios disponibles en tugo, home center y los almacenes de la 30 con 77 fue claro que el escritorio debia ser diseñado a la medida, esto principalmente por el tamaño de la mesa y el tamaño del sitio para la pantalla.</description>
+    </item>
+    
+    <item>
+      <title>Love at first sight</title>
+      <link>./posts/2008/love-at-first-sight/</link>
+      <pubDate>Thu, 31 Jul 2008 19:34:00 +0000</pubDate>
+      
+      <guid>./posts/2008/love-at-first-sight/</guid>
+      <description>Despues de muchos años, hoy por fin puedo decir que se que significa amor a primera vista, y no es otra cosa que esa sensación inexplicable e indescriptible que se apodera de uno en el instante que mira a los ojos a su primer hijo.
+
+Es la verdadera definición de amor incondicional, es la definición de paz interior, &amp;hellip;
+Lorenzo, mi hijo, nació el 31 de julio de 2008 a las 4:56pm, y puedo afirmar con toda seguridad que es lo mas hermoso que he visto y veré en mi vida.</description>
+    </item>
+    
+    <item>
+      <title>Putting all together</title>
+      <link>./posts/2008/putting-all-together/</link>
+      <pubDate>Fri, 25 Apr 2008 19:31:00 +0000</pubDate>
+      
+      <guid>./posts/2008/putting-all-together/</guid>
+      <description>Cuando finalmente llegaron las partes le dí una mirada rápida a los manuales y comencé a armar.
+La primera frustación vino con el ventilador artic cooler y la razon no haber leido completa detalladamente la guia antes de comenzar. Este ventilador ya tenia pasta térmica pero como no me fijé primero la dañe. Segundo problema, cerré primero las fijaciones de un mismo lado en vez de diagonal y casi rompo el ventilador tratando de sacarlas.</description>
+    </item>
+    
+    <item>
+      <title>Many options, many choices</title>
+      <link>./posts/2008/many-options-many-choices/</link>
+      <pubDate>Tue, 15 Apr 2008 19:30:00 +0000</pubDate>
+      
+      <guid>./posts/2008/many-options-many-choices/</guid>
+      <description>Video
+AMD o NVIDIA &amp;hellip;
+Luego de leer mucho en los foros y basado en mi experiencia personal decidí quedarme con NVIDIA. Los modelos nuevos de AMD no me convencieron mucho para lo que pensaba gastar en tarjeta de video. En el Dell tenia una ATI (AMD) y la forma como funciona el driver no me gustaba para nada. Escogida la marca viene el modelo, para los U$200 que pensaba gastar aplicaban o una 9600GT o una 8800GT.</description>
+    </item>
+    
+    <item>
+      <title>My new desktop PC</title>
+      <link>./posts/2008/my-new-desktop-pc/</link>
+      <pubDate>Mon, 14 Apr 2008 19:29:00 +0000</pubDate>
+      
+      <guid>./posts/2008/my-new-desktop-pc/</guid>
+      <description>Finalmente, upgrade de PC.
+Llevaba 4 años con mi Dell 4600. Porque el cambio? Leyendo todos los dias RSS de extremetech y cnet es dificil no darse cuenta de los grandes avances en procesadores y memoria. El Dell no se sentia propiamente lento excepto en juegos pero en general era una máquina rápida. Sus limitaciones? Por un lado la fuente de poder no permitia tener 2 discos duros y 2 quemadores simultaneamente y por otro lado el bus de video era AGP 8x.</description>
+    </item>
+    
+  </channel>
+</rss>
