@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Uncategorized on David Triana</title>
-    <link>./tags/uncategorized/</link>
+    <link>http://davidtriana.com/tags/uncategorized/</link>
     <description>Recent content in Uncategorized on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 05 Dec 2012 18:16:49 +0000</lastBuildDate>
     
-	<atom:link href="./tags/uncategorized/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://davidtriana.com/tags/uncategorized/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>CCA Hosted Controls and Focus</title>
-      <link>./posts/2012/cca-hosted-controls-and-focus/</link>
+      <link>http://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</link>
       <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
       
-      <guid>./posts/2012/cca-hosted-controls-and-focus/</guid>
+      <guid>http://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</guid>
       <description>Scenario  CCA R2 for Dynamics CRM 2011 A non global dynamic hosted control whose panel is the main panel A workflow step that produce changes on that hosted control  Use case The user is in a session, start a workflow that activates the hosted application. The user choose other application from the main panel. The user start a workflow step that interacts with the hosted application and expects the application to get focus in the main panel.</description>
     </item>
     
     <item>
       <title>Messenger &#43; Skype all in one with the new skype</title>
-      <link>./posts/2012/messenger-skype-all-in-one-with-the-new-skype/</link>
+      <link>http://davidtriana.com/posts/2012/messenger-skype-all-in-one-with-the-new-skype/</link>
       <pubDate>Fri, 14 Sep 2012 01:40:47 +0000</pubDate>
       
-      <guid>./posts/2012/messenger-skype-all-in-one-with-the-new-skype/</guid>
+      <guid>http://davidtriana.com/posts/2012/messenger-skype-all-in-one-with-the-new-skype/</guid>
       <description>As announced by Paul Thurrott (@thurrott) the new skype has Messenger Integration
 
 How it Works?
@@ -41,10 +41,10 @@ After signed in, SKYPE offers to ‘merge’ the accounts:</description>
     
     <item>
       <title>Who needs a pdf reader when you have google chrome</title>
-      <link>./posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</link>
+      <link>http://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</link>
       <pubDate>Mon, 11 Jun 2012 15:22:00 +0000</pubDate>
       
-      <guid>./posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</guid>
+      <guid>http://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</guid>
       <description>When settting up a new Windows PC one of most boring and time consuming task is setting up all the required utilities, 7Zip, Antivirus, Lastpass, …,
 Yeah, I know of Ninite, http://ninite.com/ , it can automate most of the process, however I prefer to run the installers myself so I won’t end up with lots of undesired autorunners and toolbars.
 One of those must have utilities is a PDF reader since it’s only included since Windows 8.</description>
@@ -52,10 +52,10 @@ One of those must have utilities is a PDF reader since it’s only included sinc
     
     <item>
       <title>Using Windows Server AppFabric Cache with WCF</title>
-      <link>./posts/2011/using-windows-server-appfabric-cache-with-wcf/</link>
+      <link>http://davidtriana.com/posts/2011/using-windows-server-appfabric-cache-with-wcf/</link>
       <pubDate>Mon, 12 Sep 2011 15:57:00 +0000</pubDate>
       
-      <guid>./posts/2011/using-windows-server-appfabric-cache-with-wcf/</guid>
+      <guid>http://davidtriana.com/posts/2011/using-windows-server-appfabric-cache-with-wcf/</guid>
       <description>When it comes to the need for speed nothing better than a Cache, much better if it’s from Microsoft and is part of Windows as it’s the case with Windows AppFabric Cache.
 So how about implementing a cache for WCF?, well, BING will find a couple well written and well explain articles about the matter, the better one being this one:
 http://blogical.se/blogs/mikael/archive/2010/09/12/use-appfabric-cache-to-cache-your-wcf-service-response.aspx?CommentPosted=true#commentmessage
@@ -64,10 +64,10 @@ At first the code doesn’t work because of the use of a timespan as an attribut
     
     <item>
       <title>Random pictures for your Website</title>
-      <link>./posts/2011/random-pictures-for-your-website/</link>
+      <link>http://davidtriana.com/posts/2011/random-pictures-for-your-website/</link>
       <pubDate>Mon, 14 Feb 2011 19:55:00 +0000</pubDate>
       
-      <guid>./posts/2011/random-pictures-for-your-website/</guid>
+      <guid>http://davidtriana.com/posts/2011/random-pictures-for-your-website/</guid>
       <description>Have you ever been working on a website and the pictures are not ready yet? End up spending hours in paint.net adjusting sizes only to fill a placeholder while the final layout is defined? Well, looks like you’re not alone, certainty I have been there myself and looking for a solution I find this great and free service:
 lorempixum.com
 The service is very straightforward, self explained, and all you need to do is as the apropiated img src in your html and ta-da!</description>
@@ -75,19 +75,19 @@ The service is very straightforward, self explained, and all you need to do is a
     
     <item>
       <title>Installing JungleDisk desktop in a Godaddy VPS</title>
-      <link>./posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</link>
+      <link>http://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</link>
       <pubDate>Sat, 04 Sep 2010 19:53:00 +0000</pubDate>
       
-      <guid>./posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</guid>
+      <guid>http://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/</guid>
       <description>So I got this Virtual Private Server in godaddy with Windows Server 2003 and everything works and looks normal but some things just doesn’t work. Well, one of those is JungleDisk Desktop. Godaddy setups up the server with 10Gb of storage which is more than plenty for most web needs, however for a business requirement I need a lot of extra space in that server so my solution was Amazon S3 + JungleDisk, that should give a new drive letter with all the space I can possibly need, and paying only for what I’m using, however JungleDisk was unable to create the new drive letter.</description>
     </item>
     
     <item>
       <title>Upgrading Business Contact Manager for Outlook 2007 to 2010</title>
-      <link>./posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</link>
+      <link>http://davidtriana.com/posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</link>
       <pubDate>Wed, 30 Jun 2010 19:50:00 +0000</pubDate>
       
-      <guid>./posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</guid>
+      <guid>http://davidtriana.com/posts/2010/upgrading-business-contact-manager-for-outlook-2007-to-2010/</guid>
       <description>This upgrade steps are for the scenario where there is a central shared database.
 1. Download the Business Contact Manager for Outlook 2010 Database tool from microsoft:
 http://www.microsoft.com/downloads/details.aspx?familyid=5F83D55E-1CC5-49DD-9B5F-06A7C08C00C2&amp;amp;displaylang=en
@@ -96,29 +96,29 @@ http://www.microsoft.com/downloads/details.aspx?familyid=5F83D55E-1CC5-49DD-9B5F
     
     <item>
       <title>Creating a digital lossless movie library</title>
-      <link>./posts/2010/creating-a-digital-lossless-movie-library/</link>
+      <link>http://davidtriana.com/posts/2010/creating-a-digital-lossless-movie-library/</link>
       <pubDate>Tue, 29 Jun 2010 19:47:00 +0000</pubDate>
       
-      <guid>./posts/2010/creating-a-digital-lossless-movie-library/</guid>
+      <guid>http://davidtriana.com/posts/2010/creating-a-digital-lossless-movie-library/</guid>
       <description>I got a bunch of original movies in DVD. They look fine in the shelve but they are DVDs, so they need to be taken of the case and put on the player, plus they get dusty and scratched. My dream is to be able to have them in my hard drive and play then whenever i want. Well, that dream came true in the form of trialware / freeware.</description>
     </item>
     
     <item>
       <title>Upgrading from Nvidia 8800GT to ATI 5830</title>
-      <link>./posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</link>
+      <link>http://davidtriana.com/posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</link>
       <pubDate>Sun, 09 May 2010 19:45:00 +0000</pubDate>
       
-      <guid>./posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</guid>
+      <guid>http://davidtriana.com/posts/2010/upgrading-from-nvidia-8800gt-to-ati-5830/</guid>
       <description>Luego de 2 años a mi fiel 8800GT le llegó la hora de jubilarse para dar paso a esta ATI con mejor desempeño y soporte para DirectX 11.
 Habia tenido este upgrade en espera, atento a que iba a lanzar NVIDIA con su nueva serie Fermi, las GTX 470 y 480. No iba a gastarle mas de U$300 al asunto a no ser que la diferencia en desempeño respecto a una ATI de precio comparable fuese dramáticamente superior, sin embargo a principios de abril cuando por fin salieron al mercado resultaron muy costosas, con un consumo muy elevado de energia y con un desempeño dificilmente superior a las ATI de precio comparable o menor entonces con esa descepción me decidí por ATI.</description>
     </item>
     
     <item>
       <title>Skype 4.1 with desktop sharing</title>
-      <link>./posts/2009/skype-4-1-with-desktop-sharing/</link>
+      <link>http://davidtriana.com/posts/2009/skype-4-1-with-desktop-sharing/</link>
       <pubDate>Wed, 05 Aug 2009 19:44:00 +0000</pubDate>
       
-      <guid>./posts/2009/skype-4-1-with-desktop-sharing/</guid>
+      <guid>http://davidtriana.com/posts/2009/skype-4-1-with-desktop-sharing/</guid>
       <description>Bueno, no exáctamente desktop sharing como lo conocemos a traves de herramientas como remote desktop o sharedview pero si permite brindarle al interlocutor una especie de pantalla compartida.
 Ventajas frente a Microsoft Sharedview o Microsoft Office Live Meeting
  No se necesita otro producto aparte para el audio y otro para la presentación No degrada el video a Vista Basic como si ocurre con los productos de Microsoft al ejecutarlos en Vista con Aero Permite compartir la otra pantalla en el caso de configuraciones Dual Screen (Cosa que no hacen los productos de Microsoft)  Limitaciones</description>
@@ -126,40 +126,40 @@ Ventajas frente a Microsoft Sharedview o Microsoft Office Live Meeting
     
     <item>
       <title>Windows 7 RC Virtual XP Rocks!!!</title>
-      <link>./posts/2009/windows-7-rc-virtual-xp-rocks/</link>
+      <link>http://davidtriana.com/posts/2009/windows-7-rc-virtual-xp-rocks/</link>
       <pubDate>Fri, 01 May 2009 19:43:00 +0000</pubDate>
       
-      <guid>./posts/2009/windows-7-rc-virtual-xp-rocks/</guid>
+      <guid>http://davidtriana.com/posts/2009/windows-7-rc-virtual-xp-rocks/</guid>
       <description>Hoy instalé el RC y una de las caracteristicas nuevas que mas me llamaba la atención era la maquina virtual de XP. La razón es que en mi laptop me vi obligado a tener dual boot con XP porque necesito utilizar un adaptador de RS-232 a USB, cuyo driver solo funciona en XP y la anterior tecnologia de virtualización de Microsoft no permitia acceso a los USB.
 Pues luego de instalar el RC y bajar los dos componentes adicionales, grata sorporesa, soporte para USB.</description>
     </item>
     
     <item>
       <title>Katmouse – Freeing mouse wheel scrolling from the keyboard focus</title>
-      <link>./posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</link>
+      <link>http://davidtriana.com/posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</link>
       <pubDate>Tue, 10 Feb 2009 19:42:00 +0000</pubDate>
       
-      <guid>./posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</guid>
+      <guid>http://davidtriana.com/posts/2009/katmouse-freeing-mouse-wheel-scrolling-from-the-keyboard-focus/</guid>
       <description>En security now 182 Steve recomendó esta utilidad luego de una breve discusión sobre su dependencia en el mouse wheel y sus características como parte de la interfaz de usuario.
 Ciertamente he venido compartiendo el dolor de Steve en mi configuración dual – screen, no hay nada más frustrante de mover el cursor de una pantalla a la otra y tratar de hacer scroll para darse cuenta que primero hay que darle foco a la aplicación para que el scroll funcione, a pesar de que aparentemente la aplicación está en primer plano.</description>
     </item>
     
     <item>
       <title>Fixing sound issues with Bioshock in Vista</title>
-      <link>./posts/2009/fixing-sound-issues-with-bioshock-in-vista/</link>
+      <link>http://davidtriana.com/posts/2009/fixing-sound-issues-with-bioshock-in-vista/</link>
       <pubDate>Wed, 04 Feb 2009 19:41:00 +0000</pubDate>
       
-      <guid>./posts/2009/fixing-sound-issues-with-bioshock-in-vista/</guid>
+      <guid>http://davidtriana.com/posts/2009/fixing-sound-issues-with-bioshock-in-vista/</guid>
       <description>Feliz con mi Bioshock y luego de haberlo jugado unas 8 horas sin problemas, ayer resultó que no tenía audio. Revisé los setting en el juego y en las propiedades de sonido del sistema operativo y nada …
 Luego de reiniciar el juego y el pc acudí a google encontrando la desagradable sorpresa de que es un problema común y según el foro en el sitio del fabricante, sin resolver.</description>
     </item>
     
     <item>
       <title>El Tiempo fights portafolio.com and lose!!!</title>
-      <link>./posts/2009/el-tiempo-fights-portafolio-com-and-lose/</link>
+      <link>http://davidtriana.com/posts/2009/el-tiempo-fights-portafolio-com-and-lose/</link>
       <pubDate>Fri, 30 Jan 2009 19:40:00 +0000</pubDate>
       
-      <guid>./posts/2009/el-tiempo-fights-portafolio-com-and-lose/</guid>
+      <guid>http://davidtriana.com/posts/2009/el-tiempo-fights-portafolio-com-and-lose/</guid>
       <description>Como sabemos, el periódico el tiempo, dueño entre otras cosas de eltiempo.com , motor.com y metrocuadrado.com publica en Colombia el magazine económico portafolio, acompañado por supuesto de su página portafolio.com.co . Qué pasó con portafolio.com ?
 Pues resulta que lo peleó y perdió!!!
 La página hoy día apunta a lo que conocemos como un clic farm, es decir una página parqueada, llena de links provistos por alguna agencia dedicada a publicidad en web y que seguramente le genera algún ingreso al dueño del dominio según los clics que se hagan en los links.</description>
@@ -167,20 +167,20 @@ La página hoy día apunta a lo que conocemos como un clic farm, es decir una p�
     
     <item>
       <title>Teracopy</title>
-      <link>./posts/2008/teracopy/</link>
+      <link>http://davidtriana.com/posts/2008/teracopy/</link>
       <pubDate>Wed, 17 Sep 2008 19:38:00 +0000</pubDate>
       
-      <guid>./posts/2008/teracopy/</guid>
+      <guid>http://davidtriana.com/posts/2008/teracopy/</guid>
       <description>Hace un par de podcasts Paul Thurrott de Windows Weekly recomendó una utilidad llamada Teracopy como algo indispensable para reemplazar el abusurdamente lento proceso de copia en Windows Vista.
 Tuve que hacer espacio para instalar un dual boot con Windows XP en el Tablet para poder utilizar un cable USB - Serial que requiero para configurar unos equipos de un cliente. Como necesitaba tanto espacio tuve que borrar las imágenes de las máquinas virtuales (40Gb) que utilizo tanto el el desktop como en el tablet.</description>
     </item>
     
     <item>
       <title>Finally, 5.9</title>
-      <link>./posts/2008/finally-5-9/</link>
+      <link>http://davidtriana.com/posts/2008/finally-5-9/</link>
       <pubDate>Fri, 22 Aug 2008 19:33:00 +0000</pubDate>
       
-      <guid>./posts/2008/finally-5-9/</guid>
+      <guid>http://davidtriana.com/posts/2008/finally-5-9/</guid>
       <description>Finalmente, 4 meses despues de haber armado este PC hoy logré que marcara 5.9 en el windows vista performance index.
 
 Los problemas? primero como ya habia comentado el RAID de la board; resulta que en este modelo el RAID no esta soportado para todos los puertos SATA y solo se puede hacer combinando un puerto SATA especial con el puerto externo eSATA, entonces hasta que no traje el cable SATA2eSATA desde EU no lo pude hacer.</description>
@@ -188,20 +188,20 @@ Los problemas? primero como ya habia comentado el RAID de la board; resulta que 
     
     <item>
       <title>My new desk</title>
-      <link>./posts/2008/my-new-desk/</link>
+      <link>http://davidtriana.com/posts/2008/my-new-desk/</link>
       <pubDate>Thu, 21 Aug 2008 19:32:00 +0000</pubDate>
       
-      <guid>./posts/2008/my-new-desk/</guid>
+      <guid>http://davidtriana.com/posts/2008/my-new-desk/</guid>
       <description>Trabajar desde la casa tiene un montón de retos y aprovechando que cambio de apartamento es la mejor oportunidad para abordar el reto de la comodidad del sitio de trabajo.
 Luego de ver los escritorios disponibles en tugo, home center y los almacenes de la 30 con 77 fue claro que el escritorio debia ser diseñado a la medida, esto principalmente por el tamaño de la mesa y el tamaño del sitio para la pantalla.</description>
     </item>
     
     <item>
       <title>Love at first sight</title>
-      <link>./posts/2008/love-at-first-sight/</link>
+      <link>http://davidtriana.com/posts/2008/love-at-first-sight/</link>
       <pubDate>Thu, 31 Jul 2008 19:34:00 +0000</pubDate>
       
-      <guid>./posts/2008/love-at-first-sight/</guid>
+      <guid>http://davidtriana.com/posts/2008/love-at-first-sight/</guid>
       <description>Despues de muchos años, hoy por fin puedo decir que se que significa amor a primera vista, y no es otra cosa que esa sensación inexplicable e indescriptible que se apodera de uno en el instante que mira a los ojos a su primer hijo.
 
 Es la verdadera definición de amor incondicional, es la definición de paz interior, &amp;hellip;
@@ -210,30 +210,30 @@ Lorenzo, mi hijo, nació el 31 de julio de 2008 a las 4:56pm, y puedo afirmar co
     
     <item>
       <title>Putting all together</title>
-      <link>./posts/2008/putting-all-together/</link>
+      <link>http://davidtriana.com/posts/2008/putting-all-together/</link>
       <pubDate>Fri, 25 Apr 2008 19:31:00 +0000</pubDate>
       
-      <guid>./posts/2008/putting-all-together/</guid>
+      <guid>http://davidtriana.com/posts/2008/putting-all-together/</guid>
       <description>Cuando finalmente llegaron las partes le dí una mirada rápida a los manuales y comencé a armar.
 La primera frustación vino con el ventilador artic cooler y la razon no haber leido completa detalladamente la guia antes de comenzar. Este ventilador ya tenia pasta térmica pero como no me fijé primero la dañe. Segundo problema, cerré primero las fijaciones de un mismo lado en vez de diagonal y casi rompo el ventilador tratando de sacarlas.</description>
     </item>
     
     <item>
       <title>Podcasts</title>
-      <link>./pages/podcasts/</link>
+      <link>http://davidtriana.com/pages/podcasts/</link>
       <pubDate>Wed, 16 Apr 2008 19:31:00 +0000</pubDate>
       
-      <guid>./pages/podcasts/</guid>
+      <guid>http://davidtriana.com/pages/podcasts/</guid>
       <description>This are the podcast i&amp;rsquo;m currently listening / viewing. If you don&amp;rsquo;t know what is a podcast i&amp;rsquo;m sure wikipedia explains it but basically are like radio / TV shows that i download to my computer and take with me on an iPod or other device to enjoy them where and when i like to.
 I listen to the audio podcasts when i commute to my work and when i workout in the gym.</description>
     </item>
     
     <item>
       <title>Many options, many choices</title>
-      <link>./posts/2008/many-options-many-choices/</link>
+      <link>http://davidtriana.com/posts/2008/many-options-many-choices/</link>
       <pubDate>Tue, 15 Apr 2008 19:30:00 +0000</pubDate>
       
-      <guid>./posts/2008/many-options-many-choices/</guid>
+      <guid>http://davidtriana.com/posts/2008/many-options-many-choices/</guid>
       <description>Video
 AMD o NVIDIA &amp;hellip;
 Luego de leer mucho en los foros y basado en mi experiencia personal decidí quedarme con NVIDIA. Los modelos nuevos de AMD no me convencieron mucho para lo que pensaba gastar en tarjeta de video. En el Dell tenia una ATI (AMD) y la forma como funciona el driver no me gustaba para nada. Escogida la marca viene el modelo, para los U$200 que pensaba gastar aplicaban o una 9600GT o una 8800GT.</description>
@@ -241,10 +241,10 @@ Luego de leer mucho en los foros y basado en mi experiencia personal decidí que
     
     <item>
       <title>My new desktop PC</title>
-      <link>./posts/2008/my-new-desktop-pc/</link>
+      <link>http://davidtriana.com/posts/2008/my-new-desktop-pc/</link>
       <pubDate>Mon, 14 Apr 2008 19:29:00 +0000</pubDate>
       
-      <guid>./posts/2008/my-new-desktop-pc/</guid>
+      <guid>http://davidtriana.com/posts/2008/my-new-desktop-pc/</guid>
       <description>Finalmente, upgrade de PC.
 Llevaba 4 años con mi Dell 4600. Porque el cambio? Leyendo todos los dias RSS de extremetech y cnet es dificil no darse cuenta de los grandes avances en procesadores y memoria. El Dell no se sentia propiamente lento excepto en juegos pero en general era una máquina rápida. Sus limitaciones? Por un lado la fuente de poder no permitia tener 2 discos duros y 2 quemadores simultaneamente y por otro lado el bus de video era AGP 8x.</description>
     </item>

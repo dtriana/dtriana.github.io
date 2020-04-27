@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>DynamicsCRM on David Triana</title>
-    <link>./tags/dynamicscrm/</link>
+    <link>http://davidtriana.com/tags/dynamicscrm/</link>
     <description>Recent content in DynamicsCRM on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 27 Jun 2012 18:41:36 +0000</lastBuildDate>
     
-	<atom:link href="./tags/dynamicscrm/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://davidtriana.com/tags/dynamicscrm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>All you need to know when installing Dynamics CRM 2011</title>
-      <link>./posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</link>
+      <link>http://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</link>
       <pubDate>Wed, 27 Jun 2012 18:41:36 +0000</pubDate>
       
-      <guid>./posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</guid>
+      <guid>http://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</guid>
       <description>When dealing with installing the on premise version of Microsoft Dynamics CRM 2011 you will find a couple documents on MSDN, Microsoft Dynamics CRM Planning Guide and Microsoft Dynamics CRM Installing Guide. I find those lacking a lot of detail with the real steps and requirement for the installation, however I found this excellent and very detailed technical step by step guide, with just one flaw,
 http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx
 The flaw is when SQL Server is on another server and a TCP port other than the default and the Windows Firewall is on.</description>
