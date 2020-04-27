@@ -18,20 +18,20 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
 <meta property="og:description" content="In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.
 To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (http://nugetserver.net/) and hosted it on a free tier Azure Web Site. Having that, I’m all set." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/" />
+<meta property="og:url" content="https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/" />
 <meta property="article:published_time" content="2016-11-26T03:54:00+00:00" />
 <meta property="article:modified_time" content="2016-11-26T03:54:00+00:00" />
 
 
     
-      <base href="http://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/">
+      <base href="https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/">
     
     <title>
   Continuous Integration &amp; Deployment of a NuGet Package with VSTS · David Triana
 </title>
 
     
-      <link rel="canonical" href="http://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/">
+      <link rel="canonical" href="https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/">
     
 
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
     
       
       
-      <link rel="stylesheet" href="http://davidtriana.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
+      <link rel="stylesheet" href="https://davidtriana.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
     
 
     
@@ -49,15 +49,15 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
     
 
     
-      <link rel="stylesheet" href="http://davidtriana.com/css/custom.css" />
+      <link rel="stylesheet" href="https://davidtriana.com/css/custom.css" />
     
 
     
 
     
 
-    <link rel="icon" type="image/png" href="http://davidtriana.com/img/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="http://davidtriana.com/img/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-16x16.png" sizes="16x16">
 
     <meta name="generator" content="Hugo 0.67.1" />
   </head>
@@ -68,7 +68,7 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
     <main class="wrapper">
       <nav class="navigation">
   <section class="container">
-    <a class="navigation-title" href="http://davidtriana.com/">
+    <a class="navigation-title" href="https://davidtriana.com/">
       David Triana
     </a>
     
@@ -78,11 +78,11 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
       
         
           <li class="navigation-item">
-            <a class="navigation-link" href="http://davidtriana.com/posts/">Blog</a>
+            <a class="navigation-link" href="https://davidtriana.com/posts/">Blog</a>
           </li>
         
           <li class="navigation-item">
-            <a class="navigation-link" href="http://davidtriana.com/about/">About</a>
+            <a class="navigation-link" href="https://davidtriana.com/about/">About</a>
           </li>
         
       
@@ -117,9 +117,9 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
           
           <div class="tags">
   <i class="fas fa-tag"></i>
-    <a href="http://davidtriana.com/tags/azure/">Azure</a>
+    <a href="https://davidtriana.com/tags/azure/">Azure</a>
       <span class="separator">•</span>
-    <a href="http://davidtriana.com/tags/tfs/">TFS</a></div>
+    <a href="https://davidtriana.com/tags/tfs/">TFS</a></div>
 
         </div>
       </header>
@@ -129,50 +129,50 @@ To publish a NuGet Package you will need a NuGet server. There are lots of optio
         <p>In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.</p>
 <p>To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (<a href="http://nugetserver.net/" title="http://nugetserver.net/">http://nugetserver.net/</a>) and hosted it on a free tier Azure Web Site. Having that, I’m all set.</p>
 <p>First I need the project from which I will then generate the package, so first make sure to have a Visual Studio solution that builds, and that doesn’t have any weird local references since the build will be done by the hosted build service in VSTS. Nuget dependencies are fine, since the CI can take care of that.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb.png" alt="image" title="image"></a></p>
 <p>Then my project needs to be in a repository in VSTS</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image1.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb1.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image1.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb1.png" alt="image" title="image"></a></p>
 <p>With that, I’m ready to configure the CI/CD build</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image2.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb2.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image2.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb2.png" alt="image" title="image"></a></p>
 <p>Leave the defaults in the “Select a template”, be aware however that this screen can change at any time so check the options and selection in your case</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image3.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb3.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image3.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb3.png" alt="image" title="image"></a></p>
 <p>In the “Create new build definition” screen pick the right repository, branch, and check the Continuous integration option if that is really what you want. If you leave it blank you will need to manually start each build, or schedule it in some other way</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image4.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb4.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image4.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb4.png" alt="image" title="image"></a></p>
 <p>VSTS will create a default build definition like this:</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image5.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb5.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image5.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb5.png" alt="image" title="image"></a></p>
 <p>Leave only the first two steps, delete the rest.</p>
 <p>To delete a step, first click over it and then on the red arrow to the right next to it:</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image6.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb6.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image6.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb6.png" alt="image" title="image"></a></p>
 <p>Click on the green Add build step on top of the steps list and in the Task Catalog dialog select Package and look for the Nuget and click Add</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image7.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb7.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image7.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb7.png" alt="image" title="image"></a></p>
 <p>Without closing the dialog, click add on the Nuget Publisher</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image8.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb8.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image8.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb8.png" alt="image" title="image"></a></p>
 <p>Then click on Close to dismiss the Task Catalog dialog. Click on the NuGet Publisher step to reveal the configuration. If you are using the Nuget server provided by VSTS then choose “Internal Nuget Feed” and copy/paste the Url provided by the extension.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image9.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb9.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image9.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb9.png" alt="image" title="image"></a></p>
 <p>In my case since I have a external server I left the Feed type as External and clicked on the Manage link to the right of the Url. This is needed only the first time. After the server is setup it will be available in the dropdown control for NuGet Server Endpoint.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image10.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb10.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image10.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb10.png" alt="image" title="image"></a></p>
 <p>The Manage link opens a new page, the “Settings/Services” page. Click on the green New Service Endpoint and choose generic</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image11.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb11.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image11.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb11.png" alt="image" title="image"></a></p>
 <p>In the Add new Generic Connection dialog use a friendly name for Connection Name and fill out the Url and Username and Password if needed. In my case with the Nuget.Server I have I passkey so I typed it there.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image12.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb12.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image12.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb12.png" alt="image" title="image"></a></p>
 <p>After clicking Ok close the Settings page to go back to the Build page, Click on the refresh icon next to the Url to have the server available and select the server.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image13.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb13.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image13.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb13.png" alt="image" title="image"></a></p>
 <p>At this point the Build definition is ready. It must look like this</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image14.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb14.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image14.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb14.png" alt="image" title="image"></a></p>
 <p>Click on save and provide a distinctive name for it</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image15.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb15.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image15.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb15.png" alt="image" title="image"></a></p>
 <p>And that’s it!, if you selected the continuous integration the Build will run automatically every time you check in changes in the repo/branch selected at the beginning. To run the build manually click on “Queue build…” and leave the default options. The BuildConfiguration option is particularly important since without it, or misconfigured the build will fail.</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image16.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb16.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image16.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb16.png" alt="image" title="image"></a></p>
 <p>Moments later a build agent will pick the job and you will be able to see the output of the build tasks in real time</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image17.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb17.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image17.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb17.png" alt="image" title="image"></a></p>
 <p>Then the build will finish. If something fails, it will be red, and the logs will help to find the issue, probably some issue with dependencies in the Visual Studio Solution</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image18.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb18.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image18.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb18.png" alt="image" title="image"></a></p>
 <p>To then consume my package, if I haven’t already added my Nuget server I need to do it in the Options screen in Visual Studio. One quick way to get to the right place is to open the Nuget Package Manager and click on the Gear</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image19.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb19.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image19.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb19.png" alt="image" title="image"></a></p>
 <p>Then add the server. In my case it looks like this</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image20.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb20.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image20.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb20.png" alt="image" title="image"></a></p>
 <p>And with that I can pick my just created package</p>
-<p><a href="http://davidtriana.com/images/posts/2016/11/image21.png"><img src="http://davidtriana.com/images/posts/2016/11/image_thumb21.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2016/11/image21.png"><img src="https://davidtriana.com/images/posts/2016/11/image_thumb21.png" alt="image" title="image"></a></p>
 
       </div>
 

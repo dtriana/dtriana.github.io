@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Windows Phone 8 on David Triana</title>
-    <link>http://davidtriana.com/tags/windows-phone-8/</link>
+    <link>https://davidtriana.com/tags/windows-phone-8/</link>
     <description>Recent content in Windows Phone 8 on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 03 May 2015 16:48:00 +0000</lastBuildDate>
     
-	<atom:link href="http://davidtriana.com/tags/windows-phone-8/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://davidtriana.com/tags/windows-phone-8/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>The nokia 920 killer</title>
-      <link>http://davidtriana.com/posts/2015/the-nokia-920-killer/</link>
+      <link>https://davidtriana.com/posts/2015/the-nokia-920-killer/</link>
       <pubDate>Sun, 03 May 2015 16:48:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2015/the-nokia-920-killer/</guid>
+      <guid>https://davidtriana.com/posts/2015/the-nokia-920-killer/</guid>
       <description>I frequently move my SIMCARD from phone to phone, testing applications, OS features and things like that.
 With the iPhone 5 and it’s nano SIMCARD I found myself with a small form size dilemma:
 
@@ -26,10 +26,10 @@ What seemed like a good idea at first turned out to be the Nokia 920 Killer!</de
     
     <item>
       <title>Google 2nd Step Verification and Windows Phone 8</title>
-      <link>http://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</link>
+      <link>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</link>
       <pubDate>Fri, 11 Jan 2013 17:48:14 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</guid>
+      <guid>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</guid>
       <description>I’m moving from iOS 6 (iPhone 4) to Windows Phone 8 (HTC 8x).
 One of the apps I’m missing from iOS is the Google Authenticator that provides one time passwords to authenticate to google.
 Looked around and found the Authenticator application:

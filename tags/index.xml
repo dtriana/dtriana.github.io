@@ -2,111 +2,111 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on David Triana</title>
-    <link>http://davidtriana.com/tags/</link>
+    <link>https://davidtriana.com/tags/</link>
     <description>Recent content in Tags on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 26 Nov 2016 03:54:00 +0000</lastBuildDate>
     
-	<atom:link href="http://davidtriana.com/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://davidtriana.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Azure</title>
-      <link>http://davidtriana.com/tags/azure/</link>
+      <link>https://davidtriana.com/tags/azure/</link>
       <pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/azure/</guid>
+      <guid>https://davidtriana.com/tags/azure/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TFS</title>
-      <link>http://davidtriana.com/tags/tfs/</link>
+      <link>https://davidtriana.com/tags/tfs/</link>
       <pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/tfs/</guid>
+      <guid>https://davidtriana.com/tags/tfs/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Windows Phone 8</title>
-      <link>http://davidtriana.com/tags/windows-phone-8/</link>
+      <link>https://davidtriana.com/tags/windows-phone-8/</link>
       <pubDate>Sun, 03 May 2015 16:48:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/windows-phone-8/</guid>
+      <guid>https://davidtriana.com/tags/windows-phone-8/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ASP.NET</title>
-      <link>http://davidtriana.com/tags/asp.net/</link>
+      <link>https://davidtriana.com/tags/asp.net/</link>
       <pubDate>Thu, 20 Dec 2012 16:45:55 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/asp.net/</guid>
+      <guid>https://davidtriana.com/tags/asp.net/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Web Development</title>
-      <link>http://davidtriana.com/tags/web-development/</link>
+      <link>https://davidtriana.com/tags/web-development/</link>
       <pubDate>Thu, 20 Dec 2012 16:45:55 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/web-development/</guid>
+      <guid>https://davidtriana.com/tags/web-development/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Dynamics CRM</title>
-      <link>http://davidtriana.com/tags/dynamics-crm/</link>
+      <link>https://davidtriana.com/tags/dynamics-crm/</link>
       <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/dynamics-crm/</guid>
+      <guid>https://davidtriana.com/tags/dynamics-crm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Uncategorized</title>
-      <link>http://davidtriana.com/tags/uncategorized/</link>
+      <link>https://davidtriana.com/tags/uncategorized/</link>
       <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/uncategorized/</guid>
+      <guid>https://davidtriana.com/tags/uncategorized/</guid>
       <description></description>
     </item>
     
     <item>
       <title>DynamicsCRM</title>
-      <link>http://davidtriana.com/tags/dynamicscrm/</link>
+      <link>https://davidtriana.com/tags/dynamicscrm/</link>
       <pubDate>Wed, 27 Jun 2012 18:41:36 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/dynamicscrm/</guid>
+      <guid>https://davidtriana.com/tags/dynamicscrm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>AzDevOps</title>
-      <link>http://davidtriana.com/tags/azdevops/</link>
+      <link>https://davidtriana.com/tags/azdevops/</link>
       <pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/azdevops/</guid>
+      <guid>https://davidtriana.com/tags/azdevops/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MVC</title>
-      <link>http://davidtriana.com/tags/mvc/</link>
+      <link>https://davidtriana.com/tags/mvc/</link>
       <pubDate>Tue, 20 Sep 2011 19:56:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/mvc/</guid>
+      <guid>https://davidtriana.com/tags/mvc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>IIS</title>
-      <link>http://davidtriana.com/tags/iis/</link>
+      <link>https://davidtriana.com/tags/iis/</link>
       <pubDate>Fri, 10 Jun 2011 19:25:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/tags/iis/</guid>
+      <guid>https://davidtriana.com/tags/iis/</guid>
       <description></description>
     </item>
     

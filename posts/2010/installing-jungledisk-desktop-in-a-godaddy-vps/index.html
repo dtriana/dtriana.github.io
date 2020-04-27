@@ -16,20 +16,20 @@
     <meta property="og:title" content="Installing JungleDisk desktop in a Godaddy VPS" />
 <meta property="og:description" content="So I got this Virtual Private Server in godaddy with Windows Server 2003 and everything works and looks normal but some things just doesn’t work. Well, one of those is JungleDisk Desktop. Godaddy setups up the server with 10Gb of storage which is more than plenty for most web needs, however for a business requirement I need a lot of extra space in that server so my solution was Amazon S3 &#43; JungleDisk, that should give a new drive letter with all the space I can possibly need, and paying only for what I’m using, however JungleDisk was unable to create the new drive letter." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/" />
+<meta property="og:url" content="https://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/" />
 <meta property="article:published_time" content="2010-09-04T19:53:00+00:00" />
 <meta property="article:modified_time" content="2010-09-04T19:53:00+00:00" />
 
 
     
-      <base href="http://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/">
+      <base href="https://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/">
     
     <title>
   Installing JungleDisk desktop in a Godaddy VPS · David Triana
 </title>
 
     
-      <link rel="canonical" href="http://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/">
+      <link rel="canonical" href="https://davidtriana.com/posts/2010/installing-jungledisk-desktop-in-a-godaddy-vps/">
     
 
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
     
       
       
-      <link rel="stylesheet" href="http://davidtriana.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
+      <link rel="stylesheet" href="https://davidtriana.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
     
 
     
@@ -47,15 +47,15 @@
     
 
     
-      <link rel="stylesheet" href="http://davidtriana.com/css/custom.css" />
+      <link rel="stylesheet" href="https://davidtriana.com/css/custom.css" />
     
 
     
 
     
 
-    <link rel="icon" type="image/png" href="http://davidtriana.com/img/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="http://davidtriana.com/img/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-16x16.png" sizes="16x16">
 
     <meta name="generator" content="Hugo 0.67.1" />
   </head>
@@ -66,7 +66,7 @@
     <main class="wrapper">
       <nav class="navigation">
   <section class="container">
-    <a class="navigation-title" href="http://davidtriana.com/">
+    <a class="navigation-title" href="https://davidtriana.com/">
       David Triana
     </a>
     
@@ -76,11 +76,11 @@
       
         
           <li class="navigation-item">
-            <a class="navigation-link" href="http://davidtriana.com/posts/">Blog</a>
+            <a class="navigation-link" href="https://davidtriana.com/posts/">Blog</a>
           </li>
         
           <li class="navigation-item">
-            <a class="navigation-link" href="http://davidtriana.com/about/">About</a>
+            <a class="navigation-link" href="https://davidtriana.com/about/">About</a>
           </li>
         
       
@@ -115,7 +115,7 @@
           
           <div class="tags">
   <i class="fas fa-tag"></i>
-    <a href="http://davidtriana.com/tags/uncategorized/">Uncategorized</a></div>
+    <a href="https://davidtriana.com/tags/uncategorized/">Uncategorized</a></div>
 
         </div>
       </header>
@@ -145,7 +145,7 @@ Error Location: JDFS.cpp:138 JDFS::Mount</p>
 JungleTravis<br>
 Jungle Disk Support</p>
 <p>Well, I don’t gave up that fast so I tried another trick, JungleDisk supports WebDav, so that should work,</p>
-<p><a href="http://davidtriana.com/images/posts/2012/05/image30.png"><img src="http://davidtriana.com/images/posts/2012/05/image_thumb29.png" alt="image" title="image"></a></p>
+<p><a href="https://davidtriana.com/images/posts/2012/05/image30.png"><img src="https://davidtriana.com/images/posts/2012/05/image_thumb29.png" alt="image" title="image"></a></p>
 <p>However, as this machine runs IIS there’s some kind of overlapping with WebDav trying to bound to port 80 but fortunately I found a workaround for that in the Microsoft’s windows home server forum:</p>
 <p><a href="http://social.microsoft.com/Forums/en-US/whssoftware/thread/096c20d9-2b6d-4dee-ac5a-2888e91d56a0/">http://social.microsoft.com/Forums/en-US/whssoftware/thread/096c20d9-2b6d-4dee-ac5a-2888e91d56a0/</a></p>
 <p>-Open up HTTP services.  Start the registry editor on the WHS box.  Browse to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\HTTP\Parameters key<br>

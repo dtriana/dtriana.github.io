@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ASP.NET on David Triana</title>
-    <link>http://davidtriana.com/tags/asp.net/</link>
+    <link>https://davidtriana.com/tags/asp.net/</link>
     <description>Recent content in ASP.NET on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 20 Dec 2012 16:45:55 +0000</lastBuildDate>
     
-	<atom:link href="http://davidtriana.com/tags/asp.net/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://davidtriana.com/tags/asp.net/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Fixing Configuration Error– &#39;oracleDBBinding&#39; could not be found</title>
-      <link>http://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</link>
+      <link>https://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</link>
       <pubDate>Thu, 20 Dec 2012 16:45:55 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</guid>
+      <guid>https://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</guid>
       <description>This error shows up with web applications and/or web services that use the Biztalk LOB Adapters for Oracle and the server doesn´t have the required assemblies.
 
 To fix it just install:
@@ -30,30 +30,30 @@ And declare the binding either on the machine.config for the whole server or in 
     
     <item>
       <title>Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications</title>
-      <link>http://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</link>
+      <link>https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</link>
       <pubDate>Tue, 20 Sep 2011 19:56:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</guid>
+      <guid>https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/</guid>
       <description>Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
 How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software.</description>
     </item>
     
     <item>
       <title>Using AzMan to provide role membership in ASP.NET</title>
-      <link>http://davidtriana.com/posts/2011/using-azman-to-provide-role-membership-in-asp-net/</link>
+      <link>https://davidtriana.com/posts/2011/using-azman-to-provide-role-membership-in-asp-net/</link>
       <pubDate>Thu, 15 Sep 2011 16:43:28 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2011/using-azman-to-provide-role-membership-in-asp-net/</guid>
+      <guid>https://davidtriana.com/posts/2011/using-azman-to-provide-role-membership-in-asp-net/</guid>
       <description>The membership services provided in ASP.NET are very rich and flexible. As part of that flexibility they allow to store the identities and roles of your web site users in a variety of providers, typically SQL Server or Active Directory.
 What if the requirement of your application make it so the best place for the identities is an LDAP repository but you don’t want Active Directory? Well, Windows Server provides a role called AD LDS – Active Directory Lightweight Directory Services.</description>
     </item>
     
     <item>
       <title>Missing management server delegation, 401 error and 403.14 error when deploying a new IIS7.5 for Web Deploy and ASP.NET MVC 2/3</title>
-      <link>http://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</link>
+      <link>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</link>
       <pubDate>Fri, 10 Jun 2011 19:25:00 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</guid>
+      <guid>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</guid>
       <description>Last night I was setting up a new box for a web site migration and lost a lot of time with that 3 issues.
 I used Web Platform Installer to setup most of the server hoping that it will leave everything working as expected, however I found that is not the case.
 First I needed to setup the Web Deploy service to install the web application from visual studio, however the Web Platform Installer leaves a few things missing when it deals with the Web Deploy.</description>

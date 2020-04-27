@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>AzDevOps on David Triana</title>
-    <link>http://davidtriana.com/tags/azdevops/</link>
+    <link>https://davidtriana.com/tags/azdevops/</link>
     <description>Recent content in AzDevOps on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 06 Mar 2012 23:11:21 +0000</lastBuildDate>
     
-	<atom:link href="http://davidtriana.com/tags/azdevops/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://davidtriana.com/tags/azdevops/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Migrating from local TFS to TFSPreview</title>
-      <link>http://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link>
+      <link>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link>
       <pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate>
       
-      <guid>http://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid>
+      <guid>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid>
       <description>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.
 It’s currently free and invite only but the invite codes are relatively easy to get. I asked for one in the page and got it in two days.
 www.tfspreview.com
