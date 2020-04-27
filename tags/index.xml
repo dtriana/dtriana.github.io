@@ -6,10 +6,28 @@
     <description>Recent content in Tags on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 26 Nov 2016 03:54:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidtriana.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Security</title>
+      <link>https://davidtriana.com/tags/security/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/tags/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Uncategorized</title>
+      <link>https://davidtriana.com/tags/uncategorized/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/tags/uncategorized/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Azure</title>
@@ -62,15 +80,6 @@
       <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
       
       <guid>https://davidtriana.com/tags/dynamics-crm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Uncategorized</title>
-      <link>https://davidtriana.com/tags/uncategorized/</link>
-      <pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/tags/uncategorized/</guid>
       <description></description>
     </item>
     

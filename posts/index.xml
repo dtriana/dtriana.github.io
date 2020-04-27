@@ -6,10 +6,30 @@
     <description>Recent content in Posts on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 26 Nov 2016 03:54:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Password and two factor authentication in the web</title>
+      <link>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</guid>
+      <description>A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin. The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.</description>
+    </item>
+    
+    <item>
+      <title>Blogging Again!</title>
+      <link>https://davidtriana.com/posts/2020/blogging-again/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/posts/2020/blogging-again/</guid>
+      <description>It has been a very long time since my last post, but here we go again.
+There is no excuse really, it is about discipline, not about lack of material, so instead of looking backwards, let’s re-start blogging!
+But first, let us switch platforms 😊. Until today I had my blog on (https://wordpress.com), the free tier, and while that worked I really prefer to have more control, and specially having everything from my own domain instead of a redirect (not that it’s not possible on wordpress.</description>
+    </item>
     
     <item>
       <title>Continuous Integration &amp; Deployment of a NuGet Package with VSTS</title>

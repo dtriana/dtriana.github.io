@@ -3,27 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://davidtriana.com/</loc>
+    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</loc>
+    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/posts/</loc>
+    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/security/</loc>
+    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/</loc>
+    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/posts/2020/blogging-again/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/uncategorized/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://davidtriana.com/tags/azure/</loc>
     <lastmod>2016-11-26T03:54:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</loc>
-    <lastmod>2016-11-26T03:54:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/</loc>
-    <lastmod>2016-11-26T03:54:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/posts/</loc>
-    <lastmod>2016-11-26T03:54:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/tags/</loc>
     <lastmod>2016-11-26T03:54:00+00:00</lastmod>
   </url>
   
@@ -84,11 +104,6 @@
   
   <url>
     <loc>https://davidtriana.com/tags/dynamics-crm/</loc>
-    <lastmod>2012-12-05T18:16:49+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/tags/uncategorized/</loc>
     <lastmod>2012-12-05T18:16:49+00:00</lastmod>
   </url>
   
