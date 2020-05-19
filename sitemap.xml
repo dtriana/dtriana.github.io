@@ -3,8 +3,38 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://davidtriana.com/tags/azdevops/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://davidtriana.com/</loc>
-    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/posts/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/tfs/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davidtriana.com/tags/vsts/</loc>
+    <lastmod>2020-05-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -13,17 +43,7 @@
   </url>
   
   <url>
-    <loc>https://davidtriana.com/posts/</loc>
-    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://davidtriana.com/tags/security/</loc>
-    <lastmod>2020-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/tags/</loc>
     <lastmod>2020-04-27T00:00:00+00:00</lastmod>
   </url>
   
@@ -44,11 +64,6 @@
   
   <url>
     <loc>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</loc>
-    <lastmod>2016-11-26T03:54:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/tags/tfs/</loc>
     <lastmod>2016-11-26T03:54:00+00:00</lastmod>
   </url>
   
@@ -135,11 +150,6 @@
   <url>
     <loc>https://davidtriana.com/pages/my-stuff/</loc>
     <lastmod>2012-05-18T13:46:32+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davidtriana.com/tags/azdevops/</loc>
-    <lastmod>2012-03-06T23:11:21+00:00</lastmod>
   </url>
   
   <url>
