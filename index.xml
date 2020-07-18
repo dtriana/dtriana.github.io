@@ -6,10 +6,22 @@
     <description>Recent content on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting the Shell back on WSL</title>
+      <link>https://davidtriana.com/posts/2020/getting-the-shell-back-on-wsl/</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/posts/2020/getting-the-shell-back-on-wsl/</guid>
+      <description>I have been using Linux more and more, via WSL, and learning a lot along the way.
+Part of the jorney is breaking and fixing things, which is exactly what happened to me today.
+I was trying to get the very nice command prompt, like the one from Scott Hanselman, and at some point following different steps from the ones shared by Scott I installed zsh as my shell.
+After trying the zsh approach and not being able to make it work, I decided to revert, and stick to what Scott did, so first thing was removing zsh,</description>
+    </item>
     
     <item>
       <title>Updating Azure DevOps WorktItems programmatically </title>
