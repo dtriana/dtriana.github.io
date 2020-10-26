@@ -6,10 +6,16 @@
     <description>Recent content on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Fri, 16 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Visual Studio Code Remote</title>
+      <link>https://davidtriana.com/posts/2020/vscode-remote/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/posts/2020/vscode-remote/</guid>
+      <description>Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.
+This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal.</description>
+    </item>
     
     <item>
       <title>Getting the Shell back on WSL</title>
@@ -84,10 +90,10 @@ What seemed like a good idea at first turned out to be the Nokia 920 Killer!</de
       
       <guid>https://davidtriana.com/pages/my-books/</guid>
       <description>Updated 4-may-2015 / The read section is still incomplete
-Wish list Type Title Self Development [](http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet)
-Quiet: The Power of Introverts in a World That Can&amp;rsquo;t Stop Talking[](http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet) Technical
+Wish list Type Title Self Development 
+Quiet: The Power of Introverts in a World That Can&amp;rsquo;t Stop Talking Technical
 Agile Principles, Patterns, and Practices in C# Currently reading Type Title Management and leadership
-[](http://www.amazon.com/Start-up-Nation-Israels-Economic-Miracle-ebook/dp/B004QZ9P6K/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625919&amp;amp;sr=1-1&amp;amp;keywords=startup+nation)[The Tipping Point](http://www.amazon.com/Tipping-Point-Little-Things-Difference-ebook/dp/B000OT8GD0)
+The Tipping Point
 Technical
 Software in 30 Days: How Agile Managers Beat the Odds, Delight Their Customers, And Leave Competitors In the Dust Read* *Incomplete list, most of the technical books are missing at the moment</description>
     </item>
@@ -210,7 +216,7 @@ NVIDIA® GeForce® GT 720 1GB DDR3
 Storage
 Samsung 850 EVO 250GB 2.5-Inch SATA III Internal SSD
 Monitor
-2x 24&amp;rdquo; Dell E248WFP (1920 x 1200)
+2x 24&amp;quot; Dell E248WFP (1920 x 1200)
 Keyboard
 Microsoft Natural Keyboard 4000
 Mouse

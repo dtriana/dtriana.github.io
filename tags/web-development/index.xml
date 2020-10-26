@@ -6,11 +6,7 @@
     <description>Recent content in Web Development on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 20 Dec 2012 16:45:55 +0000</lastBuildDate>
-    
-	<atom:link href="https://davidtriana.com/tags/web-development/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 20 Dec 2012 16:45:55 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/web-development/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fixing Configuration Error– &#39;oracleDBBinding&#39; could not be found</title>
       <link>https://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</link>

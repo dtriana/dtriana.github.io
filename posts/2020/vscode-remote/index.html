@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="David Triana">
+    <meta name="description" content="David Triana&#39;s personal website">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Visual Studio Code Remote"/>
+<meta name="twitter:description" content="Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.
+This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal."/>
+
+    <meta property="og:title" content="Visual Studio Code Remote" />
+<meta property="og:description" content="Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.
+This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://davidtriana.com/posts/2020/vscode-remote/" />
+<meta property="article:published_time" content="2020-10-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-16T00:00:00+00:00" />
+
+
+    
+      <base href="https://davidtriana.com/posts/2020/vscode-remote/">
+    
+    <title>
+  Visual Studio Code Remote · David Triana
+</title>
+
+    
+      <link rel="canonical" href="https://davidtriana.com/posts/2020/vscode-remote/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://davidtriana.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://davidtriana.com/css/custom.css" />
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://davidtriana.com/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.76.5" />
+  </head>
+
+  
+  
+  <body class="colorscheme-light">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://davidtriana.com/">
+      David Triana
+    </a>
+    
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://davidtriana.com/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="https://davidtriana.com/about/">About</a>
+          </li>
+        
+      
+      
+    </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Visual Studio Code Remote</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-10-16T00:00:00Z'>
+                October 16, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              4-minute read
+            </span>
+          </div>
+          
+          <div class="tags">
+  <i class="fas fa-tag"></i>
+    <a href="https://davidtriana.com/tags/linux/">Linux</a></div>
+
+        </div>
+      </header>
+
+      <div>
+        
+        <p>Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.</p>
+<p>This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal.</p>
+<p>A similar solution already exists, called  <a href="https://azure.microsoft.com/en-us/services/visual-studio-online/">Visual Studio Codespaces</a>, which works pretty well but its being transitioned to a new home, in <a href="https://devblogs.microsoft.com/visualstudio/visual-studio-codespaces-is-consolidating-into-github-codespaces/">GitHub</a>, and at the time of this blog post it is still in private preview. A great discussion about it is available <a href="https://www.dotnetrocks.com/?show=1708">here</a>.</p>
+<p>The specific scenarios for which this technology is a great time saver for me are:</p>
+<h4 id="build-environments-isolation">Build environments isolation</h4>
+<p>Different projects have different needs, and often those needs collide, different version, different system configurations. With this technology I can have a specific remote for linux-phyton, linux-go, linux-dotnetcore, or even more specific, by version or project, having a trusted build environment for that specific need</p>
+<h4 id="high-bandwidth-requirements">High bandwidth requirements</h4>
+<p>Living outside the city has many adventages, but broadband is not one of them, so if my productivity depends on downloading several docker images, pushing containers, or having very good connectivity in general, then I&rsquo;m not productive, however with this technology all of that happens on the remote, where the bandwith is not a problem</p>
+<h2 id="setting-it-up">Setting it up</h2>
+<p>While the steps to make this work are already documented <a href="https://code.visualstudio.com/docs/remote/ssh-tutorial">here</a>, this blog post goes over some of the details to make it work. For this, I created a new environment, on the client side I created a new Windows 10 Pro VM, and for the remote, a CentOS VM, both in Azure. Of course the idea of the client is to use your own computer, I created a new VM to see it work from scratch and being able to document all the steps.</p>
+<p>I created the Windows VM from the portal in a new resource group called remotevs, for the Linux VM I used Azure CLI from the cloud shell in the portal:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">az vm create --resource-group remotevs --name remotevsserver --image OpenLogic:CentOS:7.7:7.7.2020062400 --admin-username azureuser --generate-ssh-keys
+</code></pre></div><p>Here I used the CentOS image just because I&rsquo;m studying for the Linux Foundation certification, any other image should work fine as happens with the one I use to build this blog which is based in Ubuntu.</p>
+<p>Once the VMs where running I opened a remote desktop session on the Windows machine, and installed Visual Studio Code. Right after that I clicked on the link to get the SSH Extension, and it got installed on VSCode</p>
+<p><a href="https://davidtriana.com/images/posts/2020/vscode-remote-extension.png"><img src="https://davidtriana.com/images/posts/2020/vscode-remote-extension.png" alt="VSCode Remote SSH Extension" title="VSCode Remote SSH Extension"></a></p>
+<p>The documentation indicates that an SSH Client is needed on the client, and links to <a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">OpenSSH for Windows</a>, which can be added via the user interface or via PowerShell, which I did</p>
+<p><img src="https://davidtriana.com/images/posts/2020/admin-powershellpng.png" alt="&ldquo;Opening powershell as admin&rdquo;" title="Opening powershell as admin"></p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+</code></pre></div><p>And now what is missing is the SSH Key. In the documentation, it is suggested to first create a key pair, and then use that public key during the virtual machine creation. That certainly works, the way I did it however, with the generate-ssh-keys parameter, means that the public and private keys are there in the cloud shell. I need to copy those keys to the client for the authentication to work.</p>
+<p>To copy the files, I open a cloud shell again, this time on the client machine, find the files, and then copy using the download command</p>
+<p><img src="https://davidtriana.com/images/posts/2020/copyssh.png" alt="Copying files from cloud shell" title="Copying files from cloud shell"></p>
+<p>And now move them in the client file system to the expected location</p>
+<p><img src="static/images/posts/2020/copysshpowershell.png" alt="Moving files to ssh folder" title="Moving files to ssh folder"></p>
+<p>The name id_rsa is a default name, and if this is your client machine you might already have one. Its fine to rename it, but the filename will need to be passed explicitly to the ssh command, and also be set explicitly in the VSCode configuration.</p>
+<p>With the private key in place is time for a test</p>
+<p><img src="https://davidtriana.com/images/posts/2020/sshtest.png" alt="SSH Connection Test" title="SSH Connection Test"></p>
+<p>And now that I know my client is able to SSH to the remote, its time for VSCode to do the same</p>
+<p><img src="https://davidtriana.com/images/posts/2020/codeconnect.png" alt="Connection dialog in VSCode" title="Connection dialog in VSCode"></p>
+<p><img src="https://davidtriana.com/images/posts/2020/connecttestvscode.png" alt="VSCode and terminal connected" title="VSCode and terminal connected"></p>
+<p>In case the private key file has a different name, as happens to me with the one for the blog, the connection will fail and the extension will allow to edit the configuration, which is a text file. On that text file, you can provide the path and name of the private key file, in my case for example:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Host hugoblog
+  HostName hugoblog
+  User azureuser
+  ForwardAgent yes
+  IdentityFile ~/.ssh/hugoblog
+</code></pre></div><h1 id="next-steps">Next steps</h1>
+<p>Depending on the purpose of the remote you will need to apt-get update, configure git, install dotnet core, install python, install Azure CLI &hellip;</p>
+<p>And something that works without explicit configuration is port forwarding, in the case of my blog I can browse it locally, as if it was running locally but in realilty is being port-forwarded from the remote. This works with dotnet core as well.</p>
+<p>Have fun!</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p>The content on this site reflect my personal views</p>
+      
+      
+        ©
+        
+        2020
+         David Triana 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+
+    
+
+  </body>
+
+</html>

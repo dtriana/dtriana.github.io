@@ -6,11 +6,7 @@
     <description>Recent content in Security on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://davidtriana.com/tags/security/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/security/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Password and two factor authentication in the web</title>
       <link>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</link>

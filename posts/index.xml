@@ -6,10 +6,16 @@
     <description>Recent content in Posts on David Triana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Fri, 16 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Visual Studio Code Remote</title>
+      <link>https://davidtriana.com/posts/2020/vscode-remote/</link>
+      <pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://davidtriana.com/posts/2020/vscode-remote/</guid>
+      <description>Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.
+This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal.</description>
+    </item>
     
     <item>
       <title>Getting the Shell back on WSL</title>
