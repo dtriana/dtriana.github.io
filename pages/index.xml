@@ -1,34 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Pages on David Triana</title>
-    <link>https://davidtriana.com/pages/</link>
-    <description>Recent content in Pages on David Triana</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Fri, 10 Apr 2015 00:54:31 +0000</lastBuildDate><atom:link href="https://davidtriana.com/pages/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>MY BOOKS</title>
-      <link>https://davidtriana.com/pages/my-books/</link>
-      <pubDate>Fri, 10 Apr 2015 00:54:31 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/pages/my-books/</guid>
-      <description>Updated 4-may-2015 / The read section is still incomplete
-Wish list Type Title Self Development 
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on David Triana</title><link>https://davidtriana.com/pages/</link><description>Recent content in Pages on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 10 Apr 2015 00:54:31 +0000</lastBuildDate><atom:link href="https://davidtriana.com/pages/index.xml" rel="self" type="application/rss+xml"/><item><title>MY BOOKS</title><link>https://davidtriana.com/pages/my-books/</link><pubDate>Fri, 10 Apr 2015 00:54:31 +0000</pubDate><guid>https://davidtriana.com/pages/my-books/</guid><description>Updated 4-may-2015 / The read section is still incomplete
+Wish list Type Title Self Development
 Quiet: The Power of Introverts in a World That Can&amp;rsquo;t Stop Talking Technical
 Agile Principles, Patterns, and Practices in C# Currently reading Type Title Management and leadership
 The Tipping Point
 Technical
-Software in 30 Days: How Agile Managers Beat the Odds, Delight Their Customers, And Leave Competitors In the Dust Read* *Incomplete list, most of the technical books are missing at the moment</description>
-    </item>
-    
-    <item>
-      <title>My Stuff</title>
-      <link>https://davidtriana.com/pages/my-stuff/</link>
-      <pubDate>Fri, 18 May 2012 13:46:32 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/pages/my-stuff/</guid>
-      <description>My current setup for work &amp;amp; play consists of : Desktop
+Software in 30 Days: How Agile Managers Beat the Odds, Delight Their Customers, And Leave Competitors In the Dust Read* *Incomplete list, most of the technical books are missing at the moment</description></item><item><title>My Stuff</title><link>https://davidtriana.com/pages/my-stuff/</link><pubDate>Fri, 18 May 2012 13:46:32 +0000</pubDate><guid>https://davidtriana.com/pages/my-stuff/</guid><description>My current setup for work &amp;amp; play consists of : Desktop
 Processor
 4th gen Intel® Core™ i7-4790
 RAM
@@ -38,7 +14,7 @@ NVIDIA® GeForce® GT 720 1GB DDR3
 Storage
 Samsung 850 EVO 250GB 2.5-Inch SATA III Internal SSD
 Monitor
-2x 24&amp;quot; Dell E248WFP (1920 x 1200)
+2x 24&amp;rdquo; Dell E248WFP (1920 x 1200)
 Keyboard
 Microsoft Natural Keyboard 4000
 Mouse
@@ -47,18 +23,5 @@ Main Os
 Latests build of Windows 10
 Laptop
 Processor
-4th Gen Intel® Core™ i7-4600U (4MB Cache, up to 3.</description>
-    </item>
-    
-    <item>
-      <title>Podcasts</title>
-      <link>https://davidtriana.com/pages/podcasts/</link>
-      <pubDate>Wed, 16 Apr 2008 19:31:00 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/pages/podcasts/</guid>
-      <description>This are the podcast i&amp;rsquo;m currently listening / viewing. If you don&amp;rsquo;t know what is a podcast i&amp;rsquo;m sure wikipedia explains it but basically are like radio / TV shows that i download to my computer and take with me on an iPod or other device to enjoy them where and when i like to.
-I listen to the audio podcasts when i commute to my work and when i workout in the gym.</description>
-    </item>
-    
-  </channel>
-</rss>
+4th Gen Intel® Core™ i7-4600U (4MB Cache, up to 3.</description></item><item><title>Podcasts</title><link>https://davidtriana.com/pages/podcasts/</link><pubDate>Wed, 16 Apr 2008 19:31:00 +0000</pubDate><guid>https://davidtriana.com/pages/podcasts/</guid><description>This are the podcast i&amp;rsquo;m currently listening / viewing. If you don&amp;rsquo;t know what is a podcast i&amp;rsquo;m sure wikipedia explains it but basically are like radio / TV shows that i download to my computer and take with me on an iPod or other device to enjoy them where and when i like to.
+I listen to the audio podcasts when i commute to my work and when i workout in the gym.</description></item></channel></rss>

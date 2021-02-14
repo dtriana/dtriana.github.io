@@ -1,22 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>IIS on David Triana</title>
-    <link>https://davidtriana.com/tags/iis/</link>
-    <description>Recent content in IIS on David Triana</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Fri, 10 Jun 2011 19:25:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/iis/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Missing management server delegation, 401 error and 403.14 error when deploying a new IIS7.5 for Web Deploy and ASP.NET MVC 2/3</title>
-      <link>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</link>
-      <pubDate>Fri, 10 Jun 2011 19:25:00 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</guid>
-      <description>Last night I was setting up a new box for a web site migration and lost a lot of time with that 3 issues.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>IIS on David Triana</title><link>https://davidtriana.com/tags/iis/</link><description>Recent content in IIS on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 10 Jun 2011 19:25:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/iis/index.xml" rel="self" type="application/rss+xml"/><item><title>Missing management server delegation, 401 error and 403.14 error when deploying a new IIS7.5 for Web Deploy and ASP.NET MVC 2/3</title><link>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</link><pubDate>Fri, 10 Jun 2011 19:25:00 +0000</pubDate><guid>https://davidtriana.com/posts/2011/missing-management-server-delegation-401-error-and-403-14-error-when-deploying-a-new-iis7-5-for-web-deploy-and-asp-net-mvc-23/</guid><description>Last night I was setting up a new box for a web site migration and lost a lot of time with that 3 issues.
 I used Web Platform Installer to setup most of the server hoping that it will leave everything working as expected, however I found that is not the case.
-First I needed to setup the Web Deploy service to install the web application from visual studio, however the Web Platform Installer leaves a few things missing when it deals with the Web Deploy.</description>
-    </item>
-    
-  </channel>
-</rss>
+First I needed to setup the Web Deploy service to install the web application from visual studio, however the Web Platform Installer leaves a few things missing when it deals with the Web Deploy.</description></item></channel></rss>

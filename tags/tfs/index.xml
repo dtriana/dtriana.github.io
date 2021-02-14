@@ -1,65 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>TFS on David Triana</title>
-    <link>https://davidtriana.com/tags/tfs/</link>
-    <description>Recent content in TFS on David Triana</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/tfs/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Updating Azure DevOps WorktItems programmatically </title>
-      <link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link>
-      <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid>
-      <description>Scenario Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>TFS on David Triana</title><link>https://davidtriana.com/tags/tfs/</link><description>Recent content in TFS on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/tfs/index.xml" rel="self" type="application/rss+xml"/><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>Scenario Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.
 Restrictions The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.
-The Excel integration, which might be a solution, is not working on this environment because of a permissions error.</description>
-    </item>
-    
-    <item>
-      <title>Continuous Integration &amp; Deployment of a NuGet Package with VSTS</title>
-      <link>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</link>
-      <pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</guid>
-      <description>In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.
-To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (http://nugetserver.net/) and hosted it on a free tier Azure Web Site. Having that, I’m all set.</description>
-    </item>
-    
-    <item>
-      <title>Running the Microsoft ALM Training Virtual Machine in Azure April 2015 Edition</title>
-      <link>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</link>
-      <pubDate>Thu, 09 Apr 2015 21:37:42 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</guid>
-      <description>Last month I found myself doing ALM training and demos for a couple of customers, of course using the great ALM Virtual Machine by Brian Keller. With laptops having less and less RAM I choose to set it up in the cloud and found a few web pages with the steps to do it, however with Azure evolving every day I felt the need to put out this blog post with the guidance for Azure in April 2015</description>
-    </item>
-    
-    <item>
-      <title>Moving tfs 2010 databases from sql 2005 to sql 2008r2</title>
-      <link>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</link>
-      <pubDate>Mon, 04 Jun 2012 02:59:06 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</guid>
-      <description>During the weekend I assisted a customer in the move of TFS 2010 databases from SQL 2005 to SQL 2008R2. The scenario also included Sharepoint Fundation 2010 and SQL Reporting Services.
+The Excel integration, which might be a solution, is not working on this environment because of a permissions error.</description></item><item><title>Continuous Integration &amp; Deployment of a NuGet Package with VSTS</title><link>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</link><pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate><guid>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</guid><description>In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.
+To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (http://nugetserver.net/) and hosted it on a free tier Azure Web Site. Having that, I’m all set.</description></item><item><title>Running the Microsoft ALM Training Virtual Machine in Azure April 2015 Edition</title><link>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</link><pubDate>Thu, 09 Apr 2015 21:37:42 +0000</pubDate><guid>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</guid><description>Last month I found myself doing ALM training and demos for a couple of customers, of course using the great ALM Virtual Machine by Brian Keller. With laptops having less and less RAM I choose to set it up in the cloud and found a few web pages with the steps to do it, however with Azure evolving every day I felt the need to put out this blog post with the guidance for Azure in April 2015</description></item><item><title>Moving tfs 2010 databases from sql 2005 to sql 2008r2</title><link>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</link><pubDate>Mon, 04 Jun 2012 02:59:06 +0000</pubDate><guid>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</guid><description>During the weekend I assisted a customer in the move of TFS 2010 databases from SQL 2005 to SQL 2008R2. The scenario also included Sharepoint Fundation 2010 and SQL Reporting Services.
 MSDN offers a very complete guide about this procedure, http://msdn.microsoft.com/en-us/library/ms252516.aspx , however the guide warns about possible problems if the SQL Server version is different. The guide says:
-“The version of SQL Server that you install must exactly match the version on the original server that hosted the databases.</description>
-    </item>
-    
-    <item>
-      <title>Migrating from local TFS to TFSPreview</title>
-      <link>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link>
-      <pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate>
-      
-      <guid>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid>
-      <description>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.
+“The version of SQL Server that you install must exactly match the version on the original server that hosted the databases.</description></item><item><title>Migrating from local TFS to TFSPreview</title><link>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link><pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate><guid>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid><description>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.
 It’s currently free and invite only but the invite codes are relatively easy to get. I asked for one in the page and got it in two days.
 www.tfspreview.com
 Account activated, TFS available but what about my existing projects in my local TFS?,
-The official word is that there’s no supported way to migrate, but, there’re some reports of success using the TFS Integration tools, well, I’m about to confirm or deny that reports!</description>
-    </item>
-    
-  </channel>
-</rss>
+The official word is that there’s no supported way to migrate, but, there’re some reports of success using the TFS Integration tools, well, I’m about to confirm or deny that reports!</description></item></channel></rss>
