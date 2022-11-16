@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Mon, 18 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Renewing Microsoft Certifications</title><link>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</link><pubDate>Mon, 18 Oct 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</guid><description>&lt;h1 id="action-required---your-microsoft-certification-will-expire-in-180-days">Action required - Your Microsoft Certification will expire in 180 days!&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 15 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">Scenario&lt;/h1>
+&lt;p>Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&amp;rsquo;t it be nice to be able to get a list of all the functions that should be updated?&lt;/p>
+&lt;h1 id="solution">Solution&lt;/h1>
+&lt;p>A simple &lt;code>az functionapps list&lt;/code> should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the &lt;code>list&lt;/code> command, and after searching for a while I found &lt;a href="https://github.com/Azure/azure-cli/issues/21548#issuecomment-1061634921">this solution for WebApps&lt;/a>, the command for Function Apps is&lt;/p>
+&lt;p>&lt;code>az functionapp list --query '[].id' -o tsv | xargs | xargs -I{} bash -c &amp;quot;az functionapp config show --ids {} --query '[].[name, resourceGroup,linuxFxVersion, netFrameworkVersion]' --out table&amp;quot;&lt;/code>&lt;/p>
+&lt;p>This command will list all the functions in the current subscription, provided proper permissions.&lt;/p>
+&lt;p>The output looks like this:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Column1&lt;/th>
+&lt;th>Column2&lt;/th>
+&lt;th>Column3&lt;/th>
+&lt;th>Column4&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>tseries-urban-cars&lt;/td>
+&lt;td>cars-classifier&lt;/td>
+&lt;td>DOTNET|6.0&lt;/td>
+&lt;td>v6.0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>tseries-urban-buildings&lt;/td>
+&lt;td>buildings-location&lt;/td>
+&lt;td>v4.0&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>tseries-urban-weapons&lt;/td>
+&lt;td>weapons-catalog&lt;/td>
+&lt;td>DOTNET|6.0&lt;/td>
+&lt;td>v6.0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>targets&lt;/td>
+&lt;td>targets-catalog&lt;/td>
+&lt;td>DOTNET|3.1&lt;/td>
+&lt;td>v4.0&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Rows 1 and 3 were updated already, row 2 is not .NET, and the last needs to be updated&lt;/p></description></item><item><title>Renewing Microsoft Certifications</title><link>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</link><pubDate>Mon, 18 Oct 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</guid><description>&lt;h1 id="action-required---your-microsoft-certification-will-expire-in-180-days">Action required - Your Microsoft Certification will expire in 180 days!&lt;/h1>
 &lt;p>That email subject, from May 21, asked for action, to get one of my certifications renewed, or &amp;ldquo;If your certification expires, you must earn the certification again by passing the required certification exam(s)&amp;rdquo;&lt;/p>
 &lt;p>This renewal process is &lt;a href="https://docs.microsoft.com/en-us/learn/certifications/renew-your-microsoft-certification">new in many ways&lt;/a>, main differences are&lt;/p>
 &lt;ul>
