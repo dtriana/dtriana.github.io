@@ -1,0 +1,265 @@
+<!doctype html><html lang=en-us>
+<head>
+<title>
+Updating Azure DevOps WorktItems programmatically · David Triana
+</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="David Triana">
+<meta name=description content="Scenario  Link to heading   Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.
+Restrictions  Link to heading   The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.
+The Excel integration, which might be a solution, is not working on this environment because of a permissions error.">
+<meta name=keywords content="blog,developer,personal">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Updating Azure DevOps WorktItems programmatically ">
+<meta name=twitter:description content="Scenario  Link to heading   Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.
+Restrictions  Link to heading   The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.
+The Excel integration, which might be a solution, is not working on this environment because of a permissions error.">
+<meta property="og:title" content="Updating Azure DevOps WorktItems programmatically ">
+<meta property="og:description" content="Scenario  Link to heading   Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.
+Restrictions  Link to heading   The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.
+The Excel integration, which might be a solution, is not working on this environment because of a permissions error.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-05-18T00:00:00+00:00">
+<meta property="article:modified_time" content="2020-05-18T00:00:00+00:00">
+<link rel=canonical href=https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/>
+<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=manifest href=https://davidtriana.com/site.webmanifest>
+<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.91.2">
+</head>
+<body class="preload-transitions colorscheme-light">
+<div class=float-container>
+<a id=dark-mode-toggle class=colorscheme-toggle>
+<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
+</a>
+</div>
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=https://davidtriana.com/>
+David Triana
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
+</li>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/about/>About</a>
+</li>
+</ul>
+</section>
+</nav>
+<div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/>
+Updating Azure DevOps WorktItems programmatically
+</a>
+</h1>
+</div>
+<div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2020-05-18T00:00:00Z>
+May 18, 2020
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+</span>
+</div>
+<div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=https://davidtriana.com/tags/tfs/>TFS</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=https://davidtriana.com/tags/vsts/>VSTS</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=https://davidtriana.com/tags/azdevops/>AzDevOps</a>
+</span></div>
+</div>
+</header>
+<div>
+<h2 id=scenario>
+Scenario
+<a class=heading-link href=#scenario>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.</p>
+<h2 id=restrictions>
+Restrictions
+<a class=heading-link href=#restrictions>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.</p>
+<p>The Excel integration, which might be a solution, is not working on this environment because of a permissions error.</p>
+<h2 id=solution>
+Solution
+<a class=heading-link href=#solution>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Using the Azure DevOps .NET Client library, it is possible to update workitems. A relatively simple console application will do the trick, especially since the documentation already provides samples showing how to do it,</p>
+<p><a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/work-item-quickstart?view=azure-devops">Fetch work items with queries programmatically in Azure DevOps Services</a>, and</p>
+<p><a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/create-bug-quickstart?view=azure-devops">Create a bug in Azure DevOps Services using .NET client libraries</a>.</p>
+<p>The issue with the process template rules remains. Those rules are enforced not only in the user interface but also using the client library or the API directly, which in the end are the same, so for this to work a permissions change is needed, for the particular identity that will be used to interact with AzDevOps via the client library.</p>
+<p>The permission is called “Bypass rules on work item updates” and as off this writing can be found by navigating to Project Settings -> Permissions -> Users -> Find the user that will be used and in the permissions panel find this setting.</p>
+<p><a href=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png><img src=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png alt="AzDevOps permissions settings" title="AzDevOps permissions settings"></a></p>
+<p>Once the user has this permission, he/she can certainly do these changes directly via the user interface, however doing repetitive tasks by hand is something to avoid.</p>
+<p>Or not…</p>
+<p><a href="https://twitter.com/kvlly/status/1255173275090640897?s=20"><img src=https://davidtriana.com/images/posts/2020/Tweet01.png alt="AzDevOps permissions settings" title="AzDevOps permissions settings"></a></p>
+<p>Certainly I have done this many times, writing a huge Excel VB Macro to move things around or implementing a GitHub action just to copy a file, but I think in the end its worth it, primarily because manual tasks are error prone, but also because of the joy of programming!</p>
+<p>So, back to the point,</p>
+<p>With the bypass rules permission, there is something else needed from AzDevOps, and it is a personal access token, which provides impersonation, authentication and authorization. With this token the code will be able to interact with AzDevOps, using the identity of the user for which the token was generated.</p>
+<p>This personal access tokens have a lot of very nice security features which makes it a very good option for many scenarios, in particular the permissions can be scoped to specific artifacts and actions, and are set to expire in 30 days by default.</p>
+<p>At the time of writing this post, the option to create a new token is available in the top right, over the user settings icon,</p>
+<p><a href=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png><img src=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png alt="AzDevOps personal token button" title="AzDevOps personal token button"></a></p>
+<p>And then the token details screen looks like this,</p>
+<p><a href=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png><img src=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png alt="AzDevOps personal token details" title="AzDevOps personal token details"></a></p>
+<p>With the token in hand, we can now get to the code, which is an adaptation from the examples linked earlier.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
+using Microsoft.VisualStudio.Services.WebApi.Patch;
+using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
+using Newtonsoft.Json;
+
+namespace ConsoleApp
+{
+    class Program
+    {
+        const string AzDevOpsUri = &#34;https://dev.azure.com/&lt;your_org&gt;&#34;;
+        const string PersonalAccessToken = &#34;&lt;the_token_generated_earlier&gt;&#34;;
+        const string ProjectName = &#34;&lt;the_name_of_your_project&gt;&#34;;
+        static void Main()
+        {
+            var connection = new VssConnection(new Uri(AzDevOpsUri), new VssBasicCredential(string.Empty, PersonalAccessToken));
+
+            var items = LoadJson();
+
+            UpdateWorkItems(connection, items).Wait();
+            Console.ReadKey();
+        }
+
+        static private async Task UpdateWorkItems(VssConnection connection, IEnumerable&lt;Item&gt; items)
+        {
+            WorkItemTrackingHttpClient witClient = connection.GetClient&lt;WorkItemTrackingHttpClient&gt;();
+
+            foreach (var item in items)
+            {
+                JsonPatchDocument documentWithTheUpdate = new JsonPatchDocument
+                {
+                    new JsonPatchOperation()
+                    {
+                        Operation = Operation.Replace,
+                        Path = &#34;/fields/Microsoft.VSTS.Scheduling.Effort&#34;,
+                        Value = item.Total
+                    }
+                };
+
+                try
+                {
+                    var result = await witClient.UpdateWorkItemAsync(documentWithTheUpdate, ProjectName, item.ID, false,
+                        true);
+                    Console.WriteLine($&#34;Workitem {result.Id} updated to revision {result.Rev}&#34;);
+                }
+                catch (AggregateException ex)
+                {
+                    Console.WriteLine($&#34;Error updating workitem {item.ID}: {ex.InnerException?.Message}&#34;);
+                }
+            }
+        }
+        public static List&lt;Item&gt; LoadJson()
+        {
+            using (StreamReader r = new StreamReader(&#34;values.json&#34;))
+            {
+                string json = r.ReadToEnd();
+                return JsonConvert.DeserializeObject&lt;List&lt;Item&gt;&gt;(json);
+            }
+        }
+
+        public class Item
+        {
+            public int ID;
+            public string Title;
+            public double Dev;
+            public double Test;
+            public double Total;
+        }
+    }
+}
+</code></pre></div><p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.</p>
+<p>My JSON input file looks like this:</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>[
+    {
+      &#34;ID&#34;: &#34;25071&#34;,
+      &#34;Dev Effort&#34;: &#34;1&#34;,
+      &#34;Test Effort&#34;: &#34;0.5&#34;,
+      &#34;Effort&#34;: &#34;1.5&#34;
+    },
+    {
+      &#34;ID&#34;: &#34;44260&#34;,
+      &#34;Dev Effort&#34;: &#34;2&#34;,
+      &#34;Test Effort&#34;: &#34;0.5&#34;,
+      &#34;Effort&#34;: &#34;2.5&#34;
+    },
+    {
+      &#34;ID&#34;: &#34;43303&#34;,
+      &#34;Dev Effort&#34;: &#34;4&#34;,
+      &#34;Test Effort&#34;: &#34;1&#34;,
+      &#34;Effort&#34;: &#34;5&#34;
+    }, ...
+</code></pre></div><p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow</p>
+<p><a href=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png><img src=https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png alt="Program Output" title="Program Output"></a></p>
+<p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.</p>
+</div>
+<footer>
+</footer>
+</article>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
+</section>
+</div>
+<footer class=footer>
+<section class=container>
+©
+2022
+David Triana
+·
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section>
+</footer>
+</main>
+<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
+</body>
+</html>

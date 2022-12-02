@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Dynamics CRM on David Triana</title><link>https://davidtriana.com/tags/dynamics-crm/</link><description>Recent content in Dynamics CRM on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Wed, 05 Dec 2012 18:16:49 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/dynamics-crm/index.xml" rel="self" type="application/rss+xml"/><item><title>CCA Hosted Controls and Focus</title><link>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</link><pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;ul>
+&lt;li>CCA R2 for Dynamics CRM 2011&lt;/li>
+&lt;li>A non global dynamic hosted control whose panel is the main panel&lt;/li>
+&lt;li>A workflow step that produce changes on that hosted control&lt;/li>
+&lt;/ul>
+&lt;h1 id="use-case">
+Use case
+&lt;a class="heading-link" href="#use-case">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The user is in a session, start a workflow that activates the hosted application. The user choose other application from the main panel. The user start a workflow step that interacts with the hosted application and expects the application to get focus in the main panel.&lt;/p>
+&lt;h1 id="the-problem">
+The problem?
+&lt;a class="heading-link" href="#the-problem">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>CCA R2 seems to ignore the Focus Application on the action definition. Also ignores the GetFocus actions on the workflow, in the hosted control itself the the LocalDesktop object are null for non global dynamic applications and all the other available objects like session and parentwindow don’t have any success when it comes to give focus to the control.&lt;/p>
+&lt;h1 id="my-solution">
+My solution
+&lt;a class="heading-link" href="#my-solution">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>I ended up creating a new action on another application, this time a global, non dynamic control. This action calls&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">uiiDesktop.SetFocusOnApplication(args.Data);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And from my non global dynamic application I just call this action and that does the trick.&lt;/p></description></item></channel></rss>

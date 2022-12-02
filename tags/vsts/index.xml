@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VSTS on David Triana</title><link>https://davidtriana.com/tags/vsts/</link><description>Recent content in VSTS on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/vsts/index.xml" rel="self" type="application/rss+xml"/><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.&lt;/p>
+&lt;h2 id="restrictions">
+Restrictions
+&lt;a class="heading-link" href="#restrictions">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.&lt;/p>
+&lt;p>The Excel integration, which might be a solution, is not working on this environment because of a permissions error.&lt;/p>
+&lt;h2 id="solution">
+Solution
+&lt;a class="heading-link" href="#solution">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Using the Azure DevOps .NET Client library, it is possible to update workitems. A relatively simple console application will do the trick, especially since the documentation already provides samples showing how to do it,&lt;/p>
+&lt;p>&lt;a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/work-item-quickstart?view=azure-devops">Fetch work items with queries programmatically in Azure DevOps Services&lt;/a>, and&lt;/p>
+&lt;p>&lt;a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/create-bug-quickstart?view=azure-devops">Create a bug in Azure DevOps Services using .NET client libraries&lt;/a>.&lt;/p>
+&lt;p>The issue with the process template rules remains. Those rules are enforced not only in the user interface but also using the client library or the API directly, which in the end are the same, so for this to work a permissions change is needed, for the particular identity that will be used to interact with AzDevOps via the client library.&lt;/p>
+&lt;p>The permission is called “Bypass rules on work item updates” and as off this writing can be found by navigating to Project Settings -&amp;gt; Permissions -&amp;gt; Users -&amp;gt; Find the user that will be used and in the permissions panel find this setting.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png" alt="AzDevOps permissions settings" title="AzDevOps permissions settings">&lt;/a>&lt;/p>
+&lt;p>Once the user has this permission, he/she can certainly do these changes directly via the user interface, however doing repetitive tasks by hand is something to avoid.&lt;/p>
+&lt;p>Or not…&lt;/p>
+&lt;p>&lt;a href="https://twitter.com/kvlly/status/1255173275090640897?s=20">&lt;img src="https://davidtriana.com/images/posts/2020/Tweet01.png" alt="AzDevOps permissions settings" title="AzDevOps permissions settings">&lt;/a>&lt;/p>
+&lt;p>Certainly I have done this many times, writing a huge Excel VB Macro to move things around or implementing a GitHub action just to copy a file, but I think in the end its worth it, primarily because manual tasks are error prone, but also because of the joy of programming!&lt;/p>
+&lt;p>So, back to the point,&lt;/p>
+&lt;p>With the bypass rules permission, there is something else needed from AzDevOps, and it is a personal access token, which provides impersonation, authentication and authorization. With this token the code will be able to interact with AzDevOps, using the identity of the user for which the token was generated.&lt;/p>
+&lt;p>This personal access tokens have a lot of very nice security features which makes it a very good option for many scenarios, in particular the permissions can be scoped to specific artifacts and actions, and are set to expire in 30 days by default.&lt;/p>
+&lt;p>At the time of writing this post, the option to create a new token is available in the top right, over the user settings icon,&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png" alt="AzDevOps personal token button" title="AzDevOps personal token button">&lt;/a>&lt;/p>
+&lt;p>And then the token details screen looks like this,&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png" alt="AzDevOps personal token details" title="AzDevOps personal token details">&lt;/a>&lt;/p>
+&lt;p>With the token in hand, we can now get to the code, which is an adaptation from the examples linked earlier.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
+using Microsoft.VisualStudio.Services.WebApi.Patch;
+using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
+using Newtonsoft.Json;
+namespace ConsoleApp
+{
+class Program
+{
+const string AzDevOpsUri = &amp;#34;https://dev.azure.com/&amp;lt;your_org&amp;gt;&amp;#34;;
+const string PersonalAccessToken = &amp;#34;&amp;lt;the_token_generated_earlier&amp;gt;&amp;#34;;
+const string ProjectName = &amp;#34;&amp;lt;the_name_of_your_project&amp;gt;&amp;#34;;
+static void Main()
+{
+var connection = new VssConnection(new Uri(AzDevOpsUri), new VssBasicCredential(string.Empty, PersonalAccessToken));
+var items = LoadJson();
+UpdateWorkItems(connection, items).Wait();
+Console.ReadKey();
+}
+static private async Task UpdateWorkItems(VssConnection connection, IEnumerable&amp;lt;Item&amp;gt; items)
+{
+WorkItemTrackingHttpClient witClient = connection.GetClient&amp;lt;WorkItemTrackingHttpClient&amp;gt;();
+foreach (var item in items)
+{
+JsonPatchDocument documentWithTheUpdate = new JsonPatchDocument
+{
+new JsonPatchOperation()
+{
+Operation = Operation.Replace,
+Path = &amp;#34;/fields/Microsoft.VSTS.Scheduling.Effort&amp;#34;,
+Value = item.Total
+}
+};
+try
+{
+var result = await witClient.UpdateWorkItemAsync(documentWithTheUpdate, ProjectName, item.ID, false,
+true);
+Console.WriteLine($&amp;#34;Workitem {result.Id} updated to revision {result.Rev}&amp;#34;);
+}
+catch (AggregateException ex)
+{
+Console.WriteLine($&amp;#34;Error updating workitem {item.ID}: {ex.InnerException?.Message}&amp;#34;);
+}
+}
+}
+public static List&amp;lt;Item&amp;gt; LoadJson()
+{
+using (StreamReader r = new StreamReader(&amp;#34;values.json&amp;#34;))
+{
+string json = r.ReadToEnd();
+return JsonConvert.DeserializeObject&amp;lt;List&amp;lt;Item&amp;gt;&amp;gt;(json);
+}
+}
+public class Item
+{
+public int ID;
+public string Title;
+public double Dev;
+public double Test;
+public double Total;
+}
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
+&lt;p>My JSON input file looks like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">[
+{
+&amp;#34;ID&amp;#34;: &amp;#34;25071&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;1&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;0.5&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;1.5&amp;#34;
+},
+{
+&amp;#34;ID&amp;#34;: &amp;#34;44260&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;2&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;0.5&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;2.5&amp;#34;
+},
+{
+&amp;#34;ID&amp;#34;: &amp;#34;43303&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;4&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;1&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;5&amp;#34;
+}, ...
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png" alt="Program Output" title="Program Output">&lt;/a>&lt;/p>
+&lt;p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.&lt;/p></description></item></channel></rss>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>iPhone on David Triana</title><link>https://davidtriana.com/tags/iphone/</link><description>Recent content in iPhone on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Wed, 01 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/iphone/index.xml" rel="self" type="application/rss+xml"/><item><title>Adding a COVID certificate link to the iPhone home screen</title><link>https://davidtriana.com/posts/2021/adding-covid-link-home/</link><pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/adding-covid-link-home/</guid><description>&lt;h1 id="iphone-home-screen-link">
+iPhone home screen link
+&lt;a class="heading-link" href="#iphone-home-screen-link">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Here in Colombia our COVID vaccine certificates are available as a PDF document. Opening a PDF in the phone is easy, but what about finding the PDF in the first place? That&amp;rsquo;s what this post is about, creating a home screen link, like for any other app, to open the PDF&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_18.png" alt="&amp;ldquo;Home Screen&amp;rdquo;" title="Home Screen">&lt;/p>
+&lt;ol>
+&lt;li>First, make sure to have the PDF available directly on the phone. In my case, I have the PDF available in the OneDrive App, but since I want this to work even offline, I need to copy the PDF locally&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_01.jpg" alt="&amp;ldquo;Share File&amp;rdquo;" title="Share File">&lt;/p>
+&lt;p>Click on the top right to open the share dialog, then click on &amp;ldquo;Share File via&amp;hellip;&amp;rdquo;&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_02.jpg" alt="&amp;ldquo;Save to files&amp;rdquo;" title="Save to files">&lt;/p>
+&lt;p>Click save to files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_03.jpg" alt="&amp;ldquo;My Iphone&amp;rdquo;" title="My Iphone">&lt;/p>
+&lt;p>Then select &amp;ldquo;On My iPhone&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_04.png" alt="&amp;ldquo;Shortcuts&amp;rdquo;" title="Shortcuts">&lt;/p>
+&lt;p>Next, look for the &amp;ldquo;Shortcuts&amp;rdquo; app&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_05.png" alt="&amp;ldquo;Shortcuts&amp;rdquo;" title="Shortcuts">&lt;/p>
+&lt;p>Click the &amp;lsquo;+&amp;rsquo; symbol in the top right to create a new shortcut&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_07.png" alt="&amp;ldquo;Gliph&amp;rdquo;" title="Gliph">&lt;/p>
+&lt;p>Select the color and the graphic&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_08.png" alt="&amp;ldquo;Name&amp;rdquo;" title="Name">&lt;/p>
+&lt;p>Give it a name, then click &amp;ldquo;Add Action&amp;rdquo;&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_09.png" alt="&amp;ldquo;Documents&amp;rdquo;" title="Documents">&lt;/p>
+&lt;p>In Categories click Documents&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_10.png" alt="&amp;ldquo;Open File&amp;rdquo;" title="Open File">&lt;/p>
+&lt;p>Then click Open File&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_12.png" alt="&amp;ldquo;Click File&amp;rdquo;" title="Click File">&lt;/p>
+&lt;p>Click File&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_13.jpg" alt="&amp;ldquo;Open File&amp;rdquo;" title="Open File">&lt;/p>
+&lt;p>Then locate the file you saved on the first step. Should be right there since this user interface shows recent files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_14.png" alt="&amp;ldquo;Default App&amp;rdquo;" title="Default App">&lt;/p>
+&lt;p>Click Default App and select Files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_15.png" alt="&amp;ldquo;Properties&amp;rdquo;" title="Properties">&lt;/p>
+&lt;p>Now click on the settings button on the top right next to the close button&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_16.png" alt="&amp;ldquo;add to home&amp;rdquo;" title="add to home">&lt;/p>
+&lt;p>Click Add To Home Screen&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_17.png" alt="&amp;ldquo;add&amp;rdquo;" title="add">&lt;/p>
+&lt;p>Click Add in the top right&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_18.png" alt="&amp;ldquo;new icon&amp;rdquo;" title="new icon">&lt;/p>
+&lt;p>And there you have it!, a new home screen link to open the PDF&lt;/p></description></item></channel></rss>

@@ -1,0 +1,1179 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>David Triana</title><link>https://davidtriana.com/</link><description>Recent content on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 15 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&amp;rsquo;t it be nice to be able to get a list of all the functions that should be updated?&lt;/p>
+&lt;h1 id="solution">
+Solution
+&lt;a class="heading-link" href="#solution">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>A simple &lt;code>az functionapps list&lt;/code> should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the &lt;code>list&lt;/code> command, and after searching for a while I found &lt;a href="https://github.com/Azure/azure-cli/issues/21548#issuecomment-1061634921">this solution for WebApps&lt;/a>, the command for Function Apps is&lt;/p>
+&lt;p>&lt;code>az functionapp list --query '[].id' -o tsv | xargs | xargs -I{} bash -c &amp;quot;az functionapp config show --ids {} --query '[].[name, resourceGroup,linuxFxVersion, netFrameworkVersion]' --out table&amp;quot;&lt;/code>&lt;/p>
+&lt;p>This command will list all the functions in the current subscription, provided proper permissions.&lt;/p>
+&lt;p>The output looks like this:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Column1&lt;/th>
+&lt;th>Column2&lt;/th>
+&lt;th>Column3&lt;/th>
+&lt;th>Column4&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>tseries-urban-cars&lt;/td>
+&lt;td>cars-classifier&lt;/td>
+&lt;td>DOTNET|6.0&lt;/td>
+&lt;td>v6.0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>tseries-urban-buildings&lt;/td>
+&lt;td>buildings-location&lt;/td>
+&lt;td>v4.0&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>tseries-urban-weapons&lt;/td>
+&lt;td>weapons-catalog&lt;/td>
+&lt;td>DOTNET|6.0&lt;/td>
+&lt;td>v6.0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>targets&lt;/td>
+&lt;td>targets-catalog&lt;/td>
+&lt;td>DOTNET|3.1&lt;/td>
+&lt;td>v4.0&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Rows 1 and 3 were updated already, row 2 is not .NET, and the last needs to be updated&lt;/p></description></item><item><title>Adding a COVID certificate link to the iPhone home screen</title><link>https://davidtriana.com/posts/2021/adding-covid-link-home/</link><pubDate>Wed, 01 Dec 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/adding-covid-link-home/</guid><description>&lt;h1 id="iphone-home-screen-link">
+iPhone home screen link
+&lt;a class="heading-link" href="#iphone-home-screen-link">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Here in Colombia our COVID vaccine certificates are available as a PDF document. Opening a PDF in the phone is easy, but what about finding the PDF in the first place? That&amp;rsquo;s what this post is about, creating a home screen link, like for any other app, to open the PDF&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_18.png" alt="&amp;ldquo;Home Screen&amp;rdquo;" title="Home Screen">&lt;/p>
+&lt;ol>
+&lt;li>First, make sure to have the PDF available directly on the phone. In my case, I have the PDF available in the OneDrive App, but since I want this to work even offline, I need to copy the PDF locally&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_01.jpg" alt="&amp;ldquo;Share File&amp;rdquo;" title="Share File">&lt;/p>
+&lt;p>Click on the top right to open the share dialog, then click on &amp;ldquo;Share File via&amp;hellip;&amp;rdquo;&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_02.jpg" alt="&amp;ldquo;Save to files&amp;rdquo;" title="Save to files">&lt;/p>
+&lt;p>Click save to files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_03.jpg" alt="&amp;ldquo;My Iphone&amp;rdquo;" title="My Iphone">&lt;/p>
+&lt;p>Then select &amp;ldquo;On My iPhone&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_04.png" alt="&amp;ldquo;Shortcuts&amp;rdquo;" title="Shortcuts">&lt;/p>
+&lt;p>Next, look for the &amp;ldquo;Shortcuts&amp;rdquo; app&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_05.png" alt="&amp;ldquo;Shortcuts&amp;rdquo;" title="Shortcuts">&lt;/p>
+&lt;p>Click the &amp;lsquo;+&amp;rsquo; symbol in the top right to create a new shortcut&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_07.png" alt="&amp;ldquo;Gliph&amp;rdquo;" title="Gliph">&lt;/p>
+&lt;p>Select the color and the graphic&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_08.png" alt="&amp;ldquo;Name&amp;rdquo;" title="Name">&lt;/p>
+&lt;p>Give it a name, then click &amp;ldquo;Add Action&amp;rdquo;&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_09.png" alt="&amp;ldquo;Documents&amp;rdquo;" title="Documents">&lt;/p>
+&lt;p>In Categories click Documents&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_10.png" alt="&amp;ldquo;Open File&amp;rdquo;" title="Open File">&lt;/p>
+&lt;p>Then click Open File&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_12.png" alt="&amp;ldquo;Click File&amp;rdquo;" title="Click File">&lt;/p>
+&lt;p>Click File&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_13.jpg" alt="&amp;ldquo;Open File&amp;rdquo;" title="Open File">&lt;/p>
+&lt;p>Then locate the file you saved on the first step. Should be right there since this user interface shows recent files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_14.png" alt="&amp;ldquo;Default App&amp;rdquo;" title="Default App">&lt;/p>
+&lt;p>Click Default App and select Files&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_15.png" alt="&amp;ldquo;Properties&amp;rdquo;" title="Properties">&lt;/p>
+&lt;p>Now click on the settings button on the top right next to the close button&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_16.png" alt="&amp;ldquo;add to home&amp;rdquo;" title="add to home">&lt;/p>
+&lt;p>Click Add To Home Screen&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_17.png" alt="&amp;ldquo;add&amp;rdquo;" title="add">&lt;/p>
+&lt;p>Click Add in the top right&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/covid_card_18.png" alt="&amp;ldquo;new icon&amp;rdquo;" title="new icon">&lt;/p>
+&lt;p>And there you have it!, a new home screen link to open the PDF&lt;/p></description></item><item><title>Renewing Microsoft Certifications</title><link>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</link><pubDate>Mon, 18 Oct 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/renewing-microsoft-certifications/</guid><description>&lt;h1 id="action-required---your-microsoft-certification-will-expire-in-180-days">
+Action required - Your Microsoft Certification will expire in 180 days!
+&lt;a class="heading-link" href="#action-required---your-microsoft-certification-will-expire-in-180-days">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>That email subject, from May 21, asked for action, to get one of my certifications renewed, or &amp;ldquo;If your certification expires, you must earn the certification again by passing the required certification exam(s)&amp;rdquo;&lt;/p>
+&lt;p>This renewal process is &lt;a href="https://docs.microsoft.com/en-us/learn/certifications/renew-your-microsoft-certification">new in many ways&lt;/a>, main differences are&lt;/p>
+&lt;ul>
+&lt;li>The topics covered are not necessarily the same as for the original exam/certification&lt;/li>
+&lt;li>The exam itself is simpler than the proctored exam, no proctor, no dedicated exam app&lt;/li>
+&lt;/ul>
+&lt;p>I renewed 3 certifications with this process,&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://docs.microsoft.com/en-us/learn/certifications/azure-developer/renew/">Azure Developer Associate&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://docs.microsoft.com/en-us/learn/certifications/devops-engineer/renew/">DevOps Engineer Expert&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://docs.microsoft.com/en-us/learn/certifications/azure-solutions-architect/renew/">Azure Solutions Architect Expert&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>I passed all on the first try, however the renewal exams can be repeated as many times as needed&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/exams.png" alt="&amp;ldquo;Exams&amp;rdquo;" title="Exams">&lt;/p>
+&lt;p>To prepare, I went through all the linked materials on each of the certification pages, all of which go to the Microsoft Learn site, and include theory, labs and exam. I highly recommend this approach because&lt;/p>
+&lt;ul>
+&lt;li>The liked materials are directly related to the questions in the renewal exam&lt;/li>
+&lt;li>The Microsoft Learn materials and labs are very well made, up to date and relevant&lt;/li>
+&lt;/ul>
+&lt;p>During the renewal exam, without a proctor or dedicated app, nothing prevents you from navigating back to the learning materials or searching for the answers online. While this approach might work to renew the certification, I think that misses the point. I think going through the materials preparing for the exam, and then consciously answering the exam questions fulfills the &amp;ldquo;brush up on your skills&amp;rdquo; objective in the invitation email.&lt;/p>
+&lt;p>About the individual exams, what I found is that all the topics are covered in the learning materials and a lot of the topics from the original exams are not part of the renewal. The questions are less &amp;ldquo;tricky&amp;rdquo; than in the proctored exams and all the questions are multiple selections, no labs, no &amp;ldquo;order the commands&amp;rdquo; or any other of the question types available in the proctored exams.&lt;/p>
+&lt;h1 id="see-more">
+See More
+&lt;a class="heading-link" href="#see-more">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Something that happened to me while preparing for the DevOps exam, opening the links to the learning materials, is that I missed some of the materials. While doing the exam I got some questions for which I wasn&amp;rsquo;t prepared, then after the exam I went back to the page and noticed the &amp;ldquo;See More&amp;rdquo; link at the bottom of the list of training materials, same link is present in the Architect Expert exam, and I learned my lesson.&lt;/p>
+&lt;h1 id="celebrate">
+Celebrate
+&lt;a class="heading-link" href="#celebrate">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/celebrate.png" alt="&amp;ldquo;Celebrate&amp;rdquo;" title="Celebrate">&lt;/p></description></item><item><title>Querying Azure DevOps Pipelines YAML Files</title><link>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</link><pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Your project has tens or hundreds of Azure DevOps Pipelines, and you need to determine if a particular YAML definition is used for any of the pipelines.&lt;/p>
+&lt;p>The Azure DevOps user interface provides this information, but it requires going pipeline by pipeline since the current experience doesn&amp;rsquo;t shows it in the pipelines list.&lt;/p>
+&lt;h2 id="querying-pipeline-details-with-the-azure-cli">
+Querying pipeline details with the Azure CLI
+&lt;a class="heading-link" href="#querying-pipeline-details-with-the-azure-cli">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>The &lt;a href="https://docs.microsoft.com/en-us/cli/azure/pipelines?view=azure-cli-latest#az_pipelines_show">Azure CLI allows querying pipelines&lt;/a>, for example, in PowerShell,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">az pipelines show --id 321
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns a JSON with the details for the pipeline with Id 321&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">{
+&lt;span style="font-weight:bold">&amp;#34;__comment&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Many properties omitted for brevity&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;authoredBy&amp;#34;&lt;/span>: {
+&lt;span style="font-weight:bold">&amp;#34;descriptor&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;aad.redacted&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;directoryAlias&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Miles Dyson&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;imageUrl&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://dev.azure.com/cyberdyne/_apis/GraphProfile/MemberAvatars/aad.redacted&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;uniqueName&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;mdyson@cyberdyne.com&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://redactedurl&amp;#34;&lt;/span>
+},
+&lt;span style="font-weight:bold">&amp;#34;createdDate&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;1997-08-04T16:41:48.533000+00:00&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Skynet Infra&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;options&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;path&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;\\Infra\\CD\\Skynet&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;process&amp;#34;&lt;/span>: {
+&lt;span style="font-weight:bold">&amp;#34;type&amp;#34;&lt;/span>: 2,
+&lt;span style="font-weight:bold">&amp;#34;yamlFilename&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;&lt;/span>
+},
+&lt;span style="font-weight:bold">&amp;#34;processParameters&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;project&amp;#34;&lt;/span>: {
+&lt;span style="font-weight:bold">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;lastUpdateTime&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;1997-08-04T20:43:19.643Z&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Skynet&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;revision&amp;#34;&lt;/span>: 78,
+&lt;span style="font-weight:bold">&amp;#34;state&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;wellFormed&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://dev.azure.com/cyberdyne/_apis/projects/redactedguid&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;visibility&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;private&amp;#34;&lt;/span>
+},
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since we are only interested in the yamlFilename, the &amp;ndash;query parameter allows filtering, for example&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">az pipelines show --id 321 --query &lt;span style="font-weight:bold">process&lt;/span>.yamlFilename
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns the YAML file for the pipeline with Id 321&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="looping-over-all-pipelines">
+Looping over all pipelines
+&lt;a class="heading-link" href="#looping-over-all-pipelines">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Now that we know how to get the information, we need it for every pipeline, so first, get a list of all pipeline Ids,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">$pipelines = az pipelines list --query [].id | ConvertFrom-Json
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then iterate over the list, to get the details for each of the pipelines, and save it to a file&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="font-weight:bold">ForEach&lt;/span> ($pipeline &lt;span style="font-weight:bold">in&lt;/span> $pipelines) {az pipelines show --id $pipeline --query [id,name,process.yamlFilename]} | Out-File c:\pipelines.txt
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enjoy">
+Enjoy!
+&lt;a class="heading-link" href="#enjoy">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Open the resulting text file in your preferred text editor, and easily find the pipelines using the YAML file of interest&lt;/p></description></item><item><title>Deploying Log4Brains ADRs in Azure Static Sites</title><link>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</link><pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Suppose your project has decided to use &lt;a href="https://github.com/thomvaill/log4brains">Log4Brains&lt;/a> to record architectural decisions and now you need to make the resulting website available, in Microsoft Azure, via a CD Pipeline. To learn about &lt;a href="https://en.wikipedia.org/wiki/Architectural_decision#Decision_documentation">ADRs&lt;/a> or architectural decision records I highly recommend &lt;a href="https://ardalis.com/getting-started-with-architecture-decision-records/">Steve Smith&amp;rsquo;s post about it&lt;/a>.&lt;/p>
+&lt;h2 id="install-log4brains-and-create-your-adrs">
+Install Log4Brains and create your ADRs
+&lt;a class="heading-link" href="#install-log4brains-and-create-your-adrs">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;ul>
+&lt;li>Install &lt;a href="https://github.com/thomvaill/log4brains#what-are-the-prerequisites">Log4Brains&amp;rsquo;s prerequisites&lt;/a> to which I will add &lt;a href="https://code.visualstudio.com/Download">VsCode&lt;/a>, with the &lt;a href="https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint">.md extension&lt;/a>&lt;/li>
+&lt;li>Install &lt;a href="https://github.com/thomvaill/log4brains#-getting-started">Log4Brains&lt;/a> and follow the getting started guide. You should be able to preview the site, and create your own ADRs&lt;/li>
+&lt;/ul>
+&lt;h2 id="commit-and-push-to-azdevops">
+Commit and push to AzDevOps
+&lt;a class="heading-link" href="#commit-and-push-to-azdevops">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>It can be &lt;a href="https://docs.microsoft.com/en-us/azure/devops/repos/git/create-new-repo?view=azure-devops">a new repository&lt;/a> or the existing repository with the application. Before push ensure the output is being ignored via you .gitignore file:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"># Log4Brains Output
+.Log4Brains/
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="add-pipeline-yaml-file">
+Add pipeline YAML File
+&lt;a class="heading-link" href="#add-pipeline-yaml-file">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>The location doesn&amp;rsquo;t really matter. It can be at / , or you can have a Pipelines or similar folder, the location and name of the file doesn&amp;rsquo;t really matter, what matters is the content:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">trigger: none
+pr: none
+stages:
+- stage: build
+displayName: &amp;#39;Build&amp;#39;
+jobs:
+- job: build
+displayName: &amp;#39;Build&amp;#39;
+pool:
+vmImage: &amp;#39;ubuntu-latest&amp;#39;
+steps:
+- task: NodeTool@0
+inputs:
+versionSpec: &amp;#39;14.x&amp;#39;
+displayName: &amp;#39;Install Node.js&amp;#39;
+- script: |
+npm install -g log4brains
+log4brains build
+displayName: &amp;#39;Install and Build Log4brains&amp;#39;
+- task: CopyFiles@2
+displayName: &amp;#39;Copy config to $(System.DefaultWorkingDirectory)/.log4brains/out&amp;#39;
+inputs:
+Contents: staticwebapp.config.json
+TargetFolder: &amp;#39;$(System.DefaultWorkingDirectory)/.log4brains/out&amp;#39;
+- task: PublishPipelineArtifact@1
+inputs:
+targetPath: &amp;#39;$(System.DefaultWorkingDirectory)/.log4brains/out&amp;#39;
+artifactName: staticSite
+- stage: publish
+displayName: &amp;#39;Publish&amp;#39;
+dependsOn: build
+jobs:
+- deployment: deployProd
+displayName: &amp;#39;Deploy prod&amp;#39;
+environment: prod
+strategy:
+runOnce:
+deploy:
+steps:
+- task: DownloadPipelineArtifact@2
+displayName: Download static site artifact
+inputs:
+artifact: staticSite
+path: $(Build.SourcesDirectory)/staticSite
+- task: AzureStaticWebApp@0
+displayName: Upload to Azure Static WebApp
+inputs:
+app_location: /staticSite
+output_location: &amp;#34;&amp;#34;
+env:
+azure_static_web_apps_api_token: $(deployment_token)
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This is a multistage pipeline, where first we build the application, or in this case, run the Log4Brains static site generator to get the html/css output and make it available via Azure DevOps Artifacts, then the second stage pulls the artifact and publishes to Azure Static WebSites.&lt;/p>
+&lt;p>On the first stage we install node, install Log4Brains, run the build command to generate the output, then publish the output as an artifact. There is a CopyFiles task before the publish task, this task is to add a special config .json file to the output. This &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#example-configuration-file">special file&lt;/a> is not needed if you want your ADRs to be publicly available, however if you want to take advantage of the &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization">Azure Static Website authorization and authentication&lt;/a> capability, you want to copy this file, which gets created in the next step.&lt;/p>
+&lt;p>The second stage pulls the artifact and calls the AzureStaticWebApp task to get the site published. The publish token is a pipeline variable that we will set later on the create pipeline step.&lt;/p>
+&lt;p>Git commit, git push, to make the file available in the repository.&lt;/p>
+&lt;h2 id="adding-the-static-web-page-configuration-file">
+Adding the Static Web Page configuration file
+&lt;a class="heading-link" href="#adding-the-static-web-page-configuration-file">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Optional, only if don&amp;rsquo;t want your ADRs to be public. Azure Static Websites provide &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization">authorization and authentication capabilities&lt;/a> which are configured via the staticwebapp.config.json file, and then adding authorized users via the Azure Portal.&lt;/p>
+&lt;p>I created the staticwebapp.config.json file in /, and configured it:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">{
+&amp;#34;routes&amp;#34;: [
+{
+&amp;#34;route&amp;#34;: &amp;#34;/*&amp;#34;,
+&amp;#34;allowedRoles&amp;#34;: [&amp;#34;reader&amp;#34;]
+}],
+&amp;#34;responseOverrides&amp;#34;: {
+&amp;#34;401&amp;#34;: {
+&amp;#34;redirect&amp;#34;: &amp;#34;/.auth/login/aad&amp;#34;,
+&amp;#34;statusCode&amp;#34;: 302
+},
+&amp;#34;404&amp;#34;: {
+&amp;#34;rewrite&amp;#34;: &amp;#34;/404.html&amp;#34;
+}
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>What it says is that every route is only allowed to the &amp;ldquo;reader&amp;rdquo; role, and if a request comes from a not previously authenticated user, the request will be redirected to the Azure Active Directory authentication provider.&lt;/p>
+&lt;p>Git commit, git push, to make the file available in the repository.&lt;/p>
+&lt;h2 id="create-an-azure-static-website">
+Create an Azure Static Website
+&lt;a class="heading-link" href="#create-an-azure-static-website">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>No surprises here, &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/publish-devops#create-a-static-web-app">the steps on the portal&lt;/a> are very straight forward, and of course the CLI or a proper infrastructure as code pipeline will work as well.&lt;/p>
+&lt;h2 id="create-an-azure-devops-pipeline">
+Create an Azure DevOps Pipeline
+&lt;a class="heading-link" href="#create-an-azure-devops-pipeline">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Again, no surprises, &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/publish-devops#create-the-pipeline-task-in-azure-devops">the steps on the guide are very clear&lt;/a>, except for steps 3 and 4, instead of the starter pipeline, select Existing Pipeline and point to the YAML File created earlier, then proceed to the next steps that set the variable with the token and run the pipeline.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/log4brains_pipeline.png" alt="&amp;ldquo;Pipeline Success&amp;rdquo;" title="Pipeline Success">&lt;/p>
+&lt;p>The artifacts link available in the pipeline output screen will allow you to verify the contents of the artifact, to ensure the index.html and the staticwebapp.config.json files are present, very useful for troubleshooting.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/log4brains_artifact.png" alt="&amp;ldquo;Artifact details&amp;rdquo;" title="Artifact details">&lt;/p>
+&lt;h2 id="invite-users">
+Invite users
+&lt;a class="heading-link" href="#invite-users">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Navigate to the Azure Portal, to the Static Web Resource, click on Role management to invite users&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/log4brains_addrolesteps.png" alt="&amp;ldquo;Role management&amp;rdquo;" title="Role management">&lt;/p>
+&lt;p>In the invite users dialog, use &amp;lsquo;reader&amp;rsquo; as role. If you use any other role be sure to update the staticwebapp.config.json file accordingly.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2021/log4brains_addroledialog.png" alt="&amp;ldquo;Role management&amp;rdquo;" title="Role management">&lt;/p>
+&lt;h2 id="enjoy">
+Enjoy!
+&lt;a class="heading-link" href="#enjoy">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>And with that, the site is available, with user authentication in place. The pipeline trigger can be updated so that every time a new ADR is checked in the pipeline runs automatically.&lt;/p></description></item><item><title>Visual Studio Code Remote</title><link>https://davidtriana.com/posts/2020/vscode-remote/</link><pubDate>Fri, 16 Oct 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/vscode-remote/</guid><description>&lt;p>Visual Studio Code Remote enables scenarios where the editing happens on the client machine, but all the processing, build and dependencies happen somewhere else.&lt;/p>
+&lt;p>This is great for situations where the software being build requieres some specific setup that conflicts with your current machine or operating system, or to provide isolation between different projects or development environments, or to have access to more performant hardware or better internet connection, for the build, pulling dependencies, pushing containers, pulling docker images and many other scenarios where your local machine is not ideal.&lt;/p>
+&lt;p>A similar solution already exists, called &lt;a href="https://azure.microsoft.com/en-us/services/visual-studio-online/">Visual Studio Codespaces&lt;/a>, which works pretty well but its being transitioned to a new home, in &lt;a href="https://devblogs.microsoft.com/visualstudio/visual-studio-codespaces-is-consolidating-into-github-codespaces/">GitHub&lt;/a>, and at the time of this blog post it is still in private preview. A great discussion about it is available &lt;a href="https://www.dotnetrocks.com/?show=1708">here&lt;/a>.&lt;/p>
+&lt;p>The specific scenarios for which this technology is a great time saver for me are:&lt;/p>
+&lt;h4 id="build-environments-isolation">
+Build environments isolation
+&lt;a class="heading-link" href="#build-environments-isolation">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>Different projects have different needs, and often those needs collide, different version, different system configurations. With this technology I can have a specific remote for linux-phyton, linux-go, linux-dotnetcore, or even more specific, by version or project, having a trusted build environment for that specific need&lt;/p>
+&lt;h4 id="high-bandwidth-requirements">
+High bandwidth requirements
+&lt;a class="heading-link" href="#high-bandwidth-requirements">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>Living outside the city has many adventages, but broadband is not one of them, so if my productivity depends on downloading several docker images, pushing containers, or having very good connectivity in general, then I&amp;rsquo;m not productive, however with this technology all of that happens on the remote, where the bandwith is not a problem&lt;/p>
+&lt;h2 id="setting-it-up">
+Setting it up
+&lt;a class="heading-link" href="#setting-it-up">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>While the steps to set this up are already documented &lt;a href="https://code.visualstudio.com/docs/remote/ssh-tutorial">here&lt;/a>, this blog post goes over some of the details to make it work. For this, I created a new environment, on the client side I created a new Windows 10 Pro VM, and for the remote, a CentOS VM, both in Azure. Of course the idea of the client is to use your own computer, I created a new VM to see it work from scratch and being able to document all the steps.&lt;/p>
+&lt;p>I created the Windows VM from the portal in a new resource group called remotevs, for the Linux VM I used Azure CLI from the cloud shell in the portal:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">az vm create --resource-group remotevs --name remotevsserver --image OpenLogic:CentOS:7.7:7.7.2020062400 --admin-username azureuser --generate-ssh-keys
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here I used the CentOS image just because I&amp;rsquo;m studying for the Linux Foundation certification, any other image should work fine as happens with the one I use to build this blog which is based in Ubuntu.&lt;/p>
+&lt;p>Once the VMs were running I opened a remote desktop session on the Windows machine, and installed Visual Studio Code. Right after that I clicked on the link to get the SSH Extension, and got it installed on VSCode&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/vscode-remote-extension.png">&lt;img src="https://davidtriana.com/images/posts/2020/vscode-remote-extension.png" alt="VSCode Remote SSH Extension" title="VSCode Remote SSH Extension">&lt;/a>&lt;/p>
+&lt;p>The documentation indicates that an SSH Client is needed on the client, and links to &lt;a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">OpenSSH for Windows&lt;/a>, which can be added via the user interface or via PowerShell, which I did&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/admin-powershellpng.png" alt="&amp;ldquo;Opening powershell as admin&amp;rdquo;" title="Opening powershell as admin">&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And now what is missing is the SSH Key. In the documentation, it is suggested to first create a key pair, and then use that public key during the virtual machine creation. That certainly works, the way I did it however, with the generate-ssh-keys parameter, means that the public and private keys are there in the cloud shell. I need to copy those keys to the client for the authentication to work.&lt;/p>
+&lt;p>To copy the files, I opened a cloud shell again, this time on the client machine, found the files, and then copy using the download command&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/copyssh.png" alt="Copying files from cloud shell" title="Copying files from cloud shell">&lt;/p>
+&lt;p>And now move them in the client file system to the expected location&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/copysshpowershell.png" alt="Moving files to ssh folder" title="Moving files to ssh folder">&lt;/p>
+&lt;p>The name id_rsa is a default name, and if this is your client machine you might already have one. Its fine to rename it, but the filename will need to be passed explicitly to the ssh command, and also be set explicitly in the VSCode configuration.&lt;/p>
+&lt;p>If the add-ssh command fails with&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">Error connecting to agent: No such file or directory
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Its because the ssh-agent service is not running. To start it in PowerShell&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+Start-Service ssh-agent
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>As described &lt;a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">here&lt;/a>&lt;/p>
+&lt;p>With the private key in place is time for a test&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/sshtest.png" alt="SSH Connection Test" title="SSH Connection Test">&lt;/p>
+&lt;p>And now that I know my client is able to SSH to the remote, its time for VSCode to do the same&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/codeconnect.png" alt="Connection dialog in VSCode" title="Connection dialog in VSCode">&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2020/connecttestvscode.png" alt="VSCode and terminal connected" title="VSCode and terminal connected">&lt;/p>
+&lt;p>In case the private key file has a different name, as happens to me with the one for the blog, the connection will fail and the extension will allow to edit the configuration, which is a text file. On that text file, you can provide the path and name of the private key file, in my case for example:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">Host hugoblog
+HostName hugoblog
+User azureuser
+ForwardAgent yes
+IdentityFile ~/.ssh/hugoblog
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="next-steps">
+Next steps
+&lt;a class="heading-link" href="#next-steps">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Depending on the purpose of the remote you will need to apt-get update, configure git, install dotnet core, install python, install Azure CLI &amp;hellip;&lt;/p>
+&lt;p>And something that works without explicit configuration is port forwarding, in the case of my blog I can browse it locally, as if it was running locally but in realilty is being port-forwarded from the remote. This works with dotnet core as well.&lt;/p>
+&lt;p>Have fun!&lt;/p></description></item><item><title>Getting the Shell back on WSL</title><link>https://davidtriana.com/posts/2020/getting-the-shell-back-on-wsl/</link><pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/getting-the-shell-back-on-wsl/</guid><description>&lt;p>I have been using Linux more and more, via WSL, and learning a lot along the way.&lt;/p>
+&lt;p>Part of the jorney is breaking and fixing things, which is exactly what happened to me today.&lt;/p>
+&lt;p>I was trying to get the very nice command prompt, like the one from &lt;a href="https://www.hanselman.com/blog/HowToMakeAPrettyPromptInWindowsTerminalWithPowerlineNerdFontsCascadiaCodeWSLAndOhmyposh.aspx" title="Scott Hanselman's post about pretty prompts">Scott Hanselman&lt;/a>, and at some point following different steps from the ones shared by Scott I installed zsh as my shell.&lt;/p>
+&lt;p>After trying the zsh approach and not being able to make it work, I decided to revert, and stick to what Scott did, so first thing was removing zsh,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">sudo apt-get remove zsh
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And then when trying to get the prompt again all I got back was&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/74581889-deaed800-4fef-11ea-9da4-af11872473e2.png">&lt;img src="https://davidtriana.com/images/posts/2020/74581889-deaed800-4fef-11ea-9da4-af11872473e2.png" alt="process exited with code 1" title="process exited with code 1">&lt;/a>&lt;/p>
+&lt;p>Very bad&lt;/p>
+&lt;p>A similar &lt;a href="https://github.com/microsoft/WSL/issues/4899#issuecomment-658973402">GitHub issue&lt;/a> provided some tips, none of which fixed my problem, but &lt;a href="https://github.com/microsoft/WSL/issues/4899#issuecomment-631976826">this particular comment&lt;/a> set me in the right path, by running&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">wsl --user root
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>With it I was able to get the bash prompt back, and from there try to fix whatever was broken. Since something was failing while starting the shell, after removing zsh, I looked into the .bashrc and .zshrc files, removed them, but no change.&lt;/p>
+&lt;p>Then a response to my comment on github cleared everything up, &amp;ldquo;either apt install zsh or modify your users shell with chsh&amp;rdquo;&lt;/p>
+&lt;p>So I was able to interact as root, since root was still using bash, but my user was still configured to use zsh, and since I removed it that&amp;rsquo;s why it wasn&amp;rsquo;t working, and to change the shell? That&amp;rsquo;s where the &lt;a href="https://www.computerhope.com/unix/chsh.htm">chsh command&lt;/a> comes to the rescue.&lt;/p>
+&lt;p>So running&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">chsh -s /bin/bash myLinuxUsername
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Fixed the bash prompt&lt;/p>
+&lt;p>Now, back to customizing the prompt but without zsh, I revisited Scott&amp;rsquo;s post, and then I needed to add some lines to the .bashrc file, but I deleted that one while troubleshooting earlier.&lt;/p>
+&lt;p>Luckily I found &lt;a href="https://www.reddit.com/r/bashonubuntuonwindows/comments/5d9hhe/can_someone_please_paste_the_content_the_default/da3bv2i/">this reddit comment&lt;/a>&lt;/p>
+&lt;p>And sure enough, the default .bashrc was available at /etc/skel so I just went there and did a&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">cp .bashrc ~/
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And back on track to get my prompt as fancy as Scott&amp;rsquo;s, and of course back at being productive with WSL.&lt;/p></description></item><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Some workitems are missing important information, the information was provided via an Excel sheet, the workitems need to be updated with this information without changing any other properties, particularly the workitem state.&lt;/p>
+&lt;h2 id="restrictions">
+Restrictions
+&lt;a class="heading-link" href="#restrictions">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>The workitems are in done state, and the process template has rules that prevent changes to the properties that need to be updated.&lt;/p>
+&lt;p>The Excel integration, which might be a solution, is not working on this environment because of a permissions error.&lt;/p>
+&lt;h2 id="solution">
+Solution
+&lt;a class="heading-link" href="#solution">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Using the Azure DevOps .NET Client library, it is possible to update workitems. A relatively simple console application will do the trick, especially since the documentation already provides samples showing how to do it,&lt;/p>
+&lt;p>&lt;a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/work-item-quickstart?view=azure-devops">Fetch work items with queries programmatically in Azure DevOps Services&lt;/a>, and&lt;/p>
+&lt;p>&lt;a href="https://docs.microsoft.com/en-us/azure/devops/integrate/quickstarts/create-bug-quickstart?view=azure-devops">Create a bug in Azure DevOps Services using .NET client libraries&lt;/a>.&lt;/p>
+&lt;p>The issue with the process template rules remains. Those rules are enforced not only in the user interface but also using the client library or the API directly, which in the end are the same, so for this to work a permissions change is needed, for the particular identity that will be used to interact with AzDevOps via the client library.&lt;/p>
+&lt;p>The permission is called “Bypass rules on work item updates” and as off this writing can be found by navigating to Project Settings -&amp;gt; Permissions -&amp;gt; Users -&amp;gt; Find the user that will be used and in the permissions panel find this setting.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot01.png" alt="AzDevOps permissions settings" title="AzDevOps permissions settings">&lt;/a>&lt;/p>
+&lt;p>Once the user has this permission, he/she can certainly do these changes directly via the user interface, however doing repetitive tasks by hand is something to avoid.&lt;/p>
+&lt;p>Or not…&lt;/p>
+&lt;p>&lt;a href="https://twitter.com/kvlly/status/1255173275090640897?s=20">&lt;img src="https://davidtriana.com/images/posts/2020/Tweet01.png" alt="AzDevOps permissions settings" title="AzDevOps permissions settings">&lt;/a>&lt;/p>
+&lt;p>Certainly I have done this many times, writing a huge Excel VB Macro to move things around or implementing a GitHub action just to copy a file, but I think in the end its worth it, primarily because manual tasks are error prone, but also because of the joy of programming!&lt;/p>
+&lt;p>So, back to the point,&lt;/p>
+&lt;p>With the bypass rules permission, there is something else needed from AzDevOps, and it is a personal access token, which provides impersonation, authentication and authorization. With this token the code will be able to interact with AzDevOps, using the identity of the user for which the token was generated.&lt;/p>
+&lt;p>This personal access tokens have a lot of very nice security features which makes it a very good option for many scenarios, in particular the permissions can be scoped to specific artifacts and actions, and are set to expire in 30 days by default.&lt;/p>
+&lt;p>At the time of writing this post, the option to create a new token is available in the top right, over the user settings icon,&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot02.png" alt="AzDevOps personal token button" title="AzDevOps personal token button">&lt;/a>&lt;/p>
+&lt;p>And then the token details screen looks like this,&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png" alt="AzDevOps personal token details" title="AzDevOps personal token details">&lt;/a>&lt;/p>
+&lt;p>With the token in hand, we can now get to the code, which is an adaptation from the examples linked earlier.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
+using Microsoft.VisualStudio.Services.WebApi.Patch;
+using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
+using Newtonsoft.Json;
+namespace ConsoleApp
+{
+class Program
+{
+const string AzDevOpsUri = &amp;#34;https://dev.azure.com/&amp;lt;your_org&amp;gt;&amp;#34;;
+const string PersonalAccessToken = &amp;#34;&amp;lt;the_token_generated_earlier&amp;gt;&amp;#34;;
+const string ProjectName = &amp;#34;&amp;lt;the_name_of_your_project&amp;gt;&amp;#34;;
+static void Main()
+{
+var connection = new VssConnection(new Uri(AzDevOpsUri), new VssBasicCredential(string.Empty, PersonalAccessToken));
+var items = LoadJson();
+UpdateWorkItems(connection, items).Wait();
+Console.ReadKey();
+}
+static private async Task UpdateWorkItems(VssConnection connection, IEnumerable&amp;lt;Item&amp;gt; items)
+{
+WorkItemTrackingHttpClient witClient = connection.GetClient&amp;lt;WorkItemTrackingHttpClient&amp;gt;();
+foreach (var item in items)
+{
+JsonPatchDocument documentWithTheUpdate = new JsonPatchDocument
+{
+new JsonPatchOperation()
+{
+Operation = Operation.Replace,
+Path = &amp;#34;/fields/Microsoft.VSTS.Scheduling.Effort&amp;#34;,
+Value = item.Total
+}
+};
+try
+{
+var result = await witClient.UpdateWorkItemAsync(documentWithTheUpdate, ProjectName, item.ID, false,
+true);
+Console.WriteLine($&amp;#34;Workitem {result.Id} updated to revision {result.Rev}&amp;#34;);
+}
+catch (AggregateException ex)
+{
+Console.WriteLine($&amp;#34;Error updating workitem {item.ID}: {ex.InnerException?.Message}&amp;#34;);
+}
+}
+}
+public static List&amp;lt;Item&amp;gt; LoadJson()
+{
+using (StreamReader r = new StreamReader(&amp;#34;values.json&amp;#34;))
+{
+string json = r.ReadToEnd();
+return JsonConvert.DeserializeObject&amp;lt;List&amp;lt;Item&amp;gt;&amp;gt;(json);
+}
+}
+public class Item
+{
+public int ID;
+public string Title;
+public double Dev;
+public double Test;
+public double Total;
+}
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
+&lt;p>My JSON input file looks like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">[
+{
+&amp;#34;ID&amp;#34;: &amp;#34;25071&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;1&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;0.5&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;1.5&amp;#34;
+},
+{
+&amp;#34;ID&amp;#34;: &amp;#34;44260&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;2&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;0.5&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;2.5&amp;#34;
+},
+{
+&amp;#34;ID&amp;#34;: &amp;#34;43303&amp;#34;,
+&amp;#34;Dev Effort&amp;#34;: &amp;#34;4&amp;#34;,
+&amp;#34;Test Effort&amp;#34;: &amp;#34;1&amp;#34;,
+&amp;#34;Effort&amp;#34;: &amp;#34;5&amp;#34;
+}, ...
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png" alt="Program Output" title="Program Output">&lt;/a>&lt;/p>
+&lt;p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.&lt;/p></description></item><item><title>Password and two factor authentication in the web</title><link>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</link><pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/</guid><description>&lt;p>A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin.
+The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.&lt;/p>
+&lt;p>I told him not to worry about the email, its just spam, but also provided some advice and explanations on how this happened.&lt;/p>
+&lt;h1 id="how-this-happened">
+How this happened?
+&lt;a class="heading-link" href="#how-this-happened">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>When you register to gain access to a website you typically provide your email and a password. How well the website stores and protect that information is up to the website, and often not very well done, and even in cases where it is been done correctly &lt;a href="https://edition.cnn.com/2018/11/30/tech/marriott-hotels-hacked/index.html" title="CNN's Article about stolen passwords from Starwood hotels now owned by Marriot">it could get leaked or stolen&lt;/a>.&lt;/p>
+&lt;p>Lists of those emails and password are available, &lt;a href="https://krebsonsecurity.com/2017/12/the-market-for-stolen-account-credentials/" title="Blob post about the web credentials dark market">sometimes for sale&lt;/a> sometimes for free, and with that information people with no so good intentions will try to gain access to your email, bank, Facebook, and every other Internet service which might give them some direct or indirect gain. The email my friend received was put together using this same data.&lt;/p>
+&lt;h1 id="how-can-i-protect-myself-from-this">
+How can I protect myself from this?
+&lt;a class="heading-link" href="#how-can-i-protect-myself-from-this">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Avoiding creating accounts in shady websites is one way, but even reputable sites are of course targets of all sorts of attacks, to stole this kind of information, and eventually some of those attacks will succeed, not much we as individuals can do about it, however there are two things you can and should do to protect yourself.&lt;/p>
+&lt;h2 id="do-not-reuse-password-use-a-password-manager">
+Do not reuse password, use a password manager
+&lt;a class="heading-link" href="#do-not-reuse-password-use-a-password-manager">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>If you use the same password everywhere, when one of those websites leak your password that will be very bad. Passwords should be unique, hard to guess and hard to infer, however managing unique difficult passwords can be a challenge and that is where a password manager comes in. Password Managers are applications that automatically generate strong passwords, can automatically update your passwords for some sites, automatically log you in, and can ensure that passwords are not reused.&lt;/p>
+&lt;p>One critical point here is, if I have all my passwords on that application, how can I trust that application? And my approach here is to leverage the recommendations from security experts who have deeply inspected those applications, and strong and reputable application vendors who are continually verifying security and if something needs fixing, it gets fixed as soon as reasonably possible.&lt;/p>
+&lt;p>I personally use &lt;a href="https://lastpass.com" title="LastPass Website">LastPass&lt;/a>, after hearing about it from &lt;a href="https://twitter.com/SGgrc" title="Steve's Twitter">Steve Gibson&lt;/a> &lt;a href="https://twit.tv/shows/security-now/episodes/256" title="Link to LastPass Security Now PodCast episode">almost 10 years ago&lt;/a>, and very happy about it since then. From a security perspective I really trust Steve’s judgment, from a features perspective it does everything I need, including web, mobile and sharing, and from a price perspective the free tier offers all this features.&lt;/p>
+&lt;p>I have also heard very good comments about &lt;a href="https://1password.com/" title="1 Password Website">1Password&lt;/a> from another of my favorite experts, &lt;a href="https://twitter.com/troyhunt" title="Troy's Twitter">Troy Hunt&lt;/a>, I have not tried it, but I am sure it is at least as good as LastPass.&lt;/p>
+&lt;h2 id="use-second-factor-authentication">
+Use second factor authentication
+&lt;a class="heading-link" href="#use-second-factor-authentication">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Authentication refers to how you probe you are you, and in most websites is by demonstrating your knowledge of a password. While this works most of the time it is very weak in the sense that knowing a password does not really proves it is you. That password can get leaked, can be guessed, and can be used by anyone else without the website having any way to prevent this from happening.&lt;/p>
+&lt;p>One way to improve this process is by adding another factor of authentication, emphasis on the “factor”. Its not just about having a second password, is about having other way to authenticate users, so what other factors exist? The knowledge of the password is something you know, the other factors are something you are, and something you have.&lt;/p>
+&lt;p>Something you are refers to the usage of biometrics, for example &lt;a href="https://support.apple.com/en-us/HT208109" title="FaceId support page">Face Id&lt;/a> or &lt;a href="https://support.apple.com/en-us/HT201371" title="TouchId support page">Touch Id&lt;/a> on Apple devices, &lt;a href="https://blogs.windows.com/windowsexperience/2015/07/25/say-hello-to-windows-hello-on-windows-10/" title="Windows Hello Announcement">Windows Hello in Windows 10&lt;/a>, thumbprint readers, the more sophisticated retina scanners, and the not yet technically practical DNA verification.&lt;/p>
+&lt;p>Something you have refers for example to the key to your house, and in the case of computers and websites it can an &lt;a href="https://www.yubico.com/products/" title="Yubico Products Page">USB device&lt;/a>, a Bluetooth device, or a physical dongle that produce random numbers on its screen.&lt;/p>
+&lt;p>The level of sophistication and requirements for this can get very complicated specially if you need to buy a physical reader or dongle, however there is a great solution where the something you have is your own smartphone.&lt;/p>
+&lt;p>There, you run an application, which previously received a seed from the website, and based on that seed it produces a number that changes every 30 seconds. When you login to a website that supports this technology, you provide your username and password, and then get challenged for this number.&lt;/p>
+&lt;p>This is similar to what some websites offer, specially banks, where a 6 digits code is received as an SMS, it this case however it is the application the one that calculates the code without requiring internet connectivity. In general this technology is know as &lt;a href="https://en.wikipedia.org/wiki/One-time_password" title="Explanation of OTP">OTP&lt;/a>.&lt;/p>
+&lt;p>The application I use is &lt;a href="https://www.microsoft.com/en-us/account/authenticator" title="Authenticator Web page">Microsoft Authentication&lt;/a>, which works great, and automatically backups my seeds. Before Microsoft Authenticator I used Google Authenticator, which I am sure works fine as well.&lt;/p>
+&lt;p>To setup the usage this kind of authentication you need to go to each particular site and configure it, it takes some time but its absolutely worth it, since this way even if your password gets leaked its not enough to login.&lt;/p>
+&lt;p>Currently, I use this kind of authentication for the following sites/services, the link goes to the documentation with the details on how to set it up:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;a href="https://www.google.com/landing/2step/" title="Google 2FA Instructions">Google&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://support.microsoft.com/en-us/help/12408/microsoft-account-how-to-use-two-step-verification" title="Microsoft 2FA Instructions">Outlook/Hotmail&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://support.ubisoft.com/en-GB/Faqs/000025170/Secure-your-account-with-2-Step-Verification" title="Ubisoft 2FA Instructions">Ubisoft&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://help.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa" title="Github 2FA Instructions">Github&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://www.namecheap.com/support/knowledgebase/article.aspx/9253/5/how-can-i-enabledisable-twofactor-authentication" title="Namecheap 2FA Instructions">NameCheap&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>Blogging Again!</title><link>https://davidtriana.com/posts/2020/blogging-again/</link><pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/blogging-again/</guid><description>&lt;p>It has been a very long time since my last post, but here we go again.&lt;/p>
+&lt;p>There is no excuse really, it is about discipline, not about lack of material, so instead of looking backwards, let’s re-start blogging!&lt;/p>
+&lt;p>But first, let us switch platforms 😊. Until today I had my blog on (&lt;a href="https://wordpress.com">https://wordpress.com&lt;/a>), the free tier, and while that worked I really prefer to have more control, and specially having everything from my own domain instead of a redirect (not that it’s not possible on wordpress.com, just not on the free tier).&lt;/p>
+&lt;p>Last month, to setup my &lt;a href="https://loracer.co">son’s website&lt;/a>, I spent some time researching on platforms, CMS, static generators and similar technologies, and something really stuck with me, about the advantages of an static site from &lt;a href="https://www.pluralsight.com/courses/static-site-generator-build-better-blog">this Pluralsight course&lt;/a>.&lt;/p>
+&lt;p>With that in mind, I started researching alternatives, starting on the &lt;a href="https://www.staticgen.com/">great information available here&lt;/a>, I tried &lt;a href="https://nextjs.org/">Next.JS&lt;/a>, &lt;a href="http://jekyllrb.com/">Jekyll&lt;/a> and &lt;a href="https://gohugo.io/">Hugo&lt;/a>. By trying, I mean I set those up, created a basic blog, setup a theme, added a post, and explored how to setup CI/CD, and finally decided on Hugo.&lt;/p>
+&lt;p>While &lt;a href="https://gohugo.io/documentation/">the documentation&lt;/a> is not that good, &lt;a href="https://www.youtube.com/watch?v=qtIqKaDlqXo&amp;amp;list=PLLAZ4kZ9dFpOnyRlyS-liKL5ReHDcj4G3">the YouTube videos&lt;/a> are great, very well organized, and the &lt;a href="https://themes.gohugo.io/">available themes&lt;/a>, most of which are free, are great. Setting up CI/CD was very easy with &lt;a href="https://help.github.com/en/actions">GitHub actions&lt;/a> and documenting my boy’s racing career became as easy as I wanted it.&lt;/p>
+&lt;p>Now, about my blog, migrating the WordPress content to Hugo was easy enough, since WordPress allows to export all the content including images, and then converting the exported blog posts to Hugo’s md was done by using &lt;a href="https://github.com/palaniraja/blog2md">this script&lt;/a>.&lt;/p>
+&lt;p>After a couple of hours adjusting links and images, it was all set, hosted on &lt;a href="https://pages.github.com/">GitHub pages&lt;/a>, and ready to re-start adding blog posts, so let’s do it!&lt;/p></description></item><item><title>Continuous Integration &amp; Deployment of a NuGet Package with VSTS</title><link>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</link><pubDate>Sat, 26 Nov 2016 03:54:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2016/continuous-integration-deployment-of-a-nuget-package-with-vsts/</guid><description>&lt;p>In this post I’ll show the configuration steps to setup a CI/CD in Visual Studio Team System that from a repository build, packages and publishes a NuGet Package.&lt;/p>
+&lt;p>To publish a NuGet Package you will need a NuGet server. There are lots of options, and VSTS itself provides one. In my case I setup one using the free Nuget.Server (&lt;a href="http://nugetserver.net/" title="http://nugetserver.net/">http://nugetserver.net/&lt;/a>) and hosted it on a free tier Azure Web Site. Having that, I’m all set.&lt;/p>
+&lt;p>First I need the project from which I will then generate the package, so first make sure to have a Visual Studio solution that builds, and that doesn’t have any weird local references since the build will be done by the hosted build service in VSTS. Nuget dependencies are fine, since the CI can take care of that.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Then my project needs to be in a repository in VSTS&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image1.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb1.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>With that, I’m ready to configure the CI/CD build&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image2.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb2.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Leave the defaults in the “Select a template”, be aware however that this screen can change at any time so check the options and selection in your case&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image3.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb3.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>In the “Create new build definition” screen pick the right repository, branch, and check the Continuous integration option if that is really what you want. If you leave it blank you will need to manually start each build, or schedule it in some other way&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image4.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb4.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>VSTS will create a default build definition like this:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image5.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb5.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Leave only the first two steps, delete the rest.&lt;/p>
+&lt;p>To delete a step, first click over it and then on the red arrow to the right next to it:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image6.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb6.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Click on the green Add build step on top of the steps list and in the Task Catalog dialog select Package and look for the Nuget and click Add&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image7.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb7.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Without closing the dialog, click add on the Nuget Publisher&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image8.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb8.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Then click on Close to dismiss the Task Catalog dialog. Click on the NuGet Publisher step to reveal the configuration. If you are using the Nuget server provided by VSTS then choose “Internal Nuget Feed” and copy/paste the Url provided by the extension.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image9.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb9.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>In my case since I have a external server I left the Feed type as External and clicked on the Manage link to the right of the Url. This is needed only the first time. After the server is setup it will be available in the dropdown control for NuGet Server Endpoint.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image10.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb10.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>The Manage link opens a new page, the “Settings/Services” page. Click on the green New Service Endpoint and choose generic&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image11.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb11.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>In the Add new Generic Connection dialog use a friendly name for Connection Name and fill out the Url and Username and Password if needed. In my case with the Nuget.Server I have I passkey so I typed it there.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image12.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb12.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>After clicking Ok close the Settings page to go back to the Build page, Click on the refresh icon next to the Url to have the server available and select the server.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image13.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb13.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>At this point the Build definition is ready. It must look like this&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image14.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb14.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Click on save and provide a distinctive name for it&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image15.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb15.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>And that’s it!, if you selected the continuous integration the Build will run automatically every time you check in changes in the repo/branch selected at the beginning. To run the build manually click on “Queue build…” and leave the default options. The BuildConfiguration option is particularly important since without it, or misconfigured the build will fail.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image16.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb16.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Moments later a build agent will pick the job and you will be able to see the output of the build tasks in real time&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image17.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb17.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Then the build will finish. If something fails, it will be red, and the logs will help to find the issue, probably some issue with dependencies in the Visual Studio Solution&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image18.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb18.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>To then consume my package, if I haven’t already added my Nuget server I need to do it in the Options screen in Visual Studio. One quick way to get to the right place is to open the Nuget Package Manager and click on the Gear&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image19.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb19.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Then add the server. In my case it looks like this&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image20.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb20.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>And with that I can pick my just created package&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2016/11/image21.png">&lt;img src="https://davidtriana.com/images/posts/2016/11/image_thumb21.png" alt="image" title="image">&lt;/a>&lt;/p></description></item><item><title>The nokia 920 killer</title><link>https://davidtriana.com/posts/2015/the-nokia-920-killer/</link><pubDate>Sun, 03 May 2015 16:48:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2015/the-nokia-920-killer/</guid><description>&lt;p>I frequently move my SIMCARD from phone to phone, testing applications, OS features and things like that.&lt;/p>
+&lt;p>With the iPhone 5 and it’s nano SIMCARD I found myself with a small form size dilemma:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/05/image.png">&lt;img src="https://davidtriana.com/images/posts/2015/05/image_thumb.png" alt="image" title="Sim Cards Sizes">&lt;/a>&lt;/p>
+&lt;p>The iPhone uses nano, the Nokia micro and sometimes I need a full simcard so I started using small plastic adapters as my “&lt;strong>solution&lt;/strong>”&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2015/05/Annotation.jpg" alt="Plastic Sim Card" title="Plastic Sim Card">&lt;/p>
+&lt;p>What seemed like a good idea at first turned out to be the &lt;strong>Nokia 920 Killer&lt;/strong>!&lt;/p>
+&lt;p>The Nokia 920 is a very delicate piece of engineering, in which the mechanism that holds the SIMCARD in place is specifically designed for micro SIMCARDS.&lt;/p>
+&lt;p>The first two times when I used the adapter it felt a little forced when removing the SIMCARD, the third time it was really difficult. Well, that third time broke the mechanism.&lt;/p>
+&lt;p>I brought the phone to the local Nokia shop and they returned as irreparable, claiming that the broken part wasn’t available as a replacement since it was part of the whole phone mainboard.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/05/image1.png">&lt;img src="https://davidtriana.com/images/posts/2015/05/image_thumb1.png" alt="image" title="Broken Pin">&lt;/a>&lt;/p>
+&lt;p>Later a sad reality in life revealed to me: The guys in those shops, not just Nokia but Apple and everyone else are not there to help you repair your &lt;em>old&lt;/em> electronics but to help you make the decision to buy a new one.&lt;/p>
+&lt;p>That reality was very clear later when trying to get the guys at the Apple shop to replace an internal battery for an iPad. They had ready a very compelling speech of why it was better for me, mankind and the whole universe to just buy a new one …&lt;/p>
+&lt;p>With that in mind I searched the web for the part and there it was, U$1.90 !!!!&lt;/p>
+&lt;p>&lt;a href="http://www.parts4repair.com/sim-contact-for-nokia-lumia-920-900-800-n9-c5-03-5250/" title="http://www.parts4repair.com/sim-contact-for-nokia-lumia-920-900-800-n9-c5-03-5250/">http://www.parts4repair.com/sim-contact-for-nokia-lumia-920-900-800-n9-c5-03-5250/&lt;/a>&lt;/p>
+&lt;p>International shipping was U$6 !!! and it got here in less than 2 weeks.&lt;/p>
+&lt;p>I took care myself of disassembling the phone following one of the many youtube videos,  then I brought the phone to a small local electronics shop, they charged me U$ 10 for desoldering the broken part and soldering the new one, an guest what? GOOD AS NEW!!!&lt;/p></description></item><item><title>MY BOOKS</title><link>https://davidtriana.com/pages/my-books/</link><pubDate>Fri, 10 Apr 2015 00:54:31 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/pages/my-books/</guid><description>&lt;p>Updated 4-may-2015 / The read section is still incomplete&lt;/p>
+&lt;h1 id="wish-list">
+Wish list
+&lt;a class="heading-link" href="#wish-list">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;h2 id="type">
+Type
+&lt;a class="heading-link" href="#type">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;h2 id="title">
+Title
+&lt;a class="heading-link" href="#title">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;h5 id="self-developmenthttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiet">
+&lt;a href="http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet">Self Development&lt;/a>
+&lt;a class="heading-link" href="#self-developmenthttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiet">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h5>
+&lt;p>&lt;a href="http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet">&lt;/a>&lt;/p>
+&lt;h5 id="quiet-the-power-of-introverts-in-a-world-that-cant-stop-talkinghttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiethttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiet">
+&lt;a href="http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet">Quiet: The Power of Introverts in a World That Can&amp;rsquo;t Stop Talking&lt;/a>&lt;a href="http://www.amazon.com/Quiet-Power-Introverts-World-Talking-ebook/dp/B004J4WNL2/ref=sr_1_1_ha?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625658&amp;amp;sr=1-1&amp;amp;keywords=quiet">&lt;/a>
+&lt;a class="heading-link" href="#quiet-the-power-of-introverts-in-a-world-that-cant-stop-talkinghttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiethttpwwwamazoncomquiet-power-introverts-world-talking-ebookdpb004j4wnl2refsr_1_1_hasdigital-textieutf8qid1428625658sr1-1keywordsquiet">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h5>
+&lt;p>Technical&lt;/p>
+&lt;h6 id="agile-principles-patterns-and-practices-in-chttpwwwamazoncomdpb0051tm4girefwl_it_dp_o_pc_ns_ttl_encodingutf8colid3qq7zwv1iidhicoliidi1dlrklk9035n1">
+&lt;a href="http://www.amazon.com/dp/B0051TM4GI/ref=wl_it_dp_o_pC_nS_ttl?_encoding=UTF8&amp;amp;colid=3QQ7ZWV1IIDHI&amp;amp;coliid=I1DLRKLK9035N1">Agile Principles, Patterns, and Practices in C#&lt;/a>
+&lt;a class="heading-link" href="#agile-principles-patterns-and-practices-in-chttpwwwamazoncomdpb0051tm4girefwl_it_dp_o_pc_ns_ttl_encodingutf8colid3qq7zwv1iidhicoliidi1dlrklk9035n1">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h6>
+&lt;h1 id="currently-reading">
+Currently reading
+&lt;a class="heading-link" href="#currently-reading">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;h2 id="type-1">
+Type
+&lt;a class="heading-link" href="#type-1">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;h2 id="title-1">
+Title
+&lt;a class="heading-link" href="#title-1">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Management and leadership&lt;/p>
+&lt;p>&lt;a href="http://www.amazon.com/Start-up-Nation-Israels-Economic-Miracle-ebook/dp/B004QZ9P6K/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625919&amp;amp;sr=1-1&amp;amp;keywords=startup+nation">&lt;/a>&lt;a href="http://www.amazon.com/Tipping-Point-Little-Things-Difference-ebook/dp/B000OT8GD0">The Tipping Point&lt;/a>&lt;/p>
+&lt;p>Technical&lt;/p>
+&lt;h4 id="software-in-30-days-how-agile-managers-beat-the-odds-delight-their-customers-and-leave-competitors-in-the-dusthttpwwwamazoncomsoftware-30-days-customers-competitors-ebookdpb007p6uplgrefsr_1_1sdigital-textieutf8qid1428625993sr1-1keywordssoftwarein30days">
+&lt;a href="http://www.amazon.com/Software-30-Days-Customers-Competitors-ebook/dp/B007P6UPLG/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428625993&amp;amp;sr=1-1&amp;amp;keywords=software+in+30+days">Software in 30 Days: How Agile Managers Beat the Odds, Delight Their Customers, And Leave Competitors In the Dust&lt;/a>
+&lt;a class="heading-link" href="#software-in-30-days-how-agile-managers-beat-the-odds-delight-their-customers-and-leave-competitors-in-the-dusthttpwwwamazoncomsoftware-30-days-customers-competitors-ebookdpb007p6uplgrefsr_1_1sdigital-textieutf8qid1428625993sr1-1keywordssoftwarein30days">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;h1 id="read">
+Read*
+&lt;a class="heading-link" href="#read">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>*Incomplete list, most of the technical books are missing at the moment&lt;/p>
+&lt;h2 id="type-2">
+Type
+&lt;a class="heading-link" href="#type-2">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;h2 id="title-2">
+Title
+&lt;a class="heading-link" href="#title-2">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;h2 id="comment">
+Comment
+&lt;a class="heading-link" href="#comment">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Management and leadership&lt;/p>
+&lt;p>&lt;a href="http://www.amazon.com/Chess-Not-Checkers-Elevate-Leadership-ebook/dp/B00SCB7MVO">Chess Not Checkers&lt;/a>&lt;/p>
+&lt;p>Like a mini – &lt;a href="https://www.amazon.com/gp/product/B00AZRBLHO/ref=kinw_myk_ro_title">Phoenix&lt;/a> Project but for leadership and management, short and fun.&lt;/p>
+&lt;p>Management and leadership&lt;/p>
+&lt;p>[&lt;/p>
+&lt;h4 id="the-e-myth-revisited">
+The E-Myth Revisited
+&lt;a class="heading-link" href="#the-e-myth-revisited">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>](&lt;a href="http://www.amazon.com/E-Myth-Revisited-Michael-E-Gerber-ebook/dp/B000RO9VJK/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973223&amp;amp;sr=1-1&amp;amp;keywords=the+e+myth">http://www.amazon.com/E-Myth-Revisited-Michael-E-Gerber-ebook/dp/B000RO9VJK/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973223&amp;amp;sr=1-1&amp;amp;keywords=the+e+myth&lt;/a>)&lt;/p>
+&lt;p>Very good, lots of good tips and insights about  running a business. This book is not only about entrepreneurship but companies in general. &lt;/p>
+&lt;p>History / Economics&lt;/p>
+&lt;h4 id="start-up-nation-the-story-of-israels-economic-miraclehttpwwwamazoncomstart-up-nation-israels-economic-miracle-ebookdpb004qz9p6krefsr_1_1sdigital-textieutf8qid1428973371sr1-1keywordsstartupnationkindle">
+&lt;a href="http://www.amazon.com/Start-up-Nation-Israels-Economic-Miracle-ebook/dp/B004QZ9P6K/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973371&amp;amp;sr=1-1&amp;amp;keywords=startup+nation+kindle">Start-up Nation: The Story of Israel&amp;rsquo;s Economic Miracle&lt;/a>
+&lt;a class="heading-link" href="#start-up-nation-the-story-of-israels-economic-miraclehttpwwwamazoncomstart-up-nation-israels-economic-miracle-ebookdpb004qz9p6krefsr_1_1sdigital-textieutf8qid1428973371sr1-1keywordsstartupnationkindle">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>Good read, lots of interesting anecdotes and historic events to get a bit of understanding of this part of the world&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B00DMCPOBI/ref=kinw_myk_ro_title">Influx&lt;/a>&lt;/p>
+&lt;p>A must read, excellent book&lt;/p>
+&lt;p>Management and leadership&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B00AZRBLHO/ref=kinw_myk_ro_title">The Phoenix Project: A Novel About IT, DevOps, and Helping Your Business Win&lt;/a>&lt;/p>
+&lt;p>Quite good, very funny picture of most of my customers&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B00EMXBDMA/ref=kinw_myk_ro_title">The Martian: A Novel&lt;/a>&lt;/p>
+&lt;p>If the novel prizes are still a thing the author of this book should get at least 5 of them for this book. Absolutely amazing&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B004TIKGAI/ref=kinw_myk_ro_title">Space Prison&lt;/a>&lt;/p>
+&lt;p>Great history on a very interesting possible future&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B00GVRVEA6/ref=kinw_myk_ro_title">Rogue Code: A Jeff Aiken Novel (Jeff Aiken Series Book 3)&lt;/a>&lt;/p>
+&lt;p>The stakes keep getting higher for Jeff, and Mark’s style gets only better&lt;/p>
+&lt;p>Health&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B004I8VGYE/ref=kinw_myk_ro_title">The Primal Blueprint: Reprogram your genes for effortless weight loss, vibrant health and boundless energy (Primal Blueprint Series)&lt;/a>&lt;/p>
+&lt;p>Well written and researched health advice, quite good and VERY LONG!&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B003G4W49C/ref=kinw_myk_ro_title">Ender&amp;rsquo;s Game (The Ender Quartet series Book 1)&lt;/a>&lt;/p>
+&lt;p>So glad I read the book before the movie. The movie is crap, this book is absolutely amazing&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B0080K37P2/ref=kinw_myk_ro_title">Operation Desolation: A Short Story (Jeff Aiken Series)&lt;/a>&lt;/p>
+&lt;p>A short one but entertaining&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B0073XV2W2/ref=kinw_myk_ro_title">Kill Decision&lt;/a>&lt;/p>
+&lt;p>Action packed SciFi triller, loved it&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B007PP2J9I/ref=kinw_myk_ro_title">Trojan Horse: A Jeff Aiken Novel (Jeff Aiken Series Book 2)&lt;/a>&lt;/p>
+&lt;p>The timing for this book is almost uncomfortable, it’s like is not SciFi but current events&lt;/p>
+&lt;p>Technical / Management&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B008HUMTO0/ref=kinw_myk_ro_title">Effective Programming: More Than Writing Code&lt;/a>&lt;/p>
+&lt;p>A must read for everyone in the industry&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="http://www.audible.com/pd/Dune-Part-1-Audiobook/B002V1OF70">Dune&lt;/a>&lt;/p>
+&lt;p>A classic! Very well narrated story.&lt;/p>
+&lt;p>Technical&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B000SEGEKI/ref=kinw_myk_ro_title">The Pragmatic Programmer: From Journeyman to Master&lt;/a>&lt;/p>
+&lt;p>Is there’s a bible for programmers, this is the one&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;h4 id="lucifers-hammerhttpwwwamazoncomlucifers-hammer-larry-niven-ebookdpb004478dourefsr_1_1sdigital-textieutf8qid1428973959sr1-1keywordslucifer27shammerkindle">
+&lt;a href="http://www.amazon.com/Lucifers-Hammer-Larry-Niven-ebook/dp/B004478DOU/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973959&amp;amp;sr=1-1&amp;amp;keywords=lucifer%27s+hammer+kindle">Lucifer&amp;rsquo;s Hammer&lt;/a>
+&lt;a class="heading-link" href="#lucifers-hammerhttpwwwamazoncomlucifers-hammer-larry-niven-ebookdpb004478dourefsr_1_1sdigital-textieutf8qid1428973959sr1-1keywordslucifer27shammerkindle">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>Ah, this post apocalyptic story really got me thinking about the what ifs of a catastrophic event, how to preserve the knowledge, the technology, and stay alive!&lt;/p>
+&lt;p>Health&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B004OL26GM/ref=kinw_myk_ro_title">Deadly Harvest: The Intimate Relationship Between Our Heath and Our Food&lt;/a>&lt;/p>
+&lt;p>If you only read one book about health, this one will change your life&lt;/p>
+&lt;p>Business / Management&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B002MUAJ2A/ref=kinw_myk_ro_title">Rework&lt;/a>&lt;/p>
+&lt;p>Nice short read, good advice&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B00457X7XQ/ref=kinw_myk_ro_title">Zero Day: A Jeff Aiken Novel (Jeff Aiken Series Book 1)&lt;/a>&lt;/p>
+&lt;p>Looks like the beginning of an amazing zaga&lt;/p>
+&lt;p>Technical / Reference&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B004GUS782/ref=kinw_myk_ro_title">Software Testing: An ISTQB-ISEB Foundation Guide&lt;/a>&lt;/p>
+&lt;p>I just bought it to study for the certification exam, good information here however&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;h4 id="foundationhttpwwwamazoncomfoundation-isaac-asimov-ebookdpb000fc1pwarefsr_1_1sdigital-textieutf8qid1428973841sr1-1keywordsfondation">
+&lt;a href="http://www.amazon.com/Foundation-Isaac-Asimov-ebook/dp/B000FC1PWA/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973841&amp;amp;sr=1-1&amp;amp;keywords=fondation">Foundation&lt;/a>
+&lt;a class="heading-link" href="#foundationhttpwwwamazoncomfoundation-isaac-asimov-ebookdpb000fc1pwarefsr_1_1sdigital-textieutf8qid1428973841sr1-1keywordsfondation">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>A must read. The universe in this book is absolutely inspiring, loved it.&lt;/p>
+&lt;p>Politics&lt;/p>
+&lt;h4 id="confessions-of-an-economic-hit-manhttpwwwamazoncomconfessions-economic-hit-john-perkins-ebookdpb001aff266refsr_1_1sdigital-textieutf8qid1428973732sr1-1keywordsconfessionsofaneconomichitman">
+&lt;a href="http://www.amazon.com/Confessions-Economic-Hit-John-Perkins-ebook/dp/B001AFF266/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973732&amp;amp;sr=1-1&amp;amp;keywords=confessions+of+an+economic+hitman">Confessions of an Economic Hit Man&lt;/a>
+&lt;a class="heading-link" href="#confessions-of-an-economic-hit-manhttpwwwamazoncomconfessions-economic-hit-john-perkins-ebookdpb001aff266refsr_1_1sdigital-textieutf8qid1428973732sr1-1keywordsconfessionsofaneconomichitman">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>An eye opener about the sad reality of our society&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;h4 id="pandoras-star-the-commonwealth-saga-book-1httpwwwamazoncompandoras-star-commonwealth-saga-book-ebookdpb000fc1afcrefsr_1_1sdigital-textieutf8qid1428973611sr1-1keywordspandora27sstar">
+&lt;a href="http://www.amazon.com/Pandoras-Star-Commonwealth-Saga-Book-ebook/dp/B000FC1AFC/ref=sr_1_1?s=digital-text&amp;amp;ie=UTF8&amp;amp;qid=1428973611&amp;amp;sr=1-1&amp;amp;keywords=pandora%27s+star">Pandora&amp;rsquo;s Star (The Commonwealth Saga Book 1)&lt;/a>
+&lt;a class="heading-link" href="#pandoras-star-the-commonwealth-saga-book-1httpwwwamazoncompandoras-star-commonwealth-saga-book-ebookdpb000fc1afcrefsr_1_1sdigital-textieutf8qid1428973611sr1-1keywordspandora27sstar">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h4>
+&lt;p>Very immersive SciFi, really puts your mind to spin with an amazing universe, very entertaining and inspiring&lt;/p>
+&lt;p>Health&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B003WUYOQ6/ref=kinw_myk_ro_title">Why We Get Fat: And What to Do About It&lt;/a>&lt;/p>
+&lt;p>Very good information, however I liked more Deadly Harvest&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="http://www.amazon.com/Freedom-TM-Daemon-Book-2-ebook/dp/B002VUFKDY/ref=pd_sim_kstore_1?ie=UTF8&amp;amp;refRID=0QJ8YQBXP4GZD46K4W0W">Freedom (TM) (Daemon Book 2)&lt;/a>&lt;/p>
+&lt;p>This series is the best SciFi I have read. Sometimes looks more like reality than SciFi, a very scary reality&lt;/p>
+&lt;p>SciFi&lt;/p>
+&lt;p>&lt;a href="https://www.amazon.com/gp/product/B003QP4NPE/ref=kinw_myk_ro_title">Daemon&lt;/a>&lt;/p>
+&lt;p>The best SciFi, period.&lt;/p></description></item><item><title>Running the Microsoft ALM Training Virtual Machine in Azure April 2015 Edition</title><link>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</link><pubDate>Thu, 09 Apr 2015 21:37:42 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</guid><description>&lt;p>Last month I found myself doing ALM training and demos for a couple of customers, of course using the great ALM Virtual Machine by Brian Keller. With laptops having less and less RAM I choose to set it up in the cloud and found a few web pages with the steps to do it, however with Azure evolving every day I felt the need to put out this blog post with the guidance for Azure in April 2015&lt;/p>
+&lt;p>Additional to my RAM constrains I also have very limited internet access; some folks suggest to first download the virtual machine locally and then upload to azure. For me that will take at least 3 days watching a download / upload progress bar, so what I did was to do the download in Azure, and then transfer the bits to Azure itself, something like this:&lt;/p>
+&lt;ol>
+&lt;li>Create an Azure VM&lt;/li>
+&lt;li>Add a big disk to that Azure VM (To have space for the download and extraction)&lt;/li>
+&lt;li>Download the ALM VM RAR Files&lt;/li>
+&lt;li>Extract the RAR Files&lt;/li>
+&lt;li>Transfer the .VHD to a new blob storage&lt;/li>
+&lt;li>Create a new VM from the VHD&lt;/li>
+&lt;li>Create a point to site VPN to avoid exposing the VM directly to the internet&lt;/li>
+&lt;li>Connect to the VPN&lt;/li>
+&lt;li>Enjoy!&lt;/li>
+&lt;/ol>
+&lt;p>So let’s go through the steps:&lt;/p>
+&lt;h1 id="create-an-azure-vm">
+Create an Azure VM
+&lt;a class="heading-link" href="#create-an-azure-vm">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Go to the portal, New –&amp;gt; Compute –&amp;gt; Marketplace&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>For this any Windows Virtual Machine should work and I can have just picked the Windows Server 2012R2 image, however I pick the Marketplace to choose the lightest and easiest machine Azure offers me&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image1.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb1.png" alt="image" title="image">&lt;/a> &lt;/p>
+&lt;p>Then click Create, pick options and Create. In my case I make sure to pick the right subscription, pick my closest datacenter and a very fast tier.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image2.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb2.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>When the VM is ready, add a new disk to it.&lt;/p>
+&lt;h1 id="add-a-big-disk-to-the-vm">
+Add a big disk to the VM
+&lt;a class="heading-link" href="#add-a-big-disk-to-the-vm">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>From the portal click on the VM or browse for it and pick all settings, disks, attach new and choose the same storage account and container as the one for the VM. Adjust the size and cache and click Ok.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image3.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb3.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>RDP to the machine to attach the disk&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image4.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb4.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Open Computer Management and accept the suggestion&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image5.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb5.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Right click the newly created disk, choose New Simple Volume and follow the Wizard to format the disk&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image6.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb6.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Now we have a VM with enough space to fit the downloaded RAR files and then extract them, so lets do it&lt;/p>
+&lt;h1 id="download-the-alm-vm-rar-files">
+Download the ALM VM RAR Files
+&lt;a class="heading-link" href="#download-the-alm-vm-rar-files">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>In this step I really hate to use Free Download Manager and I spent (wasted) half a day setting up a powershell script to do the same. In the end, FDM does the job and do it very well despite the horrible user interface and installer, so for this step just follow Brian’s guide:&lt;/p>
+&lt;p>&lt;a href="http://aka.ms/ALMVMs" title="http://aka.ms/ALMVMs">http://aka.ms/ALMVMs&lt;/a>&lt;/p>
+&lt;p>Install FDM&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image7.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb7.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Copy the URLs from Brian’s page to the clipboard&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image8.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb8.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Open FDM and set the download folder to the new disk&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image9.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb9.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>choose import from clipboard&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image10.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb10.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Let it do its thing&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image11.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb11.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>When the download finishes, and in my case it took something like 5 minutes, run the .exe that extracts the VHD&lt;/p>
+&lt;h1 id="extract-vhd">
+Extract VHD
+&lt;a class="heading-link" href="#extract-vhd">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image12.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb12.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Meanwhile, install PowerShell, it will be needed to upload the VHD,&lt;/p>
+&lt;p>&lt;a href="http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/" title="http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/">http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/&lt;/a>&lt;/p>
+&lt;p>Launch PowerShell&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image13.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb13.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Connect to the subscription&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image14.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb14.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>If as me you have more that one subscription, make sure to select the one you intend to use&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image15.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb15.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;h1 id="transfer-the-vhd">
+Transfer the VHD
+&lt;a class="heading-link" href="#transfer-the-vhd">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Make sure that the extraction finished and issue the command to start the upload. For the blob storage URL I used the same container as the one for this VM. The URL can be found on the portal&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image16.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb16.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>The command:&lt;/p>
+&lt;p>&lt;code>Add-AzureVhd -Destination &amp;quot;&amp;lt;BlobStorageURL&amp;gt;/&amp;lt;YourImagesFolder&amp;gt;/&amp;lt;VHDName&amp;gt;.vhd&amp;quot; -LocalFilePath &amp;lt;PathToVHDFile&amp;gt;&lt;/code>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image17.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb17.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>In the screenshot I show the blob storage account as the same of my VM. Later I have to re-do this using another storage account in the standard tier since I created this one on the premium tier and I had a lot of trouble later creating the actual VM.&lt;/p>
+&lt;h1 id="convert-to-os-image">
+Convert to OS Image
+&lt;a class="heading-link" href="#convert-to-os-image">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>After the VHD is uploaded it should be added as an operating system image. In the screenshot is done via PowerShell, it can also be done via the legacy portal&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image18.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb18.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;h1 id="create-the-virtual-machine">
+Create the Virtual Machine
+&lt;a class="heading-link" href="#create-the-virtual-machine">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Using the just created image, create a new virtual machine. The screenshots are with the old portal, I also did it with PowerShell&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image19.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb19.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image20.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb20.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image21.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb21.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>In the next step it is important to set the machine in a virtual network and remove the public endpoints, why?, because this image has well known usernames and passwords and exposing it to the internet just like that is a bad idea. The recommended way to do it is to leave it on a Virtual Network and then connect via VPN. In this case I used the virtual network from the first virtual machine. That one was created using the preview portal which by default creates an internal network.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image22.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb22.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;h1 id="create-a-point-to-site-vpn">
+Create a point to site VPN
+&lt;a class="heading-link" href="#create-a-point-to-site-vpn">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>While the VM get setup, let’s create the VPN. Look for the same network where the VM was located and use the wizard to create a Point to site dynamic VPN. When I took the screenshot Site-To-Site was selected, make sure to select POINT-TO-SITE&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image23.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb23.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>To get the VPN working you need a self signed certificate. If you have visual studio installed it’s easy with the makecert.exe utility. The procedure is available at &lt;a href="https://msdn.microsoft.com/library/azure/dn133792.aspx/" title="https://msdn.microsoft.com/library/azure/dn133792.aspx/">https://msdn.microsoft.com/library/azure/dn133792.aspx/&lt;/a> and looks like this:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image24.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb24.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image25.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb25.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;h1 id="connect-to-the-vpn">
+Connect to the VPN
+&lt;a class="heading-link" href="#connect-to-the-vpn">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Wait for the creation of the gateway, that usually takes a long time, and then download the client, install and connect:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image26.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb26.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;h1 id="connect-to-the-vm">
+Connect to the VM
+&lt;a class="heading-link" href="#connect-to-the-vm">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image27.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb27.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image28.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb28.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>At this point the first Virtual Machine can be deleted. I will however keep the disk with the original VHD as a mean to rollback since here in Azure I don’t have the snapshotting facility provided by HyperV.&lt;/p>
+&lt;p>Now let’s do some ALM…&lt;/p></description></item><item><title>Google 2nd Step Verification and Windows Phone 8</title><link>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</link><pubDate>Fri, 11 Jan 2013 17:48:14 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</guid><description>&lt;p>I’m moving from iOS 6 (iPhone 4) to Windows Phone 8 (HTC 8x).&lt;/p>
+&lt;p>One of the apps I’m missing from iOS is the Google Authenticator that provides one time passwords to authenticate to google.&lt;/p>
+&lt;p>Looked around and found the Authenticator application:&lt;/p>
+&lt;p>&lt;a href="http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0" title="http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0">http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0&lt;/a>&lt;/p>
+&lt;p>Recommended on the Karspersky blog&lt;/p>
+&lt;p>&lt;a href="http://blog.kaspersky.com/the-best-windows-phone-security-apps/" title="http://blog.kaspersky.com/the-best-windows-phone-security-apps/">http://blog.kaspersky.com/the-best-windows-phone-security-apps/&lt;/a>&lt;/p>
+&lt;p>Immediately installed it, then proceeded to Google to configure it. As expected Google doesn’t offer Windows Phone as an option since them don’t produce an app for that:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/image.png">&lt;img src="https://davidtriana.com/images/posts/2013/01/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>So I leave the setting on iPhone and run the App.&lt;/p>
+&lt;p>The barcode scanner doesn’t seem to work, at least not as easy as it was on the iPhone, I ended up entering the code using the “Can’t Scan the barcode” option from Google&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/image1.png">&lt;img src="https://davidtriana.com/images/posts/2013/01/image_thumb1.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Entered the code in the app&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0001.jpg">&lt;img src="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0001_thumb.jpg" alt="wp_ss_20130111_0001" title="wp_ss_20130111_0001">&lt;/a>&lt;/p>
+&lt;p>And voila&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0002.jpg">&lt;img src="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0002_thumb.jpg" alt="wp_ss_20130111_0002" title="wp_ss_20130111_0002">&lt;/a>&lt;/p></description></item><item><title>Fixing Configuration Error– 'oracleDBBinding' could not be found</title><link>https://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</link><pubDate>Thu, 20 Dec 2012 16:45:55 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/fixing-configuration-error-oracledbbinding-could-not-be-found/</guid><description>&lt;p>This error shows up with web applications and/or web services that use the Biztalk LOB Adapters for Oracle and the server doesn´t have the required assemblies.&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/12/image.png">&lt;img src="https://davidtriana.com/images/posts/2012/12/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>To fix it just install:&lt;/p>
+&lt;p>The WCF LOB Adapter&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/12/image1.png">&lt;img src="https://davidtriana.com/images/posts/2012/12/image_thumb1.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Then the biztalk adapter pack&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/12/image2.png">&lt;img src="https://davidtriana.com/images/posts/2012/12/image_thumb2.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>And declare the binding either on the machine.config for the whole server or in the web.config of the particular web app&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">&amp;lt;system.serviceModel&amp;gt;
+&amp;lt;extensions&amp;gt;
+&amp;lt;bindingElementExtensions&amp;gt;
+&amp;lt;add name=&amp;#34;oracleDBAdapter&amp;#34; type=&amp;#34;Microsoft.Adapters.OracleDB.OracleDBAdapterExtensionElement,Microsoft.Adapters.OracleDB, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&amp;#34; /&amp;gt;
+&amp;lt;/bindingElementExtensions&amp;gt;
+&amp;lt;bindingExtensions&amp;gt;
+&amp;lt;add name=&amp;#34;oracleDBBinding&amp;#34; type=&amp;#34;Microsoft.Adapters.OracleDB.OracleDBAdapterBindingSection,Microsoft.Adapters.OracleDB, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&amp;#34; /&amp;gt;
+&amp;lt;/bindingExtensions&amp;gt;
+&amp;lt;/extensions&amp;gt;
+&amp;lt;/system.serviceModel&amp;gt;
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Both downloads can be found easily on the Microsoft Downloads web site&lt;/p></description></item><item><title>CCA Hosted Controls and Focus</title><link>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</link><pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;ul>
+&lt;li>CCA R2 for Dynamics CRM 2011&lt;/li>
+&lt;li>A non global dynamic hosted control whose panel is the main panel&lt;/li>
+&lt;li>A workflow step that produce changes on that hosted control&lt;/li>
+&lt;/ul>
+&lt;h1 id="use-case">
+Use case
+&lt;a class="heading-link" href="#use-case">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The user is in a session, start a workflow that activates the hosted application. The user choose other application from the main panel. The user start a workflow step that interacts with the hosted application and expects the application to get focus in the main panel.&lt;/p>
+&lt;h1 id="the-problem">
+The problem?
+&lt;a class="heading-link" href="#the-problem">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>CCA R2 seems to ignore the Focus Application on the action definition. Also ignores the GetFocus actions on the workflow, in the hosted control itself the the LocalDesktop object are null for non global dynamic applications and all the other available objects like session and parentwindow don’t have any success when it comes to give focus to the control.&lt;/p>
+&lt;h1 id="my-solution">
+My solution
+&lt;a class="heading-link" href="#my-solution">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>I ended up creating a new action on another application, this time a global, non dynamic control. This action calls&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">uiiDesktop.SetFocusOnApplication(args.Data);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And from my non global dynamic application I just call this action and that does the trick.&lt;/p></description></item><item><title>Messenger + Skype all in one with the new skype</title><link>https://davidtriana.com/posts/2012/messenger-skype-all-in-one-with-the-new-skype/</link><pubDate>Fri, 14 Sep 2012 01:40:47 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/messenger-skype-all-in-one-with-the-new-skype/</guid><description>&lt;p>As announced by Paul Thurrott (@thurrott) the new skype has Messenger Integration&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>How it Works?&lt;/p>
+&lt;p>First, install the new version. It’s the 5.11 Beta Version,&lt;/p>
+&lt;p>&lt;a href="http://www.skype.com/go/getskype-beta" title="http://www.skype.com/go/getskype-beta">http://www.skype.com/go/getskype-beta&lt;/a>&lt;/p>
+&lt;p>Run the setup and after the install, if you have it previously running sign out, then sign in with your Live Id Account:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image1.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb1.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image2.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb2.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>And then, SKYPE offers to sign in with the SKYPE account:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image3.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb3.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>After signed in, SKYPE offers to ‘merge’ the accounts:&lt;/p>
+&lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image4.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb4.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>And now skype shows messenger contacts in the same software with  presence and chat working&lt;a href="https://davidtriana.com/images/posts/2012/09/image5.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb5.png" alt="image" title="image">&lt;/a>&lt;/p>
+&lt;p>Pretty nice.&lt;/p></description></item><item><title>All you need to know when installing Dynamics CRM 2011</title><link>https://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</link><pubDate>Wed, 27 Jun 2012 18:41:36 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</guid><description>&lt;p>When dealing with installing the on premise version of Microsoft Dynamics CRM 2011 you will find a couple documents on MSDN, Microsoft Dynamics CRM Planning Guide and Microsoft Dynamics CRM Installing Guide. I find those lacking a lot of detail with the real steps and requirement for the installation, however I found this excellent and very detailed technical step by step guide, with just one flaw,&lt;/p>
+&lt;p>&lt;a href="http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx">http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx&lt;/a>&lt;/p>
+&lt;p>The flaw is when SQL Server is on another server and a TCP port other than the default and the Windows Firewall is on. The Dynamics Setup will fail complaining that the “sql server agent service is not running on the server”.&lt;/p>
+&lt;p>The issue has to do with the way that the setup connects to SQL Server, it relies on the SQL Browser service that uses port UDP 1434, just open that on the firewall of the SQL Machine and remove the port number for the SQL in the setup.&lt;/p></description></item><item><title>Who needs a pdf reader when you have google chrome</title><link>https://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</link><pubDate>Mon, 11 Jun 2012 15:22:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</guid><description>&lt;p>When settting up a new Windows PC one of most boring and time consuming task is setting up all the required utilities, 7Zip, Antivirus, Lastpass, …,&lt;/p>
+&lt;p>Yeah, I know of Ninite, &lt;a href="http://ninite.com/">http://ninite.com/&lt;/a> , it can automate most of the process, however I prefer to run the installers myself so I won’t end up with lots of undesired autorunners and toolbars.&lt;/p>
+&lt;p>One of those must have utilities is a PDF reader since it’s only included since Windows 8. I usually install FoxIt PDF reader, however since I’ve been using Google Chome I noticed it do an excellent job with PDFs on the web, so what about setting it as the default handler for .PDF files?, will it open my local PDFs?&lt;/p>
+&lt;p>Only one way to find out and I’m happy to report that it work perfectly. Only gotcha is that the executable for Chrome is not in the usual locations bellow program files, in my case it was in C:\Users\David\AppData\Local\Google\Chrome\Application\chrome.exe&lt;/p></description></item></channel></rss>

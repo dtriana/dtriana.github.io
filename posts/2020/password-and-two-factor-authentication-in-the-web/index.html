@@ -1,0 +1,175 @@
+<!doctype html><html lang=en-us>
+<head>
+<title>
+Password and two factor authentication in the web · David Triana
+</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="David Triana">
+<meta name=description content="A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin. The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.">
+<meta name=keywords content="blog,developer,personal">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Password and two factor authentication in the web">
+<meta name=twitter:description content="A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin. The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.">
+<meta property="og:title" content="Password and two factor authentication in the web">
+<meta property="og:description" content="A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin. The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-04-27T00:00:00+00:00">
+<meta property="article:modified_time" content="2020-04-27T00:00:00+00:00">
+<link rel=canonical href=https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/>
+<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=manifest href=https://davidtriana.com/site.webmanifest>
+<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.91.2">
+</head>
+<body class="preload-transitions colorscheme-light">
+<div class=float-container>
+<a id=dark-mode-toggle class=colorscheme-toggle>
+<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
+</a>
+</div>
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=https://davidtriana.com/>
+David Triana
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
+</li>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/about/>About</a>
+</li>
+</ul>
+</section>
+</nav>
+<div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://davidtriana.com/posts/2020/password-and-two-factor-authentication-in-the-web/>
+Password and two factor authentication in the web
+</a>
+</h1>
+</div>
+<div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2020-04-27T00:00:00Z>
+April 27, 2020
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+</span>
+</div>
+<div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=https://davidtriana.com/tags/security/>Security</a>
+</span></div>
+</div>
+</header>
+<div>
+<p>A few weeks ago a friend called me, very worried, about a threatening email he is receiving, someone claiming to have access to his email, threatening to release some compromising information, sharing part of his email password as proof, and asking for a ransom to be paid via Bitcoin.
+The password was in fact a password he used in the past, or maybe for a different site, not his current email password, but still he was very worried on how this happened.</p>
+<p>I told him not to worry about the email, its just spam, but also provided some advice and explanations on how this happened.</p>
+<h1 id=how-this-happened>
+How this happened?
+<a class=heading-link href=#how-this-happened>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h1>
+<p>When you register to gain access to a website you typically provide your email and a password. How well the website stores and protect that information is up to the website, and often not very well done, and even in cases where it is been done correctly <a href=https://edition.cnn.com/2018/11/30/tech/marriott-hotels-hacked/index.html title="CNN's Article about stolen passwords from Starwood hotels now owned by Marriot">it could get leaked or stolen</a>.</p>
+<p>Lists of those emails and password are available, <a href=https://krebsonsecurity.com/2017/12/the-market-for-stolen-account-credentials/ title="Blob post about the web credentials dark market">sometimes for sale</a> sometimes for free, and with that information people with no so good intentions will try to gain access to your email, bank, Facebook, and every other Internet service which might give them some direct or indirect gain. The email my friend received was put together using this same data.</p>
+<h1 id=how-can-i-protect-myself-from-this>
+How can I protect myself from this?
+<a class=heading-link href=#how-can-i-protect-myself-from-this>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h1>
+<p>Avoiding creating accounts in shady websites is one way, but even reputable sites are of course targets of all sorts of attacks, to stole this kind of information, and eventually some of those attacks will succeed, not much we as individuals can do about it, however there are two things you can and should do to protect yourself.</p>
+<h2 id=do-not-reuse-password-use-a-password-manager>
+Do not reuse password, use a password manager
+<a class=heading-link href=#do-not-reuse-password-use-a-password-manager>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>If you use the same password everywhere, when one of those websites leak your password that will be very bad. Passwords should be unique, hard to guess and hard to infer, however managing unique difficult passwords can be a challenge and that is where a password manager comes in. Password Managers are applications that automatically generate strong passwords, can automatically update your passwords for some sites, automatically log you in, and can ensure that passwords are not reused.</p>
+<p>One critical point here is, if I have all my passwords on that application, how can I trust that application? And my approach here is to leverage the recommendations from security experts who have deeply inspected those applications, and strong and reputable application vendors who are continually verifying security and if something needs fixing, it gets fixed as soon as reasonably possible.</p>
+<p>I personally use <a href=https://lastpass.com title="LastPass Website">LastPass</a>, after hearing about it from <a href=https://twitter.com/SGgrc title="Steve's Twitter">Steve Gibson</a> <a href=https://twit.tv/shows/security-now/episodes/256 title="Link to LastPass Security Now PodCast episode">almost 10 years ago</a>, and very happy about it since then. From a security perspective I really trust Steve’s judgment, from a features perspective it does everything I need, including web, mobile and sharing, and from a price perspective the free tier offers all this features.</p>
+<p>I have also heard very good comments about <a href=https://1password.com/ title="1 Password Website">1Password</a> from another of my favorite experts, <a href=https://twitter.com/troyhunt title="Troy's Twitter">Troy Hunt</a>, I have not tried it, but I am sure it is at least as good as LastPass.</p>
+<h2 id=use-second-factor-authentication>
+Use second factor authentication
+<a class=heading-link href=#use-second-factor-authentication>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Authentication refers to how you probe you are you, and in most websites is by demonstrating your knowledge of a password. While this works most of the time it is very weak in the sense that knowing a password does not really proves it is you. That password can get leaked, can be guessed, and can be used by anyone else without the website having any way to prevent this from happening.</p>
+<p>One way to improve this process is by adding another factor of authentication, emphasis on the “factor”. Its not just about having a second password, is about having other way to authenticate users, so what other factors exist? The knowledge of the password is something you know, the other factors are something you are, and something you have.</p>
+<p>Something you are refers to the usage of biometrics, for example <a href=https://support.apple.com/en-us/HT208109 title="FaceId support page">Face Id</a> or <a href=https://support.apple.com/en-us/HT201371 title="TouchId support page">Touch Id</a> on Apple devices, <a href=https://blogs.windows.com/windowsexperience/2015/07/25/say-hello-to-windows-hello-on-windows-10/ title="Windows Hello Announcement">Windows Hello in Windows 10</a>, thumbprint readers, the more sophisticated retina scanners, and the not yet technically practical DNA verification.</p>
+<p>Something you have refers for example to the key to your house, and in the case of computers and websites it can an <a href=https://www.yubico.com/products/ title="Yubico Products Page">USB device</a>, a Bluetooth device, or a physical dongle that produce random numbers on its screen.</p>
+<p>The level of sophistication and requirements for this can get very complicated specially if you need to buy a physical reader or dongle, however there is a great solution where the something you have is your own smartphone.</p>
+<p>There, you run an application, which previously received a seed from the website, and based on that seed it produces a number that changes every 30 seconds. When you login to a website that supports this technology, you provide your username and password, and then get challenged for this number.</p>
+<p>This is similar to what some websites offer, specially banks, where a 6 digits code is received as an SMS, it this case however it is the application the one that calculates the code without requiring internet connectivity. In general this technology is know as <a href=https://en.wikipedia.org/wiki/One-time_password title="Explanation of OTP">OTP</a>.</p>
+<p>The application I use is <a href=https://www.microsoft.com/en-us/account/authenticator title="Authenticator Web page">Microsoft Authentication</a>, which works great, and automatically backups my seeds. Before Microsoft Authenticator I used Google Authenticator, which I am sure works fine as well.</p>
+<p>To setup the usage this kind of authentication you need to go to each particular site and configure it, it takes some time but its absolutely worth it, since this way even if your password gets leaked its not enough to login.</p>
+<p>Currently, I use this kind of authentication for the following sites/services, the link goes to the documentation with the details on how to set it up:</p>
+<ul>
+<li>
+<p><a href=https://www.google.com/landing/2step/ title="Google 2FA Instructions">Google</a></p>
+</li>
+<li>
+<p><a href=https://support.microsoft.com/en-us/help/12408/microsoft-account-how-to-use-two-step-verification title="Microsoft 2FA Instructions">Outlook/Hotmail</a></p>
+</li>
+<li>
+<p><a href=https://support.ubisoft.com/en-GB/Faqs/000025170/Secure-your-account-with-2-Step-Verification title="Ubisoft 2FA Instructions">Ubisoft</a></p>
+</li>
+<li>
+<p><a href=https://help.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa title="Github 2FA Instructions">Github</a></p>
+</li>
+<li>
+<p><a href=https://www.namecheap.com/support/knowledgebase/article.aspx/9253/5/how-can-i-enabledisable-twofactor-authentication title="Namecheap 2FA Instructions">NameCheap</a></p>
+</li>
+</ul>
+</div>
+<footer>
+</footer>
+</article>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
+</section>
+</div>
+<footer class=footer>
+<section class=container>
+©
+2022
+David Triana
+·
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section>
+</footer>
+</main>
+<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
+</body>
+</html>

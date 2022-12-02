@@ -1,0 +1,279 @@
+<!doctype html><html lang=en-us>
+<head>
+<title>
+Deploying Log4Brains ADRs in Azure Static Sites · David Triana
+</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="David Triana">
+<meta name=description content="Scenario  Link to heading   Suppose your project has decided to use Log4Brains to record architectural decisions and now you need to make the resulting website available, in Microsoft Azure, via a CD Pipeline. To learn about ADRs or architectural decision records I highly recommend Steve Smith&rsquo;s post about it.
+Install Log4Brains and create your ADRs  Link to heading    Install Log4Brains&rsquo;s prerequisites to which I will add VsCode, with the .">
+<meta name=keywords content="blog,developer,personal">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Deploying Log4Brains ADRs in Azure Static Sites">
+<meta name=twitter:description content="Scenario  Link to heading   Suppose your project has decided to use Log4Brains to record architectural decisions and now you need to make the resulting website available, in Microsoft Azure, via a CD Pipeline. To learn about ADRs or architectural decision records I highly recommend Steve Smith&rsquo;s post about it.
+Install Log4Brains and create your ADRs  Link to heading    Install Log4Brains&rsquo;s prerequisites to which I will add VsCode, with the .">
+<meta property="og:title" content="Deploying Log4Brains ADRs in Azure Static Sites">
+<meta property="og:description" content="Scenario  Link to heading   Suppose your project has decided to use Log4Brains to record architectural decisions and now you need to make the resulting website available, in Microsoft Azure, via a CD Pipeline. To learn about ADRs or architectural decision records I highly recommend Steve Smith&rsquo;s post about it.
+Install Log4Brains and create your ADRs  Link to heading    Install Log4Brains&rsquo;s prerequisites to which I will add VsCode, with the .">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-05-03T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-05-03T00:00:00+00:00">
+<link rel=canonical href=https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/>
+<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=manifest href=https://davidtriana.com/site.webmanifest>
+<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.91.2">
+</head>
+<body class="preload-transitions colorscheme-light">
+<div class=float-container>
+<a id=dark-mode-toggle class=colorscheme-toggle>
+<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
+</a>
+</div>
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=https://davidtriana.com/>
+David Triana
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
+</li>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/about/>About</a>
+</li>
+</ul>
+</section>
+</nav>
+<div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/>
+Deploying Log4Brains ADRs in Azure Static Sites
+</a>
+</h1>
+</div>
+<div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2021-05-03T00:00:00Z>
+May 3, 2021
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+</span>
+</div>
+<div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=https://davidtriana.com/tags/azure/>Azure</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=https://davidtriana.com/tags/azdevops/>AzDevOps</a>
+</span></div>
+</div>
+</header>
+<div>
+<h1 id=scenario>
+Scenario
+<a class=heading-link href=#scenario>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h1>
+<p>Suppose your project has decided to use <a href=https://github.com/thomvaill/log4brains>Log4Brains</a> to record architectural decisions and now you need to make the resulting website available, in Microsoft Azure, via a CD Pipeline. To learn about <a href=https://en.wikipedia.org/wiki/Architectural_decision#Decision_documentation>ADRs</a> or architectural decision records I highly recommend <a href=https://ardalis.com/getting-started-with-architecture-decision-records/>Steve Smith&rsquo;s post about it</a>.</p>
+<h2 id=install-log4brains-and-create-your-adrs>
+Install Log4Brains and create your ADRs
+<a class=heading-link href=#install-log4brains-and-create-your-adrs>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<ul>
+<li>Install <a href=https://github.com/thomvaill/log4brains#what-are-the-prerequisites>Log4Brains&rsquo;s prerequisites</a> to which I will add <a href=https://code.visualstudio.com/Download>VsCode</a>, with the <a href="https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint">.md extension</a></li>
+<li>Install <a href=https://github.com/thomvaill/log4brains#-getting-started>Log4Brains</a> and follow the getting started guide. You should be able to preview the site, and create your own ADRs</li>
+</ul>
+<h2 id=commit-and-push-to-azdevops>
+Commit and push to AzDevOps
+<a class=heading-link href=#commit-and-push-to-azdevops>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>It can be <a href="https://docs.microsoft.com/en-us/azure/devops/repos/git/create-new-repo?view=azure-devops">a new repository</a> or the existing repository with the application. Before push ensure the output is being ignored via you .gitignore file:</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback># Log4Brains Output
+.Log4Brains/
+</code></pre></div><h2 id=add-pipeline-yaml-file>
+Add pipeline YAML File
+<a class=heading-link href=#add-pipeline-yaml-file>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>The location doesn&rsquo;t really matter. It can be at / , or you can have a Pipelines or similar folder, the location and name of the file doesn&rsquo;t really matter, what matters is the content:</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>trigger: none
+
+pr: none
+
+stages:
+- stage: build
+  displayName: &#39;Build&#39;
+  jobs:
+  - job: build
+    displayName: &#39;Build&#39;
+    pool:
+      vmImage: &#39;ubuntu-latest&#39;
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: &#39;14.x&#39;
+      displayName: &#39;Install Node.js&#39;
+    - script: |
+        npm install -g log4brains
+        log4brains build
+      displayName: &#39;Install and Build Log4brains&#39;
+    - task: CopyFiles@2
+      displayName: &#39;Copy config to $(System.DefaultWorkingDirectory)/.log4brains/out&#39;
+      inputs:
+        Contents: staticwebapp.config.json
+        TargetFolder: &#39;$(System.DefaultWorkingDirectory)/.log4brains/out&#39;
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: &#39;$(System.DefaultWorkingDirectory)/.log4brains/out&#39;
+        artifactName: staticSite
+
+- stage: publish
+  displayName: &#39;Publish&#39;
+  dependsOn: build
+  jobs:
+  - deployment: deployProd
+    displayName: &#39;Deploy prod&#39;
+    environment: prod
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - task: DownloadPipelineArtifact@2
+            displayName: Download static site artifact
+            inputs:
+              artifact: staticSite
+              path: $(Build.SourcesDirectory)/staticSite
+
+          - task: AzureStaticWebApp@0
+            displayName: Upload to Azure Static WebApp
+            inputs:
+              app_location: /staticSite
+              output_location: &#34;&#34;
+            env:
+              azure_static_web_apps_api_token: $(deployment_token)
+</code></pre></div><p>This is a multistage pipeline, where first we build the application, or in this case, run the Log4Brains static site generator to get the html/css output and make it available via Azure DevOps Artifacts, then the second stage pulls the artifact and publishes to Azure Static WebSites.</p>
+<p>On the first stage we install node, install Log4Brains, run the build command to generate the output, then publish the output as an artifact. There is a CopyFiles task before the publish task, this task is to add a special config .json file to the output. This <a href=https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#example-configuration-file>special file</a> is not needed if you want your ADRs to be publicly available, however if you want to take advantage of the <a href=https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization>Azure Static Website authorization and authentication</a> capability, you want to copy this file, which gets created in the next step.</p>
+<p>The second stage pulls the artifact and calls the AzureStaticWebApp task to get the site published. The publish token is a pipeline variable that we will set later on the create pipeline step.</p>
+<p>Git commit, git push, to make the file available in the repository.</p>
+<h2 id=adding-the-static-web-page-configuration-file>
+Adding the Static Web Page configuration file
+<a class=heading-link href=#adding-the-static-web-page-configuration-file>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Optional, only if don&rsquo;t want your ADRs to be public. Azure Static Websites provide <a href=https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization>authorization and authentication capabilities</a> which are configured via the staticwebapp.config.json file, and then adding authorized users via the Azure Portal.</p>
+<p>I created the staticwebapp.config.json file in /, and configured it:</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>{
+    &#34;routes&#34;: [
+        {
+            &#34;route&#34;: &#34;/*&#34;,
+            &#34;allowedRoles&#34;: [&#34;reader&#34;]
+        }],
+    &#34;responseOverrides&#34;: {
+        &#34;401&#34;: {
+            &#34;redirect&#34;: &#34;/.auth/login/aad&#34;,
+            &#34;statusCode&#34;: 302
+        },
+        &#34;404&#34;: {
+            &#34;rewrite&#34;: &#34;/404.html&#34;
+        }
+    }
+}
+</code></pre></div><p>What it says is that every route is only allowed to the &ldquo;reader&rdquo; role, and if a request comes from a not previously authenticated user, the request will be redirected to the Azure Active Directory authentication provider.</p>
+<p>Git commit, git push, to make the file available in the repository.</p>
+<h2 id=create-an-azure-static-website>
+Create an Azure Static Website
+<a class=heading-link href=#create-an-azure-static-website>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>No surprises here, <a href=https://docs.microsoft.com/en-us/azure/static-web-apps/publish-devops#create-a-static-web-app>the steps on the portal</a> are very straight forward, and of course the CLI or a proper infrastructure as code pipeline will work as well.</p>
+<h2 id=create-an-azure-devops-pipeline>
+Create an Azure DevOps Pipeline
+<a class=heading-link href=#create-an-azure-devops-pipeline>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Again, no surprises, <a href=https://docs.microsoft.com/en-us/azure/static-web-apps/publish-devops#create-the-pipeline-task-in-azure-devops>the steps on the guide are very clear</a>, except for steps 3 and 4, instead of the starter pipeline, select Existing Pipeline and point to the YAML File created earlier, then proceed to the next steps that set the variable with the token and run the pipeline.</p>
+<p><img src=https://davidtriana.com/images/posts/2021/log4brains_pipeline.png alt="&ldquo;Pipeline Success&rdquo;" title="Pipeline Success"></p>
+<p>The artifacts link available in the pipeline output screen will allow you to verify the contents of the artifact, to ensure the index.html and the staticwebapp.config.json files are present, very useful for troubleshooting.</p>
+<p><img src=https://davidtriana.com/images/posts/2021/log4brains_artifact.png alt="&ldquo;Artifact details&rdquo;" title="Artifact details"></p>
+<h2 id=invite-users>
+Invite users
+<a class=heading-link href=#invite-users>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>Navigate to the Azure Portal, to the Static Web Resource, click on Role management to invite users</p>
+<p><img src=https://davidtriana.com/images/posts/2021/log4brains_addrolesteps.png alt="&ldquo;Role management&rdquo;" title="Role management"></p>
+<p>In the invite users dialog, use &lsquo;reader&rsquo; as role. If you use any other role be sure to update the staticwebapp.config.json file accordingly.</p>
+<p><img src=https://davidtriana.com/images/posts/2021/log4brains_addroledialog.png alt="&ldquo;Role management&rdquo;" title="Role management"></p>
+<h2 id=enjoy>
+Enjoy!
+<a class=heading-link href=#enjoy>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h2>
+<p>And with that, the site is available, with user authentication in place. The pipeline trigger can be updated so that every time a new ADR is checked in the pipeline runs automatically.</p>
+</div>
+<footer>
+</footer>
+</article>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
+</section>
+</div>
+<footer class=footer>
+<section class=container>
+©
+2022
+David Triana
+·
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section>
+</footer>
+</main>
+<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
+</body>
+</html>
