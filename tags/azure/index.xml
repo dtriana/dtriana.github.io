@@ -1,4 +1,83 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 15 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Troubleshooting Web APIs, especially when released to the world, often require the submitted payload, to be able to reproduce the issue. HTTP payloads are not captured by logging be default, and it should be that way to avoid introducing performance and privacy issues, however, when needed, there are many ways to do it.&lt;/p>
+&lt;p>Some teams will explicitly add code to log the request, for each of the requests where the payload is needed. This is good, but adds a lot of code to maintain, at least one line per API method.&lt;/p>
+&lt;p>Other teams will create a generic logging mechanism, introduced in runtime via a wrapper on each call or any of the middleware interceptors available in .NET. This is good since it can be maintained in a single place, remains custom, additional code.&lt;/p>
+&lt;p>My team, looking for ways to add as little code as possible, rely on the build it HttpLogging service. Not customizable as with custom code, but its build need, no need for custom logging code for it to work.&lt;/p>
+&lt;h1 id="adding-httplogging">
+Adding HTTPLogging
+&lt;a class="heading-link" href="#adding-httplogging">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>To add HTTPLogging to a .NET 7 Core APIs project:&lt;/p>
+&lt;ol>
+&lt;li>In program.cs inside the static main method, when declaring the services but before creating the app&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> builder.Services.AddHttpLogging(logging =&amp;gt;
+{
+logging.LoggingFields = HttpLoggingFields.RequestBody;
+logging.RequestBodyLogLimit = 1024;
+});
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The LoggingFields properties is a flags property, other fields can be added, here I&amp;rsquo;m only interested in the request body, other characteristics of the request like the URL and Method are being captured already by the request type logs. The Limit property, which is in bytes, is to prevent polluting the log with very long payloads, either accidental, malicious, or real with endpoints where users submit images.&lt;/p>
+&lt;ol>
+&lt;li>In program.cs inside the static main method, after creating the app&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">app.UseWhen(
+context =&amp;gt; !(
+context.Request.Path.StartsWithSegments(&amp;#34;/api/user/login&amp;#34;) ||
+context.Request.Path.StartsWithSegments(&amp;#34;/api/user/password&amp;#34;)),
+builder =&amp;gt; builder.UseHttpLogging());
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here I use the UseWhen filter, to prevent logging passwords. In general, logging secrets or any kind of confidential information should be prevented. More complex APIs might require much more sophisticated mechanisms to avoid privacy incidents while keeping the ability to troubleshoot problematic HTTP requests.&lt;/p>
+&lt;ol>
+&lt;li>In appsettings.json, in the Logging section, add the relevant lines for &lt;code>Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&lt;/code> based on&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> &amp;#34;Logging&amp;#34;: {
+&amp;#34;LogLevel&amp;#34;: {
+&amp;#34;Default&amp;#34;: &amp;#34;Information&amp;#34;,
+&amp;#34;Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&amp;#34;: &amp;#34;Information&amp;#34;,
+&amp;#34;Microsoft.AspNetCore&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft.Hosting.Lifetime&amp;#34;: &amp;#34;Information&amp;#34;
+},
+&amp;#34;ApplicationInsights&amp;#34;: {
+&amp;#34;LogLevel&amp;#34;: {
+&amp;#34;Default&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&amp;#34;: &amp;#34;Information&amp;#34;
+}
+}
+},
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationIsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
+&lt;h1 id="finding-the-logs-in-application-insights">
+Finding the logs in Application Insights
+&lt;a class="heading-link" href="#finding-the-logs-in-application-insights">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Running in Visual Studio or looking at the logs stream in Azure App Services will show the entries. In Application Insights the logs will be of type Trace, severity information, and the message starts with RequestBody, for example&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Local Time&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Details&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>9:41:40.179 AM&lt;/td>
+&lt;td>Trace&lt;/td>
+&lt;td>&lt;strong>Severity level:&lt;/strong> Information, &lt;strong>Message:&lt;/strong> RequestBody: {&amp;ldquo;productId&amp;rdquo;:&amp;ldquo;INFANTRYALPHA2023&amp;rdquo;,&amp;ldquo;quantity&amp;rdquo;:3}&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>

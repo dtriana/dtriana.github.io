@@ -1,4 +1,83 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 15 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Troubleshooting Web APIs, especially when released to the world, often require the submitted payload, to be able to reproduce the issue. HTTP payloads are not captured by logging be default, and it should be that way to avoid introducing performance and privacy issues, however, when needed, there are many ways to do it.&lt;/p>
+&lt;p>Some teams will explicitly add code to log the request, for each of the requests where the payload is needed. This is good, but adds a lot of code to maintain, at least one line per API method.&lt;/p>
+&lt;p>Other teams will create a generic logging mechanism, introduced in runtime via a wrapper on each call or any of the middleware interceptors available in .NET. This is good since it can be maintained in a single place, remains custom, additional code.&lt;/p>
+&lt;p>My team, looking for ways to add as little code as possible, rely on the build it HttpLogging service. Not customizable as with custom code, but its build need, no need for custom logging code for it to work.&lt;/p>
+&lt;h1 id="adding-httplogging">
+Adding HTTPLogging
+&lt;a class="heading-link" href="#adding-httplogging">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>To add HTTPLogging to a .NET 7 Core APIs project:&lt;/p>
+&lt;ol>
+&lt;li>In program.cs inside the static main method, when declaring the services but before creating the app&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> builder.Services.AddHttpLogging(logging =&amp;gt;
+{
+logging.LoggingFields = HttpLoggingFields.RequestBody;
+logging.RequestBodyLogLimit = 1024;
+});
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The LoggingFields properties is a flags property, other fields can be added, here I&amp;rsquo;m only interested in the request body, other characteristics of the request like the URL and Method are being captured already by the request type logs. The Limit property, which is in bytes, is to prevent polluting the log with very long payloads, either accidental, malicious, or real with endpoints where users submit images.&lt;/p>
+&lt;ol>
+&lt;li>In program.cs inside the static main method, after creating the app&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">app.UseWhen(
+context =&amp;gt; !(
+context.Request.Path.StartsWithSegments(&amp;#34;/api/user/login&amp;#34;) ||
+context.Request.Path.StartsWithSegments(&amp;#34;/api/user/password&amp;#34;)),
+builder =&amp;gt; builder.UseHttpLogging());
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here I use the UseWhen filter, to prevent logging passwords. In general, logging secrets or any kind of confidential information should be prevented. More complex APIs might require much more sophisticated mechanisms to avoid privacy incidents while keeping the ability to troubleshoot problematic HTTP requests.&lt;/p>
+&lt;ol>
+&lt;li>In appsettings.json, in the Logging section, add the relevant lines for &lt;code>Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&lt;/code> based on&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> &amp;#34;Logging&amp;#34;: {
+&amp;#34;LogLevel&amp;#34;: {
+&amp;#34;Default&amp;#34;: &amp;#34;Information&amp;#34;,
+&amp;#34;Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&amp;#34;: &amp;#34;Information&amp;#34;,
+&amp;#34;Microsoft.AspNetCore&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft.Hosting.Lifetime&amp;#34;: &amp;#34;Information&amp;#34;
+},
+&amp;#34;ApplicationInsights&amp;#34;: {
+&amp;#34;LogLevel&amp;#34;: {
+&amp;#34;Default&amp;#34;: &amp;#34;Warning&amp;#34;,
+&amp;#34;Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&amp;#34;: &amp;#34;Information&amp;#34;
+}
+}
+},
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationIsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
+&lt;h1 id="finding-the-logs-in-application-insights">
+Finding the logs in Application Insights
+&lt;a class="heading-link" href="#finding-the-logs-in-application-insights">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Running in Visual Studio or looking at the logs stream in Azure App Services will show the entries. In Application Insights the logs will be of type Trace, severity information, and the message starts with RequestBody, for example&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Local Time&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Details&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>9:41:40.179 AM&lt;/td>
+&lt;td>Trace&lt;/td>
+&lt;td>&lt;strong>Severity level:&lt;/strong> Information, &lt;strong>Message:&lt;/strong> RequestBody: {&amp;ldquo;productId&amp;rdquo;:&amp;ldquo;INFANTRYALPHA2023&amp;rdquo;,&amp;ldquo;quantity&amp;rdquo;:3}&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Listing Azure Function Apps Framework Version</title><link>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</link><pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -953,8 +1032,4 @@ My solution
 &lt;p>The issue has to do with the way that the setup connects to SQL Server, it relies on the SQL Browser service that uses port UDP 1434, just open that on the firewall of the SQL Machine and remove the port number for the SQL in the setup.&lt;/p></description></item><item><title>Who needs a pdf reader when you have google chrome</title><link>https://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</link><pubDate>Mon, 11 Jun 2012 15:22:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/who-needs-a-pdf-reader-when-you-have-google-chrome/</guid><description>&lt;p>When settting up a new Windows PC one of most boring and time consuming task is setting up all the required utilities, 7Zip, Antivirus, Lastpass, …,&lt;/p>
 &lt;p>Yeah, I know of Ninite, &lt;a href="http://ninite.com/">http://ninite.com/&lt;/a> , it can automate most of the process, however I prefer to run the installers myself so I won’t end up with lots of undesired autorunners and toolbars.&lt;/p>
 &lt;p>One of those must have utilities is a PDF reader since it’s only included since Windows 8. I usually install FoxIt PDF reader, however since I’ve been using Google Chome I noticed it do an excellent job with PDFs on the web, so what about setting it as the default handler for .PDF files?, will it open my local PDFs?&lt;/p>
-&lt;p>Only one way to find out and I’m happy to report that it work perfectly. Only gotcha is that the executable for Chrome is not in the usual locations bellow program files, in my case it was in C:\Users\David\AppData\Local\Google\Chrome\Application\chrome.exe&lt;/p></description></item><item><title>Moving tfs 2010 databases from sql 2005 to sql 2008r2</title><link>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</link><pubDate>Mon, 04 Jun 2012 02:59:06 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/moving-tfs-2010-databases-from-sql-2005-to-sql-2008r2/</guid><description>&lt;p>During the weekend I assisted a customer in the move of TFS 2010 databases from SQL 2005 to SQL 2008R2. The scenario also included Sharepoint Fundation 2010 and SQL Reporting Services.&lt;/p>
-&lt;p>MSDN offers a very complete guide about this procedure, &lt;a href="http://msdn.microsoft.com/en-us/library/ms252516.aspx">http://msdn.microsoft.com/en-us/library/ms252516.aspx&lt;/a> , however the guide warns about possible problems if the SQL Server version is different. The guide says:&lt;/p>
-&lt;p>“The version of SQL Server that you install must exactly match the version on the original server that hosted the databases. This requirement includes the service-pack level, the collation settings, and the language edition”&lt;/p>
-&lt;p>However there’s no guide or procedure to prepare the data to be upgraded or something like that. I guest this warning applies when moving from SQL 2005 to SQL 2005 in the case of disaster recovery but in the case of version upgrade there’s really no problem.&lt;/p>
-&lt;p>The other issue I had with the guide is that the link for the detailed procedure with Sharepoint after restoring the databases points to the article for WSS 3.0, my customer was using Sharepoint Foundation 2010. The procedure in this case consists on creating a SQL Server alias in the application server that hosts Sharepoint. If the server is 64 bits remember to create the alias for both clients, x86 and x64.&lt;/p></description></item></channel></rss>
+&lt;p>Only one way to find out and I’m happy to report that it work perfectly. Only gotcha is that the executable for Chrome is not in the usual locations bellow program files, in my case it was in C:\Users\David\AppData\Local\Google\Chrome\Application\chrome.exe&lt;/p></description></item></channel></rss>
