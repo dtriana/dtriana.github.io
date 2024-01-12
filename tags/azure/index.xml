@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Azure on David Triana</title><link>https://davidtriana.com/tags/azure/</link><description>Recent content in Azure on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 12 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Logic Apps Standard DB2 Query and Parameters</title><link>https://davidtriana.com/posts/2024/logging-http-requests/</link><pubDate>Fri, 12 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/add_db2_actions.png" alt="DB2 Shapes">&lt;/p>
+&lt;p>While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.&lt;/p>
+&lt;h1 id="adjusting-the-query-and-parameter">
+Adjusting the query and parameter
+&lt;a class="heading-link" href="#adjusting-the-query-and-parameter">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/db2_query.png" alt="DB2 Query">&lt;/p>
+&lt;p>This was after trying named parameters, the @ sign, and reading the links on the first two pages of Bing results for this question without any luck. This solution worked for me, however it might be different for you depending on the underlying database and its configuration, in my case this is against an Informix 14 database.&lt;/p></description></item><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
