@@ -53,7 +53,7 @@ builder =&amp;gt; builder.UseHttpLogging());
 }
 }
 },
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationIsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationInsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
 &lt;h1 id="finding-the-logs-in-application-insights">
 Finding the logs in Application Insights
 &lt;a class="heading-link" href="#finding-the-logs-in-application-insights">

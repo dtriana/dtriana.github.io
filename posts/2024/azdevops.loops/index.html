@@ -1,0 +1,183 @@
+<!doctype html><html lang=en-us>
+<head>
+<title>
+Dynamic Loops In Azure DevOps Pipelines · David Triana
+</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="David Triana">
+<meta name=description content="Scenario  Link to heading   Being used to programming, loops feel very basic, like, for each one of these, do that. However, doing this in AzDevOps pipelines turned out to be not as easy.
+It is trivial, for a previously know set, like an array of environments [&lsquo;dev,&lsquo;qa&rsquo;,&lsquo;prod&rsquo;], no problem there, but what if the set is determined dynamically, while the pipeline is running?
+This is exactly my need.">
+<meta name=keywords content="blog,developer,personal">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Dynamic Loops In Azure DevOps Pipelines">
+<meta name=twitter:description content="Scenario  Link to heading   Being used to programming, loops feel very basic, like, for each one of these, do that. However, doing this in AzDevOps pipelines turned out to be not as easy.
+It is trivial, for a previously know set, like an array of environments [&lsquo;dev,&lsquo;qa&rsquo;,&lsquo;prod&rsquo;], no problem there, but what if the set is determined dynamically, while the pipeline is running?
+This is exactly my need.">
+<meta property="og:title" content="Dynamic Loops In Azure DevOps Pipelines">
+<meta property="og:description" content="Scenario  Link to heading   Being used to programming, loops feel very basic, like, for each one of these, do that. However, doing this in AzDevOps pipelines turned out to be not as easy.
+It is trivial, for a previously know set, like an array of environments [&lsquo;dev,&lsquo;qa&rsquo;,&lsquo;prod&rsquo;], no problem there, but what if the set is determined dynamically, while the pipeline is running?
+This is exactly my need.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://davidtriana.com/posts/2024/azdevops.loops/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2024-01-26T00:00:00+00:00">
+<meta property="article:modified_time" content="2024-01-26T00:00:00+00:00">
+<link rel=canonical href=https://davidtriana.com/posts/2024/azdevops.loops/>
+<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
+<link rel=manifest href=https://davidtriana.com/site.webmanifest>
+<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.91.2">
+</head>
+<body class="preload-transitions colorscheme-light">
+<div class=float-container>
+<a id=dark-mode-toggle class=colorscheme-toggle>
+<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
+</a>
+</div>
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=https://davidtriana.com/>
+David Triana
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
+</li>
+<li class=navigation-item>
+<a class=navigation-link href=https://davidtriana.com/about/>About</a>
+</li>
+</ul>
+</section>
+</nav>
+<div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://davidtriana.com/posts/2024/azdevops.loops/>
+Dynamic Loops In Azure DevOps Pipelines
+</a>
+</h1>
+</div>
+<div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2024-01-26T00:00:00Z>
+January 26, 2024
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+</span>
+</div>
+<div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=https://davidtriana.com/tags/azure/>Azure</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=https://davidtriana.com/tags/azdevops/>AzDevOps</a>
+</span></div>
+</div>
+</header>
+<div>
+<h1 id=scenario>
+Scenario
+<a class=heading-link href=#scenario>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h1>
+<p>Being used to programming, loops feel very basic, like, for each one of these, do that. However, doing this in AzDevOps pipelines turned out to be not as easy.</p>
+<p>It is trivial, for a previously know set, like an array of environments [&lsquo;dev,&lsquo;qa&rsquo;,&lsquo;prod&rsquo;], no problem there, but what if the set is determined dynamically, while the pipeline is running?</p>
+<p>This is exactly my need. I have a container app, publicly exposed to the internet, with a set of IP rules so that it can only be called by a Logic App. The thing is, the outgoing IP of the Logic App is not a single one and can change from deployment to deployment, so I need to obtain the list of IPs, then run a loop on those IP, to add them as rules.</p>
+<p>Of course I can deploy both the container app and the logic app in a VNET to avoid the need of these rules, not there yet unfortunately, other requirements and limitations make it necessary to keep these public.</p>
+<p>So why is not as easy?</p>
+<p>The Azure Devops loop support relies on the each keyword explained <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#each-keyword">here</a>,</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=font-weight:700>parameters</span>:
+- <span style=font-weight:700>name</span>: listOfStrings
+  <span style=font-weight:700>type</span>: object
+  <span style=font-weight:700>default</span>:
+  - one
+  - two
+
+<span style=font-weight:700>steps</span>:
+- ${{ each value in parameters.listOfStrings }}:
+  - <span style=font-weight:700>script</span>: echo ${{ value }}
+</code></pre></div><p>However, the <code>${{ }}</code> syntax is not for runtime. Those expressions are expanded before running the workflow as explained <a href=https://stackoverflow.com/a/75832425>here</a>,</p>
+<h1 id=using-bash-inside-the-task-to-run-the-loop>
+Using bash inside the task to run the loop
+<a class=heading-link href=#using-bash-inside-the-task-to-run-the-loop>
+<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span>
+</a>
+</h1>
+<p>The way I worked around this is by using bash loops, and the same can be accomplished with PowerShell,</p>
+<p>My code:</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=font-weight:700>task</span>: AzureCLI@2
+  <span style=font-weight:700>displayName</span>: Add Ip Security Allow Logic Apps
+  <span style=font-weight:700>name</span>: AddIpSecurityRestrictionsAllowLAs
+  <span style=font-weight:700>inputs</span>:
+    <span style=font-weight:700>azureSubscription</span>: myServiceConnectionName
+    <span style=font-weight:700>scriptType</span>: <span style=font-style:italic>&#39;bash&#39;</span>
+    <span style=font-weight:700>scriptLocation</span>: <span style=font-style:italic>&#39;inlineScript&#39;</span>
+    <span style=font-weight:700>inlineScript</span>: |<span style=font-style:italic>
+</span><span style=font-style:italic>      MSYS_NO_PATHCONV=1
+</span><span style=font-style:italic>      echo &#34;Full Ip List is $(GetLogicAppsOutgoingIps.logicApps_outgoing)&#34;
+</span><span style=font-style:italic>      IFS=&#39;,&#39; read -ra la_ips &lt;&lt;&lt; &#34;$(GetLogicAppsOutgoingIps.logicApps_outgoing)&#34;
+</span><span style=font-style:italic>      for i in &#34;${la_ips[@]}&#34;;
+</span><span style=font-style:italic>      do
+</span><span style=font-style:italic>        DATE=$(date &#39;+%Y%m%d%H%M%S&#39;)
+</span><span style=font-style:italic>        echo &#34;Adding rule for $i&#34;
+</span><span style=font-style:italic>        az containerapp ingress access-restriction set \
+</span><span style=font-style:italic>          --name theNameOfMyContainerApp \
+</span><span style=font-style:italic>          --resource-group theNameOfTheResourceGroup \
+</span><span style=font-style:italic>          --rule-name &#34;Allow My Logic App $DATE&#34; \
+</span><span style=font-style:italic>          --ip-address &#34;$i/32&#34; \
+</span><span style=font-style:italic>          --action Allow
+</span><span style=font-style:italic>      done</span>      
+</code></pre></div><p>I&rsquo;m adding the date to make the name unique, and the syntax to split the string and the loop in bash is explained <a href=https://stackoverflow.com/a/918931>here</a>.</p>
+<p>The <code>GetLogicAppsOutgoingIps.logicApps_outgoing</code> variable is set by a template that runs another AzureCLI bash script, that queries the outgoing IPs, and creates an array with that information,</p>
+<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>logicAppIps=<span style=font-weight:700>$(</span> az logicapp show -n theLogicAppName -g theResourceGroupName --query <span style=font-style:italic>&#39;outboundIpAddresses&#39;</span> -o tsv<span style=font-weight:700>)</span>
+<span style=font-weight:700>if</span> [[ $logicAppIps == <span style=font-style:italic>&#34;&#34;</span> ]]; <span style=font-weight:700>then</span>
+    exit 1
+<span style=font-weight:700>fi</span>
+echo <span style=font-style:italic>&#34;##vso[task.setvariable variable=logicApps_outgoing;isoutput=true;isreadonly=true;]</span>$logicAppIps<span style=font-style:italic>&#34;</span>
+</code></pre></div><p>And there it is!, a dynamic loop in an Azure Devops pipeline.</p>
+</div>
+<footer>
+</footer>
+</article>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
+</section>
+</div>
+<footer class=footer>
+<section class=container>
+©
+2024
+David Triana
+·
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.
+</section>
+</footer>
+</main>
+<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
+</body>
+</html>

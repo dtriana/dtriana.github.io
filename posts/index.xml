@@ -1,4 +1,65 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 12 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Logic Apps Standard DB2 Query and Parameters</title><link>https://davidtriana.com/posts/2024/logging-http-requests/</link><pubDate>Fri, 12 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 26 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Dynamic Loops In Azure DevOps Pipelines</title><link>https://davidtriana.com/posts/2024/azdevops.loops/</link><pubDate>Fri, 26 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/azdevops.loops/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Being used to programming, loops feel very basic, like, for each one of these, do that. However, doing this in AzDevOps pipelines turned out to be not as easy.&lt;/p>
+&lt;p>It is trivial, for a previously know set, like an array of environments [&amp;lsquo;dev,&amp;lsquo;qa&amp;rsquo;,&amp;lsquo;prod&amp;rsquo;], no problem there, but what if the set is determined dynamically, while the pipeline is running?&lt;/p>
+&lt;p>This is exactly my need. I have a container app, publicly exposed to the internet, with a set of IP rules so that it can only be called by a Logic App. The thing is, the outgoing IP of the Logic App is not a single one and can change from deployment to deployment, so I need to obtain the list of IPs, then run a loop on those IP, to add them as rules.&lt;/p>
+&lt;p>Of course I can deploy both the container app and the logic app in a VNET to avoid the need of these rules, not there yet unfortunately, other requirements and limitations make it necessary to keep these public.&lt;/p>
+&lt;p>So why is not as easy?&lt;/p>
+&lt;p>The Azure Devops loop support relies on the each keyword explained &lt;a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#each-keyword">here&lt;/a>,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">parameters&lt;/span>:
+- &lt;span style="font-weight:bold">name&lt;/span>: listOfStrings
+&lt;span style="font-weight:bold">type&lt;/span>: object
+&lt;span style="font-weight:bold">default&lt;/span>:
+- one
+- two
+&lt;span style="font-weight:bold">steps&lt;/span>:
+- ${{ each value in parameters.listOfStrings }}:
+- &lt;span style="font-weight:bold">script&lt;/span>: echo ${{ value }}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>However, the &lt;code>${{ }}&lt;/code> syntax is not for runtime. Those expressions are expanded before running the workflow as explained &lt;a href="https://stackoverflow.com/a/75832425">here&lt;/a>,&lt;/p>
+&lt;h1 id="using-bash-inside-the-task-to-run-the-loop">
+Using bash inside the task to run the loop
+&lt;a class="heading-link" href="#using-bash-inside-the-task-to-run-the-loop">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The way I worked around this is by using bash loops, and the same can be accomplished with PowerShell,&lt;/p>
+&lt;p>My code:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">task&lt;/span>: AzureCLI@2
+&lt;span style="font-weight:bold">displayName&lt;/span>: Add Ip Security Allow Logic Apps
+&lt;span style="font-weight:bold">name&lt;/span>: AddIpSecurityRestrictionsAllowLAs
+&lt;span style="font-weight:bold">inputs&lt;/span>:
+&lt;span style="font-weight:bold">azureSubscription&lt;/span>: myServiceConnectionName
+&lt;span style="font-weight:bold">scriptType&lt;/span>: &lt;span style="font-style:italic">&amp;#39;bash&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">scriptLocation&lt;/span>: &lt;span style="font-style:italic">&amp;#39;inlineScript&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">inlineScript&lt;/span>: |&lt;span style="font-style:italic">
+&lt;/span>&lt;span style="font-style:italic"> MSYS_NO_PATHCONV=1
+&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;Full Ip List is $(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
+&lt;/span>&lt;span style="font-style:italic"> IFS=&amp;#39;,&amp;#39; read -ra la_ips &amp;lt;&amp;lt;&amp;lt; &amp;#34;$(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
+&lt;/span>&lt;span style="font-style:italic"> for i in &amp;#34;${la_ips[@]}&amp;#34;;
+&lt;/span>&lt;span style="font-style:italic"> do
+&lt;/span>&lt;span style="font-style:italic"> DATE=$(date &amp;#39;+%Y%m%d%H%M%S&amp;#39;)
+&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;Adding rule for $i&amp;#34;
+&lt;/span>&lt;span style="font-style:italic"> az containerapp ingress access-restriction set \
+&lt;/span>&lt;span style="font-style:italic"> --name theNameOfMyContainerApp \
+&lt;/span>&lt;span style="font-style:italic"> --resource-group theNameOfTheResourceGroup \
+&lt;/span>&lt;span style="font-style:italic"> --rule-name &amp;#34;Allow My Logic App $DATE&amp;#34; \
+&lt;/span>&lt;span style="font-style:italic"> --ip-address &amp;#34;$i/32&amp;#34; \
+&lt;/span>&lt;span style="font-style:italic"> --action Allow
+&lt;/span>&lt;span style="font-style:italic"> done&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>I&amp;rsquo;m adding the date to make the name unique, and the syntax to split the string and the loop in bash is explained &lt;a href="https://stackoverflow.com/a/918931">here&lt;/a>.&lt;/p>
+&lt;p>The &lt;code>GetLogicAppsOutgoingIps.logicApps_outgoing&lt;/code> variable is set by a template that runs another AzureCLI bash script, that queries the outgoing IPs, and creates an array with that information,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">logicAppIps=&lt;span style="font-weight:bold">$(&lt;/span> az logicapp show -n theLogicAppName -g theResourceGroupName --query &lt;span style="font-style:italic">&amp;#39;outboundIpAddresses&amp;#39;&lt;/span> -o tsv&lt;span style="font-weight:bold">)&lt;/span>
+&lt;span style="font-weight:bold">if&lt;/span> [[ $logicAppIps == &lt;span style="font-style:italic">&amp;#34;&amp;#34;&lt;/span> ]]; &lt;span style="font-weight:bold">then&lt;/span>
+exit 1
+&lt;span style="font-weight:bold">fi&lt;/span>
+echo &lt;span style="font-style:italic">&amp;#34;##vso[task.setvariable variable=logicApps_outgoing;isoutput=true;isreadonly=true;]&lt;/span>$logicAppIps&lt;span style="font-style:italic">&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>And there it is!, a dynamic loop in an Azure Devops pipeline.&lt;/p></description></item><item><title>Logic Apps Standard DB2 Query and Parameters</title><link>https://davidtriana.com/posts/2024/db2-queries/</link><pubDate>Fri, 12 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/db2-queries/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -72,7 +133,7 @@ builder =&amp;gt; builder.UseHttpLogging());
 }
 }
 },
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationIsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationInsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
 &lt;h1 id="finding-the-logs-in-application-insights">
 Finding the logs in Application Insights
 &lt;a class="heading-link" href="#finding-the-logs-in-application-insights">
@@ -1045,7 +1106,4 @@ My solution
 &lt;p>After signed in, SKYPE offers to ‘merge’ the accounts:&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2012/09/image4.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb4.png" alt="image" title="image">&lt;/a>&lt;/p>
 &lt;p>And now skype shows messenger contacts in the same software with  presence and chat working&lt;a href="https://davidtriana.com/images/posts/2012/09/image5.png">&lt;img src="https://davidtriana.com/images/posts/2012/09/image_thumb5.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Pretty nice.&lt;/p></description></item><item><title>All you need to know when installing Dynamics CRM 2011</title><link>https://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</link><pubDate>Wed, 27 Jun 2012 18:41:36 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/all-you-need-to-know-when-installing-dynamics-crm-2011/</guid><description>&lt;p>When dealing with installing the on premise version of Microsoft Dynamics CRM 2011 you will find a couple documents on MSDN, Microsoft Dynamics CRM Planning Guide and Microsoft Dynamics CRM Installing Guide. I find those lacking a lot of detail with the real steps and requirement for the installation, however I found this excellent and very detailed technical step by step guide, with just one flaw,&lt;/p>
-&lt;p>&lt;a href="http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx">http://social.technet.microsoft.com/wiki/contents/articles/3176.how-to-install-microsoft-dynamics-crm-2011-en-us.aspx&lt;/a>&lt;/p>
-&lt;p>The flaw is when SQL Server is on another server and a TCP port other than the default and the Windows Firewall is on. The Dynamics Setup will fail complaining that the “sql server agent service is not running on the server”.&lt;/p>
-&lt;p>The issue has to do with the way that the setup connects to SQL Server, it relies on the SQL Browser service that uses port UDP 1434, just open that on the firewall of the SQL Machine and remove the port number for the SQL in the setup.&lt;/p></description></item></channel></rss>
+&lt;p>Pretty nice.&lt;/p></description></item></channel></rss>
