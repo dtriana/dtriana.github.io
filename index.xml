@@ -1,4 +1,213 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>David Triana</title><link>https://davidtriana.com/</link><description>Recent content on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 26 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Dynamic Loops In Azure DevOps Pipelines</title><link>https://davidtriana.com/posts/2024/azdevops.loops/</link><pubDate>Fri, 26 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/azdevops.loops/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>David Triana</title><link>https://davidtriana.com/</link><description>Recent content on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Sun, 28 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Continuous delivery for Azure Workbooks using Azure DevOps</title><link>https://davidtriana.com/posts/2024/cd-workbooks/</link><pubDate>Sun, 28 Apr 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/cd-workbooks/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>Azure Workbooks are great!, with an easy to use graphical designer to put together interactive queries and reports, no need to code, and available directly in the portal, no need to host a new application.&lt;/p>
+&lt;p>I have been using Azure Workbooks for the last couple of months to show summaries and details on failures for several business applications, some running as Logic Apps Standard, some as Azure Container Apps.&lt;/p>
+&lt;p>In this blog post I share the way I automate the deployment of these Workbooks, following patterns similar to the ones used in continuous deployment for regular applications. Here the workflow is not really an application in the sense of the need to pull dependencies, build and deploy, but by following these patterns, the need for inspection, approvals and reuse between environments is satisfied.&lt;/p>
+&lt;h2 id="creating-log-entries-to-populate-the-workbook">
+Creating log entries to populate the workbook
+&lt;a class="heading-link" href="#creating-log-entries-to-populate-the-workbook">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>This section is only to address the need of data to show in the workflow. Real applications are probably already creating all these logs. The code bellow is a simple console application, starting from &lt;a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/ilogger?tabs=dotnet6#console-application">Microsoft&amp;rsquo;s sample code&lt;/a>, I added console output to be able to check the outcome live while running. The program creates logs entries simulating a process that runs every 5 seconds, doing 5 tasks every time, simulating some tasks taking longer and failures every once in a while.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-cs" data-lang="cs">&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">System.Diagnostics&lt;/span>;
+&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.ApplicationInsights.Channel&lt;/span>;
+&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.ApplicationInsights.Extensibility&lt;/span>;
+&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.Extensions.DependencyInjection&lt;/span>;
+&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.Extensions.Logging&lt;/span>;
+&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">var&lt;/span> channel = &lt;span style="font-weight:bold">new&lt;/span> InMemoryChannel();
+&lt;span style="font-weight:bold">try&lt;/span>
+{
+IServiceCollection services = &lt;span style="font-weight:bold">new&lt;/span> ServiceCollection();
+services.Configure&amp;lt;TelemetryConfiguration&amp;gt;(config =&amp;gt; config.TelemetryChannel = channel);
+services.AddLogging(builder =&amp;gt;
+{
+&lt;span style="font-style:italic">// Only Application Insights is registered as a logger provider
+&lt;/span>&lt;span style="font-style:italic">&lt;/span> builder.AddApplicationInsights(
+configureTelemetryConfiguration: (config) =&amp;gt; config.ConnectionString = &lt;span style="font-style:italic">&amp;#34;---the connection string---&amp;#34;&lt;/span>,
+configureApplicationInsightsLoggerOptions: (options) =&amp;gt; { }
+);
+builder.AddJsonConsole(options =&amp;gt;
+{
+options.IncludeScopes = &lt;span style="font-weight:bold">true&lt;/span>;
+options.TimestampFormat = &lt;span style="font-style:italic">&amp;#34;HH:mm:ss &amp;#34;&lt;/span>;
+});
+});
+&lt;span style="">var&lt;/span> serviceProvider = services.BuildServiceProvider();
+&lt;span style="">var&lt;/span> logger = serviceProvider.GetRequiredService&amp;lt;ILogger&amp;lt;Program&amp;gt;&amp;gt;();
+&lt;span style="">var&lt;/span> cancellationTokenSource = &lt;span style="font-weight:bold">new&lt;/span> CancellationTokenSource();
+&lt;span style="font-weight:bold">await&lt;/span> MainLoop(cancellationTokenSource.Token,
+logger, 5000).ConfigureAwait(&lt;span style="font-weight:bold">false&lt;/span>);
+logger.LogInformation(&lt;span style="font-style:italic">&amp;#34;Logger is working...&amp;#34;&lt;/span>);
+}
+&lt;span style="font-weight:bold">finally&lt;/span>
+{
+&lt;span style="font-style:italic">// Explicitly call Flush() followed by Delay, as required in console apps.
+&lt;/span>&lt;span style="font-style:italic">&lt;/span> &lt;span style="font-style:italic">// This ensures that even if the application terminates, telemetry is sent to the back end.
+&lt;/span>&lt;span style="font-style:italic">&lt;/span> channel.Flush();
+&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(TimeSpan.FromMilliseconds(1000));
+}
+&lt;span style="font-weight:bold">return&lt;/span>;
+&lt;span style="font-weight:bold">static&lt;/span> &lt;span style="font-weight:bold">async&lt;/span> Task MainLoop(
+CancellationToken cancellationToken,
+ILogger&amp;lt;Program&amp;gt; logger,
+&lt;span style="">int&lt;/span> frequencyInMilliSeconds)
+{
+&lt;span style="">var&lt;/span> totalRuns=0;
+&lt;span style="font-weight:bold">while&lt;/span> (!cancellationToken.IsCancellationRequested &amp;amp;&amp;amp; totalRuns &amp;lt; 200)
+{
+&lt;span style="font-style:italic">// Create a child task that runs in parallel
+&lt;/span>&lt;span style="font-style:italic">&lt;/span> &lt;span style="">var&lt;/span> childTask = Task.Run(&lt;span style="font-weight:bold">async&lt;/span> () =&amp;gt;
+{
+&lt;span style="">var&lt;/span> transactionId = DateTime.UtcNow.ToString(&lt;span style="font-style:italic">&amp;#34;yyyyMMddHHmmssfff&amp;#34;&lt;/span>);
+&lt;span style="font-weight:bold">using&lt;/span> (logger.BeginScope(&lt;span style="font-style:italic">&amp;#34;{transactionId}&amp;#34;&lt;/span>, transactionId))
+{
+&lt;span style="">var&lt;/span> totalTimeTaken = &lt;span style="font-weight:bold">new&lt;/span> Stopwatch();
+totalTimeTaken.Start();
+logger.LogInformation(
+&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName}&amp;#34;&lt;/span>,
+&lt;span style="font-style:italic">&amp;#34;started&amp;#34;&lt;/span>);
+&lt;span style="font-weight:bold">try&lt;/span>
+{
+&lt;span style="">var&lt;/span> stopWatch = &lt;span style="font-weight:bold">new&lt;/span> Stopwatch();
+&lt;span style="font-weight:bold">for&lt;/span> (&lt;span style="">var&lt;/span> i = 1; i &amp;lt; 6; i++)
+{
+stopWatch.Restart();
+&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(RandomNumber(1000, 20000), cancellationToken);
+&lt;span style="font-weight:bold">if&lt;/span> (RandomNumber(0, 100) &amp;gt; 90) &lt;span style="font-weight:bold">throw&lt;/span> &lt;span style="font-weight:bold">new&lt;/span> Exception(&lt;span style="font-style:italic">&amp;#34;Pest finder overrun!&amp;#34;&lt;/span>);
+logger.LogInformation(
+&lt;span style="font-style:italic">&amp;#34;Pest finder task {taskNumber} took {timeTaken}ms&amp;#34;&lt;/span>,
+i,
+stopWatch.ElapsedMilliseconds);
+}
+logger.LogInformation(
+&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
+&lt;span style="font-style:italic">&amp;#34;completed&amp;#34;&lt;/span>, totalTimeTaken.ElapsedMilliseconds);
+}
+&lt;span style="font-weight:bold">catch&lt;/span> (Exception ex)
+{
+logger.LogError(ex,
+&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName} with error {errorMessage} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
+&lt;span style="font-style:italic">&amp;#34;completed&amp;#34;&lt;/span>, ex.Message, totalTimeTaken.ElapsedMilliseconds);
+}
+}
+});
+&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(frequencyInMilliSeconds, cancellationToken).ConfigureAwait(&lt;span style="font-weight:bold">false&lt;/span>);
+totalRuns++;
+}
+}
+&lt;span style="font-weight:bold">static&lt;/span> &lt;span style="">int&lt;/span> RandomNumber(&lt;span style="">int&lt;/span> min, &lt;span style="">int&lt;/span> max)
+{
+&lt;span style="">var&lt;/span> random = &lt;span style="font-weight:bold">new&lt;/span> Random();
+&lt;span style="font-weight:bold">return&lt;/span> random.Next(min, max);
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="creating-the-workbook">
+Creating the workbook
+&lt;a class="heading-link" href="#creating-the-workbook">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>Now that we have some logs in place, its time to create the workbook. In the Azure Portal, find the application insights instance which was receiving these logs, then navigate to workbooks&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-navigate.png" alt="Navigate to workbooks link">&lt;/p>
+&lt;p>The workbooks screen offers two templates, select the default template&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-select-default-template.png" alt="Template options">&lt;/p>
+&lt;p>Workbooks are composed of blocks, added vertically one after the other. The default template adds two blocks, one text block and one query block&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-initial-template.png" alt="Default template">&lt;/p>
+&lt;p>I updated the query in the query block according to the logs I created&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">union * | where customDimensions.eventTypeName == &amp;#39;completed&amp;#39; | summarize count() by bin(timestamp, 1m), itemType
+| render barchart
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-first-query.png" alt="First query">&lt;/p>
+&lt;p>And this already shows the value of workbooks!, the ability to produce very nice reports and summaries from logs, without code and without deploying an additional application. This first query shows a summary.&lt;/p>
+&lt;p>I used the +Add option to add a new query block&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-add-query.png" alt="add query">&lt;/p>
+&lt;p>and in this next query I&amp;rsquo;m getting the details of all the processes that failed&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">exceptions | project timestamp, TransactionId = customDimensions.transactionId, Error = customDimensions.errorMessage
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>To add some interactivity I configured the &amp;ldquo;export parameter&amp;rdquo; feature so that when a row from the results is selected, the selected value is made available as a parameter for the next query&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-second-query-add-parameter.png" alt="Adding parameters">&lt;/p>
+&lt;p>Next I added the last query, to show all the log entries for that process run&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">union traces,exceptions | where customDimensions.transactionId == {txid}
+| order by timestamp asc
+| project timestamp, message = iif(itemType==&amp;#39;trace&amp;#39;, message, customDimensions.FormattedMessage), timetaken = customDimensions.timeTaken
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The final result looks like this&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-end-result.png" alt="Final result">&lt;/p>
+&lt;p>Workbooks also allow &amp;ldquo;link&amp;rdquo; columns, with the ability to directly open Azure Portal blades or invoke actions, as shown &lt;a href="https://techcommunity.microsoft.com/t5/azure-integration-services-blog/extending-logic-apps-app-insight-integration-with-azure/ba-p/3784062">here&lt;/a> for Logic Apps Standard where the workbook includes links to the run details and to the &amp;ldquo;resubmit&amp;rdquo; action for the workflow.&lt;/p>
+&lt;h2 id="creating-the-pipeline">
+Creating the pipeline
+&lt;a class="heading-link" href="#creating-the-pipeline">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h2>
+&lt;p>The workbook is now in place and working, this however was done directly in the Azure Portal, manually, something that I don&amp;rsquo;t want to repeat for my TEST, STAGING, PERF or PRODUCTION environments. Just like with code, ideally, this needs to be version managed and go though deployment pipelines that parameterize by environment when needed, and control the approvals process to promote from lower to higher environments.&lt;/p>
+&lt;p>The workbooks user interface in the portal already provides some help for this by producing the ARM template needed to deploy the workbook via the Azure CLI. To obtain the ARM template, in the workbook editor view select the advanced editor&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-advanced-editor-button.png" alt="Advanced editor">&lt;/p>
+&lt;p>Then use the ARM template from the options offered by the Azure Portal&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-export-options.png" alt="Export options">&lt;/p>
+&lt;p>This option works, however the content of the workbook is all in one single place, the serializedData property, which makes it harder to inspect when thinking about code reviews and pull requests. The option I use is the first one, the &amp;ldquo;Gallery template&amp;rdquo; option, which provides the full content of the workbook in an easy to read and inspect JSON format.&lt;/p>
+&lt;p>To use this option I save this content as a JSON file, which I then add to source control, then pull during deployment using the loadTextContent bicep function.&lt;/p>
+&lt;p>Assuming separate subscriptions per environment, my bicep template looks like this, and a critical piece is the uniqueness of the name of the workflow. This name needs to be unique, and the same between pipeline runs to ensure the workbook is updated instead of adding a new workbook. The GUID function accepts as many parameters as needed so depending on the project I might need to add more parameters to make it unique.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">@description(&amp;#39;The datacenter to use for the deployment.&amp;#39;)
+param location string = resourceGroup().location
+param environmentName string
+param environmentShortNameUpperCase string = toUpper(environmentName)
+param workbookSourceId string = &amp;#39;/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/microsoft.insights/components/appinsights-${environmentName}&amp;#39;
+resource existing_application_insights &amp;#39;Microsoft.Insights/components@2020-02-02&amp;#39; existing = {
+name: &amp;#39;appinsights-${environmentName}&amp;#39;
+scope: resourceGroup()
+}
+resource ProcessRunsSummaryWorkbook &amp;#39;Microsoft.Insights/workbooks@2023-06-01&amp;#39; = {
+name: guid(subscription().id, resourceGroup().id, existing_application_insights.id)
+location: location
+tags: {
+costCenter: &amp;#39;Demos&amp;#39;
+project: &amp;#39;Demos&amp;#39;
+}
+kind: &amp;#39;shared&amp;#39;
+properties: {
+category: &amp;#39;workbook&amp;#39;
+displayName: &amp;#39;Pest control runs - ${environmentShortNameUpperCase}&amp;#39;
+serializedData: loadTextContent(&amp;#39;PestControlWorkbook.json&amp;#39;)
+sourceId: workbookSourceId
+version: &amp;#39;1.0&amp;#39;
+}
+dependsOn: [
+existing_application_insights
+]
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>To deploy this bicep template I use the Azure Devops deployment task&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">task&lt;/span>: AzureResourceManagerTemplateDeployment@3
+&lt;span style="font-weight:bold">displayName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Deploy Workbook&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">inputs&lt;/span>:
+&lt;span style="font-weight:bold">azureResourceManagerConnection&lt;/span>: ${{ parameters.serviceConnection }}
+&lt;span style="font-weight:bold">subscriptionId&lt;/span>: &lt;span style="font-style:italic">&amp;#39;$(subscriptionId)&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">action&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Create Or Update Resource Group&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">resourceGroupName&lt;/span>: $(resourceGroupName)
+&lt;span style="font-weight:bold">location&lt;/span>: $(resourceGroupLocation)
+&lt;span style="font-weight:bold">csmFile&lt;/span>: &lt;span style="font-style:italic">&amp;#39;$(Pipeline.Workspace)/$(artifactName)/template-workbooks.bicep&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">overrideParameters&lt;/span>: &amp;gt;-&lt;span style="font-style:italic">
+&lt;/span>&lt;span style="font-style:italic"> &lt;/span> -environmentName $(environmentShortName)
+&lt;span style="font-weight:bold">deploymentMode&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Incremental&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Which is called by a multistage pipeline that takes care of each of the environments, and where a typical stage looks like this&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">stage&lt;/span>: STAGING
+&lt;span style="font-weight:bold">displayName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;STAGING Deployment&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">variables&lt;/span>:
+- &lt;span style="font-weight:bold">template&lt;/span>: pipeline-variables.yml
+&lt;span style="font-weight:bold">parameters&lt;/span>:
+&lt;span style="font-weight:bold">environmentShortName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;stg&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">subscriptionId&lt;/span>: &lt;span style="font-style:italic">&amp;#39;---my guid---&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">jobs&lt;/span>:
+- &lt;span style="font-weight:bold">template&lt;/span>: templates/iac-template.yml
+&lt;span style="font-weight:bold">parameters&lt;/span>:
+&lt;span style="font-weight:bold">azDevOpsEnvironment&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Pest Control Staging&amp;#39;&lt;/span>
+&lt;span style="font-weight:bold">serviceConnection&lt;/span>: &lt;span style="font-style:italic">&amp;#39;azure-staging-service-connection&amp;#39;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A complete example of multistage pipelines for infrastructure as code (IaC) and continuous integration (CI) and continuous delivery (CD) can be found in the &lt;a href="https://github.com/Azure/logicapps/tree/master/azure-devops-sample/.pipelines/classic">Microsoft guidance for DevOps with Azure Standard Logic Apps&lt;/a>&lt;/p></description></item><item><title>Dynamic Loops In Azure DevOps Pipelines</title><link>https://davidtriana.com/posts/2024/azdevops.loops/</link><pubDate>Fri, 26 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/azdevops.loops/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -1279,41 +1488,4 @@ Connect to the VM
 &amp;lt;/bindingExtensions&amp;gt;
 &amp;lt;/extensions&amp;gt;
 &amp;lt;/system.serviceModel&amp;gt;
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Both downloads can be found easily on the Microsoft Downloads web site&lt;/p></description></item><item><title>CCA Hosted Controls and Focus</title><link>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</link><pubDate>Wed, 05 Dec 2012 18:16:49 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/cca-hosted-controls-and-focus/</guid><description>&lt;h1 id="scenario">
-Scenario
-&lt;a class="heading-link" href="#scenario">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;ul>
-&lt;li>CCA R2 for Dynamics CRM 2011&lt;/li>
-&lt;li>A non global dynamic hosted control whose panel is the main panel&lt;/li>
-&lt;li>A workflow step that produce changes on that hosted control&lt;/li>
-&lt;/ul>
-&lt;h1 id="use-case">
-Use case
-&lt;a class="heading-link" href="#use-case">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>The user is in a session, start a workflow that activates the hosted application. The user choose other application from the main panel. The user start a workflow step that interacts with the hosted application and expects the application to get focus in the main panel.&lt;/p>
-&lt;h1 id="the-problem">
-The problem?
-&lt;a class="heading-link" href="#the-problem">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>CCA R2 seems to ignore the Focus Application on the action definition. Also ignores the GetFocus actions on the workflow, in the hosted control itself the the LocalDesktop object are null for non global dynamic applications and all the other available objects like session and parentwindow don’t have any success when it comes to give focus to the control.&lt;/p>
-&lt;h1 id="my-solution">
-My solution
-&lt;a class="heading-link" href="#my-solution">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>I ended up creating a new action on another application, this time a global, non dynamic control. This action calls&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">uiiDesktop.SetFocusOnApplication(args.Data);
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>And from my non global dynamic application I just call this action and that does the trick.&lt;/p></description></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Both downloads can be found easily on the Microsoft Downloads web site&lt;/p></description></item></channel></rss>
