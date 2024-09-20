@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>David Triana</title><link>https://davidtriana.com/</link><description>Recent content on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>David Triana</title><link>https://davidtriana.com/</link><description>Recent content on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 20 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Reusing Javascript in Logic Apps Standard</title><link>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</link><pubDate>Fri, 20 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>What I&amp;rsquo;m about to describe is more like a &amp;ldquo;because I can&amp;rdquo; approach than a recommended technique. The reason for this POST is &lt;a href="https://stackoverflow.com/a/67565101">a StackOverflow answer&lt;/a> claiming that &amp;ldquo;if we want to run node code with some third-party packages, we can only use Azure function action&amp;rdquo;.&lt;/p>
+&lt;p>I found this answer while looking for a way to get a SHA-256 for an object in a Logic Apps Standard workflow, and yes, the function action is a good alternative, the same with a full function app, I however share the feeling from the author of the question, &lt;a href="https://stackoverflow.com/questions/67556776/azure-logic-apps-generated-hmac-sha256-method-signature#comment119465221_67565101">&amp;ldquo;I just couldn&amp;rsquo;t believe I had to go to such lengths&amp;rdquo;&lt;/a>.&lt;/p>
+&lt;p>The limitation in the &lt;a href="https://learn.microsoft.com/en-us/azure/logic-apps/add-run-javascript?tabs=standard">in-line javascript action&lt;/a> is there, it &amp;ldquo;Doesn&amp;rsquo;t support the require() function for running JavaScript.&amp;rdquo;, however, what &amp;lsquo;require&amp;rsquo; is really doing is just pulling the dependency&amp;rsquo;s JavaScript code. Adding this code to the in the in-line javascript will accomplish the same. Of course it won&amp;rsquo;t be pulling the latest version every time and will get messy pretty fast if the dependency has its own dependencies, but with &lt;a href="https://snyk.io/blog/snyk-200-malicious-npm-packages-cobalt-strike-dependency-confusion-attacks/">the recent supply-chain attacks&lt;/a> this might even be a good idea!&lt;/p>
+&lt;h1 id="get-sha-256-action">
+Get SHA-256 action
+&lt;a class="heading-link" href="#get-sha-256-action">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The code shared in the StackOverflow question depends on the crypto-js library, its HmacSHA256 method. To address my needs, I use the SHA256 method instead, which is available &lt;a href="https://raw.githubusercontent.com/crypto-js/crypto-js/refs/heads/latest/dist/sha256.js">here&lt;/a>. With this in place, the SHA256 method works, with in-line javascript, no need for function actions or function apps.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/javascript-reuse-action.png" alt="alt text">&lt;/p>
+&lt;h1 id="reuse-the-crypo-js-dependency-code">
+Reuse the crypo-js dependency code
+&lt;a class="heading-link" href="#reuse-the-crypo-js-dependency-code">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The solution above addresses the need of the StackOverflow question and works for my needs as well, however in my case I need to get those hashes in more than one workflow in my Logic App. Duplicating 4.5Kb of Javascript on every one of these actions is not something I&amp;rsquo;m comfortable with.&lt;/p>
+&lt;p>To reuse this code, I ended up placing it as a parameter. Parameters in Logic Apps Standard are maintained in a JSON file, the only &lt;a href="https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-limits-and-config?tabs=consumption#workflow-definition-limits">documented limit&lt;/a> is about their number, not their size, and its value is available to all workflows.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/javascript-reuse-parameter.png" alt="alt text">&lt;/p>
+&lt;p>Now I can have this action as many times as needed in my Logic App, without duplicating the code of the dependency.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-javascript" data-lang="javascript">eval(workflowContext.actions.Set_Crypto_Library.outputs);
+&lt;span style="font-weight:bold">const&lt;/span> hash = CryptoJS.SHA256(JSON.stringify(workflowContext.actions.Parse_Input.outputs));
+&lt;span style="font-weight:bold">return&lt;/span> hash.toString();
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The Set Crypto Library action is a compose action to make the text of the parameter available to the in-line javascript action.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">{
+&lt;span style="font-weight:bold">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Compose&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;inputs&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;@parameters(&amp;#39;cryptojs&amp;#39;)&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;runAfter&amp;#34;&lt;/span>: {
+&lt;span style="font-weight:bold">&amp;#34;Parse_Input&amp;#34;&lt;/span>: [
+&lt;span style="font-style:italic">&amp;#34;SUCCEEDED&amp;#34;&lt;/span>
+]
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Is this a recommended approach?, for simple scenarios like this one, maybe. As I mentioned at the beginning, the main reason for this post is not about promoting this solution as a recommended way to do this but to show there are ways to work around technology limitations. As long as the developer is aware of the tradeoffs and communicates the potential pitfalls of the work around, he or she will have more options than just saying &amp;ldquo;we can only use&amp;hellip;&amp;rdquo;, as in the StackOverflow answer.&lt;/p></description></item><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -1382,150 +1425,4 @@ The E-Myth Revisited
 &lt;p>This series is the best SciFi I have read. Sometimes looks more like reality than SciFi, a very scary reality&lt;/p>
 &lt;p>SciFi&lt;/p>
 &lt;p>&lt;a href="https://www.amazon.com/gp/product/B003QP4NPE/ref=kinw_myk_ro_title">Daemon&lt;/a>&lt;/p>
-&lt;p>The best SciFi, period.&lt;/p></description></item><item><title>Running the Microsoft ALM Training Virtual Machine in Azure April 2015 Edition</title><link>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</link><pubDate>Thu, 09 Apr 2015 21:37:42 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2015/running-the-alm-virtual-machine-in-azure-april-2015-edition/</guid><description>&lt;p>Last month I found myself doing ALM training and demos for a couple of customers, of course using the great ALM Virtual Machine by Brian Keller. With laptops having less and less RAM I choose to set it up in the cloud and found a few web pages with the steps to do it, however with Azure evolving every day I felt the need to put out this blog post with the guidance for Azure in April 2015&lt;/p>
-&lt;p>Additional to my RAM constrains I also have very limited internet access; some folks suggest to first download the virtual machine locally and then upload to azure. For me that will take at least 3 days watching a download / upload progress bar, so what I did was to do the download in Azure, and then transfer the bits to Azure itself, something like this:&lt;/p>
-&lt;ol>
-&lt;li>Create an Azure VM&lt;/li>
-&lt;li>Add a big disk to that Azure VM (To have space for the download and extraction)&lt;/li>
-&lt;li>Download the ALM VM RAR Files&lt;/li>
-&lt;li>Extract the RAR Files&lt;/li>
-&lt;li>Transfer the .VHD to a new blob storage&lt;/li>
-&lt;li>Create a new VM from the VHD&lt;/li>
-&lt;li>Create a point to site VPN to avoid exposing the VM directly to the internet&lt;/li>
-&lt;li>Connect to the VPN&lt;/li>
-&lt;li>Enjoy!&lt;/li>
-&lt;/ol>
-&lt;p>So let’s go through the steps:&lt;/p>
-&lt;h1 id="create-an-azure-vm">
-Create an Azure VM
-&lt;a class="heading-link" href="#create-an-azure-vm">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>Go to the portal, New –&amp;gt; Compute –&amp;gt; Marketplace&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>For this any Windows Virtual Machine should work and I can have just picked the Windows Server 2012R2 image, however I pick the Marketplace to choose the lightest and easiest machine Azure offers me&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image1.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb1.png" alt="image" title="image">&lt;/a> &lt;/p>
-&lt;p>Then click Create, pick options and Create. In my case I make sure to pick the right subscription, pick my closest datacenter and a very fast tier.&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image2.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb2.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>When the VM is ready, add a new disk to it.&lt;/p>
-&lt;h1 id="add-a-big-disk-to-the-vm">
-Add a big disk to the VM
-&lt;a class="heading-link" href="#add-a-big-disk-to-the-vm">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>From the portal click on the VM or browse for it and pick all settings, disks, attach new and choose the same storage account and container as the one for the VM. Adjust the size and cache and click Ok.&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image3.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb3.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>RDP to the machine to attach the disk&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image4.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb4.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Open Computer Management and accept the suggestion&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image5.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb5.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Right click the newly created disk, choose New Simple Volume and follow the Wizard to format the disk&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image6.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb6.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Now we have a VM with enough space to fit the downloaded RAR files and then extract them, so lets do it&lt;/p>
-&lt;h1 id="download-the-alm-vm-rar-files">
-Download the ALM VM RAR Files
-&lt;a class="heading-link" href="#download-the-alm-vm-rar-files">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>In this step I really hate to use Free Download Manager and I spent (wasted) half a day setting up a powershell script to do the same. In the end, FDM does the job and do it very well despite the horrible user interface and installer, so for this step just follow Brian’s guide:&lt;/p>
-&lt;p>&lt;a href="http://aka.ms/ALMVMs" title="http://aka.ms/ALMVMs">http://aka.ms/ALMVMs&lt;/a>&lt;/p>
-&lt;p>Install FDM&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image7.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb7.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Copy the URLs from Brian’s page to the clipboard&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image8.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb8.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Open FDM and set the download folder to the new disk&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image9.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb9.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>choose import from clipboard&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image10.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb10.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Let it do its thing&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image11.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb11.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>When the download finishes, and in my case it took something like 5 minutes, run the .exe that extracts the VHD&lt;/p>
-&lt;h1 id="extract-vhd">
-Extract VHD
-&lt;a class="heading-link" href="#extract-vhd">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image12.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb12.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Meanwhile, install PowerShell, it will be needed to upload the VHD,&lt;/p>
-&lt;p>&lt;a href="http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/" title="http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/">http://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/&lt;/a>&lt;/p>
-&lt;p>Launch PowerShell&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image13.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb13.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Connect to the subscription&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image14.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb14.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>If as me you have more that one subscription, make sure to select the one you intend to use&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image15.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb15.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;h1 id="transfer-the-vhd">
-Transfer the VHD
-&lt;a class="heading-link" href="#transfer-the-vhd">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>Make sure that the extraction finished and issue the command to start the upload. For the blob storage URL I used the same container as the one for this VM. The URL can be found on the portal&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image16.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb16.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>The command:&lt;/p>
-&lt;p>&lt;code>Add-AzureVhd -Destination &amp;quot;&amp;lt;BlobStorageURL&amp;gt;/&amp;lt;YourImagesFolder&amp;gt;/&amp;lt;VHDName&amp;gt;.vhd&amp;quot; -LocalFilePath &amp;lt;PathToVHDFile&amp;gt;&lt;/code>&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image17.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb17.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>In the screenshot I show the blob storage account as the same of my VM. Later I have to re-do this using another storage account in the standard tier since I created this one on the premium tier and I had a lot of trouble later creating the actual VM.&lt;/p>
-&lt;h1 id="convert-to-os-image">
-Convert to OS Image
-&lt;a class="heading-link" href="#convert-to-os-image">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>After the VHD is uploaded it should be added as an operating system image. In the screenshot is done via PowerShell, it can also be done via the legacy portal&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image18.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb18.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;h1 id="create-the-virtual-machine">
-Create the Virtual Machine
-&lt;a class="heading-link" href="#create-the-virtual-machine">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>Using the just created image, create a new virtual machine. The screenshots are with the old portal, I also did it with PowerShell&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image19.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb19.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image20.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb20.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image21.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb21.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>In the next step it is important to set the machine in a virtual network and remove the public endpoints, why?, because this image has well known usernames and passwords and exposing it to the internet just like that is a bad idea. The recommended way to do it is to leave it on a Virtual Network and then connect via VPN. In this case I used the virtual network from the first virtual machine. That one was created using the preview portal which by default creates an internal network.&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image22.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb22.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;h1 id="create-a-point-to-site-vpn">
-Create a point to site VPN
-&lt;a class="heading-link" href="#create-a-point-to-site-vpn">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>While the VM get setup, let’s create the VPN. Look for the same network where the VM was located and use the wizard to create a Point to site dynamic VPN. When I took the screenshot Site-To-Site was selected, make sure to select POINT-TO-SITE&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image23.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb23.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>To get the VPN working you need a self signed certificate. If you have visual studio installed it’s easy with the makecert.exe utility. The procedure is available at &lt;a href="https://msdn.microsoft.com/library/azure/dn133792.aspx/" title="https://msdn.microsoft.com/library/azure/dn133792.aspx/">https://msdn.microsoft.com/library/azure/dn133792.aspx/&lt;/a> and looks like this:&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image24.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb24.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image25.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb25.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;h1 id="connect-to-the-vpn">
-Connect to the VPN
-&lt;a class="heading-link" href="#connect-to-the-vpn">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>Wait for the creation of the gateway, that usually takes a long time, and then download the client, install and connect:&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image26.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb26.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;h1 id="connect-to-the-vm">
-Connect to the VM
-&lt;a class="heading-link" href="#connect-to-the-vm">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image27.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb27.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image28.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb28.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>At this point the first Virtual Machine can be deleted. I will however keep the disk with the original VHD as a mean to rollback since here in Azure I don’t have the snapshotting facility provided by HyperV.&lt;/p>
-&lt;p>Now let’s do some ALM…&lt;/p></description></item></channel></rss>
+&lt;p>The best SciFi, period.&lt;/p></description></item></channel></rss>

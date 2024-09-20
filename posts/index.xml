@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on David Triana</title><link>https://davidtriana.com/posts/</link><description>Recent content in Posts on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 20 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Reusing Javascript in Logic Apps Standard</title><link>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</link><pubDate>Fri, 20 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</guid><description>&lt;h1 id="scenario">
+Scenario
+&lt;a class="heading-link" href="#scenario">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>What I&amp;rsquo;m about to describe is more like a &amp;ldquo;because I can&amp;rdquo; approach than a recommended technique. The reason for this POST is &lt;a href="https://stackoverflow.com/a/67565101">a StackOverflow answer&lt;/a> claiming that &amp;ldquo;if we want to run node code with some third-party packages, we can only use Azure function action&amp;rdquo;.&lt;/p>
+&lt;p>I found this answer while looking for a way to get a SHA-256 for an object in a Logic Apps Standard workflow, and yes, the function action is a good alternative, the same with a full function app, I however share the feeling from the author of the question, &lt;a href="https://stackoverflow.com/questions/67556776/azure-logic-apps-generated-hmac-sha256-method-signature#comment119465221_67565101">&amp;ldquo;I just couldn&amp;rsquo;t believe I had to go to such lengths&amp;rdquo;&lt;/a>.&lt;/p>
+&lt;p>The limitation in the &lt;a href="https://learn.microsoft.com/en-us/azure/logic-apps/add-run-javascript?tabs=standard">in-line javascript action&lt;/a> is there, it &amp;ldquo;Doesn&amp;rsquo;t support the require() function for running JavaScript.&amp;rdquo;, however, what &amp;lsquo;require&amp;rsquo; is really doing is just pulling the dependency&amp;rsquo;s JavaScript code. Adding this code to the in the in-line javascript will accomplish the same. Of course it won&amp;rsquo;t be pulling the latest version every time and will get messy pretty fast if the dependency has its own dependencies, but with &lt;a href="https://snyk.io/blog/snyk-200-malicious-npm-packages-cobalt-strike-dependency-confusion-attacks/">the recent supply-chain attacks&lt;/a> this might even be a good idea!&lt;/p>
+&lt;h1 id="get-sha-256-action">
+Get SHA-256 action
+&lt;a class="heading-link" href="#get-sha-256-action">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The code shared in the StackOverflow question depends on the crypto-js library, its HmacSHA256 method. To address my needs, I use the SHA256 method instead, which is available &lt;a href="https://raw.githubusercontent.com/crypto-js/crypto-js/refs/heads/latest/dist/sha256.js">here&lt;/a>. With this in place, the SHA256 method works, with in-line javascript, no need for function actions or function apps.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/javascript-reuse-action.png" alt="alt text">&lt;/p>
+&lt;h1 id="reuse-the-crypo-js-dependency-code">
+Reuse the crypo-js dependency code
+&lt;a class="heading-link" href="#reuse-the-crypo-js-dependency-code">
+&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
+&lt;span class="sr-only">Link to heading&lt;/span>
+&lt;/a>
+&lt;/h1>
+&lt;p>The solution above addresses the need of the StackOverflow question and works for my needs as well, however in my case I need to get those hashes in more than one workflow in my Logic App. Duplicating 4.5Kb of Javascript on every one of these actions is not something I&amp;rsquo;m comfortable with.&lt;/p>
+&lt;p>To reuse this code, I ended up placing it as a parameter. Parameters in Logic Apps Standard are maintained in a JSON file, the only &lt;a href="https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-limits-and-config?tabs=consumption#workflow-definition-limits">documented limit&lt;/a> is about their number, not their size, and its value is available to all workflows.&lt;/p>
+&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/javascript-reuse-parameter.png" alt="alt text">&lt;/p>
+&lt;p>Now I can have this action as many times as needed in my Logic App, without duplicating the code of the dependency.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-javascript" data-lang="javascript">eval(workflowContext.actions.Set_Crypto_Library.outputs);
+&lt;span style="font-weight:bold">const&lt;/span> hash = CryptoJS.SHA256(JSON.stringify(workflowContext.actions.Parse_Input.outputs));
+&lt;span style="font-weight:bold">return&lt;/span> hash.toString();
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The Set Crypto Library action is a compose action to make the text of the parameter available to the in-line javascript action.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">{
+&lt;span style="font-weight:bold">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Compose&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;inputs&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;@parameters(&amp;#39;cryptojs&amp;#39;)&amp;#34;&lt;/span>,
+&lt;span style="font-weight:bold">&amp;#34;runAfter&amp;#34;&lt;/span>: {
+&lt;span style="font-weight:bold">&amp;#34;Parse_Input&amp;#34;&lt;/span>: [
+&lt;span style="font-style:italic">&amp;#34;SUCCEEDED&amp;#34;&lt;/span>
+]
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Is this a recommended approach?, for simple scenarios like this one, maybe. As I mentioned at the beginning, the main reason for this post is not about promoting this solution as a recommended way to do this but to show there are ways to work around technology limitations. As long as the developer is aware of the tradeoffs and communicates the potential pitfalls of the work around, he or she will have more options than just saying &amp;ldquo;we can only use&amp;hellip;&amp;rdquo;, as in the StackOverflow answer.&lt;/p></description></item><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -1305,18 +1348,4 @@ Connect to the VM
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image27.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb27.png" alt="image" title="image">&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2015/04/image28.png">&lt;img src="https://davidtriana.com/images/posts/2015/04/image_thumb28.png" alt="image" title="image">&lt;/a>&lt;/p>
 &lt;p>At this point the first Virtual Machine can be deleted. I will however keep the disk with the original VHD as a mean to rollback since here in Azure I don’t have the snapshotting facility provided by HyperV.&lt;/p>
-&lt;p>Now let’s do some ALM…&lt;/p></description></item><item><title>Google 2nd Step Verification and Windows Phone 8</title><link>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</link><pubDate>Fri, 11 Jan 2013 17:48:14 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/google-2nd-step-verification-and-windows-phone-8/</guid><description>&lt;p>I’m moving from iOS 6 (iPhone 4) to Windows Phone 8 (HTC 8x).&lt;/p>
-&lt;p>One of the apps I’m missing from iOS is the Google Authenticator that provides one time passwords to authenticate to google.&lt;/p>
-&lt;p>Looked around and found the Authenticator application:&lt;/p>
-&lt;p>&lt;a href="http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0" title="http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0">http://www.windowsphone.com/en-us/store/app/authenticator/82c12390-0176-43de-916e-5613d17f61a0?wa=wsignin1.0&lt;/a>&lt;/p>
-&lt;p>Recommended on the Karspersky blog&lt;/p>
-&lt;p>&lt;a href="http://blog.kaspersky.com/the-best-windows-phone-security-apps/" title="http://blog.kaspersky.com/the-best-windows-phone-security-apps/">http://blog.kaspersky.com/the-best-windows-phone-security-apps/&lt;/a>&lt;/p>
-&lt;p>Immediately installed it, then proceeded to Google to configure it. As expected Google doesn’t offer Windows Phone as an option since them don’t produce an app for that:&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/image.png">&lt;img src="https://davidtriana.com/images/posts/2013/01/image_thumb.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>So I leave the setting on iPhone and run the App.&lt;/p>
-&lt;p>The barcode scanner doesn’t seem to work, at least not as easy as it was on the iPhone, I ended up entering the code using the “Can’t Scan the barcode” option from Google&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/image1.png">&lt;img src="https://davidtriana.com/images/posts/2013/01/image_thumb1.png" alt="image" title="image">&lt;/a>&lt;/p>
-&lt;p>Entered the code in the app&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0001.jpg">&lt;img src="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0001_thumb.jpg" alt="wp_ss_20130111_0001" title="wp_ss_20130111_0001">&lt;/a>&lt;/p>
-&lt;p>And voila&lt;/p>
-&lt;p>&lt;a href="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0002.jpg">&lt;img src="https://davidtriana.com/images/posts/2013/01/wp_ss_20130111_0002_thumb.jpg" alt="wp_ss_20130111_0002" title="wp_ss_20130111_0002">&lt;/a>&lt;/p></description></item></channel></rss>
+&lt;p>Now let’s do some ALM…&lt;/p></description></item></channel></rss>

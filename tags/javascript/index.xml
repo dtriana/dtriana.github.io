@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Logic Apps on David Triana</title><link>https://davidtriana.com/tags/logic-apps/</link><description>Recent content in Logic Apps on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 20 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/logic-apps/index.xml" rel="self" type="application/rss+xml"/><item><title>Reusing Javascript in Logic Apps Standard</title><link>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</link><pubDate>Fri, 20 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Javascript on David Triana</title><link>https://davidtriana.com/tags/javascript/</link><description>Recent content in Javascript on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 20 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/javascript/index.xml" rel="self" type="application/rss+xml"/><item><title>Reusing Javascript in Logic Apps Standard</title><link>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</link><pubDate>Fri, 20 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logic-app-reuse-javascript/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -41,29 +41,4 @@ Reuse the crypo-js dependency code
 ]
 }
 }
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Is this a recommended approach?, for simple scenarios like this one, maybe. As I mentioned at the beginning, the main reason for this post is not about promoting this solution as a recommended way to do this but to show there are ways to work around technology limitations. As long as the developer is aware of the tradeoffs and communicates the potential pitfalls of the work around, he or she will have more options than just saying &amp;ldquo;we can only use&amp;hellip;&amp;rdquo;, as in the StackOverflow answer.&lt;/p></description></item><item><title>Logic App VNET Integration Fails with ERROR: There was a conflict. SiteConfig.VnetRouteAllEnabled cannot be modified. Please modify the Site.VnetRouteAllEnabled property</title><link>https://davidtriana.com/posts/2024/logic-app-vnet-integration-error/</link><pubDate>Wed, 01 May 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/logic-app-vnet-integration-error/</guid><description>&lt;h1 id="scenario">
-Scenario
-&lt;a class="heading-link" href="#scenario">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h1>
-&lt;p>Something changed in Azure in the last week of April 2024. Specifically, one infrastructure as code pipeline that has been working fine for months started failing April 30. More specifically, this pipeline deploys a Logic App Standard Application, then setups VNET Integration for the logic app to be able to call internal and on-premises services.&lt;/p>
-&lt;p>The command&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">az webapp vnet-integration add --resource-group &lt;span style="font-weight:bold;font-style:italic">\
-&lt;/span>&lt;span style="font-weight:bold;font-style:italic">&lt;/span> --name &lt;span style="font-weight:bold">$(&lt;/span>logicAppName&lt;span style="font-weight:bold">)&lt;/span> &lt;span style="font-weight:bold;font-style:italic">\
-&lt;/span>&lt;span style="font-weight:bold;font-style:italic">&lt;/span> --vnet &lt;span style="font-weight:bold">$(&lt;/span>vnetResourceId&lt;span style="font-weight:bold">)&lt;/span> &lt;span style="font-weight:bold;font-style:italic">\
-&lt;/span>&lt;span style="font-weight:bold;font-style:italic">&lt;/span> --subnet &lt;span style="font-weight:bold">$(&lt;/span>subnetName&lt;span style="font-weight:bold">)&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Fails with the error message&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">ERROR: There was a conflict. SiteConfig.VnetRouteAllEnabled cannot be modified. Please modify the Site.VnetRouteAllEnabled property
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="workaround">
-Workaround
-&lt;a class="heading-link" href="#workaround">
-&lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
-&lt;span class="sr-only">Link to heading&lt;/span>
-&lt;/a>
-&lt;/h2>
-&lt;p>Not really sure what happened or what changed. This pipeline is reused among many logic apps in different subscriptions and still works for some of the existing logic apps.&lt;/p>
-&lt;p>Searching for the error message, I was surprised by Bing Chat understanding the problem and suggesting a solution that worked!&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">az resource update --resource-group &amp;lt;group-name&amp;gt; --name &amp;lt;app-name&amp;gt; --resource-type &lt;span style="font-style:italic">&amp;#34;Microsoft.Web/sites&amp;#34;&lt;/span> --set properties.vnetRouteAllEnabled=[true|false]
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Used that command with true as the value and now my pipeline is back in business.&lt;/p></description></item></channel></rss>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Is this a recommended approach?, for simple scenarios like this one, maybe. As I mentioned at the beginning, the main reason for this post is not about promoting this solution as a recommended way to do this but to show there are ways to work around technology limitations. As long as the developer is aware of the tradeoffs and communicates the potential pitfalls of the work around, he or she will have more options than just saying &amp;ldquo;we can only use&amp;hellip;&amp;rdquo;, as in the StackOverflow answer.&lt;/p></description></item></channel></rss>
