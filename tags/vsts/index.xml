@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VSTS on David Triana</title><link>https://davidtriana.com/tags/vsts/</link><description>Recent content in VSTS on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/vsts/index.xml" rel="self" type="application/rss+xml"/><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VSTS on David Triana</title><link>https://davidtriana.com/tags/vsts/</link><description>Recent content in VSTS on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/vsts/index.xml" rel="self" type="application/rss+xml"/><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -40,7 +40,7 @@ Solution
 &lt;p>And then the token details screen looks like this,&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png" alt="AzDevOps personal token details" title="AzDevOps personal token details">&lt;/a>&lt;/p>
 &lt;p>With the token in hand, we can now get to the code, which is an adaptation from the examples linked earlier.&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">using System;
+&lt;pre tabindex="0">&lt;code>using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -108,9 +108,9 @@ public double Total;
 }
 }
 }
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
 &lt;p>My JSON input file looks like this:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">[
+&lt;pre tabindex="0">&lt;code>[
 {
 &amp;#34;ID&amp;#34;: &amp;#34;25071&amp;#34;,
 &amp;#34;Dev Effort&amp;#34;: &amp;#34;1&amp;#34;,
@@ -129,6 +129,6 @@ public double Total;
 &amp;#34;Test Effort&amp;#34;: &amp;#34;1&amp;#34;,
 &amp;#34;Effort&amp;#34;: &amp;#34;5&amp;#34;
 }, ...
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png" alt="Program Output" title="Program Output">&lt;/a>&lt;/p>
 &lt;p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.&lt;/p></description></item></channel></rss>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AzDevOps on David Triana</title><link>https://davidtriana.com/tags/azdevops/</link><description>Recent content in AzDevOps on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azdevops/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AzDevOps on David Triana</title><link>https://davidtriana.com/tags/azdevops/</link><description>Recent content in AzDevOps on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/azdevops/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -6,29 +6,31 @@ Scenario
 &lt;/a>
 &lt;/h1>
 &lt;p>Automating infrastructure as code or continuous delivery with AzDevOps pipelines sometimes requires bash scripts when Arm/Bicep or the built-in tasks fell short. Bash scripts work great, however one issue that surprised me in a production release a few weeks ago is the fact that the failure of one of the commands in the script is not enough to mark the task as failed. For example, this YAML pipeline:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">trigger&lt;/span>:
-- none
-&lt;span style="font-weight:bold">pool&lt;/span>:
-&lt;span style="font-weight:bold">vmImage&lt;/span>: ubuntu-latest
-&lt;span style="font-weight:bold">steps&lt;/span>:
-- &lt;span style="font-weight:bold">task&lt;/span>: AzureCLI@2
-&lt;span style="font-weight:bold">displayName&lt;/span>: Get Application Insights Connection String
-&lt;span style="font-weight:bold">inputs&lt;/span>:
-&lt;span style="font-weight:bold">azureSubscription&lt;/span>: &lt;span style="font-style:italic">&amp;#39;MSDN Sub&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">scriptType&lt;/span>: &lt;span style="font-style:italic">&amp;#39;bash&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">scriptLocation&lt;/span>: &lt;span style="font-style:italic">&amp;#39;inlineScript&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">inlineScript&lt;/span>: |&lt;span style="font-style:italic">
-&lt;/span>&lt;span style="font-style:italic"> MSYS_NO_PATHCONV=1
-&lt;/span>&lt;span style="font-style:italic"> connString=$(az monitor app-insights component show -a appi-titan-prod -g rg-skynet-prod --query &amp;#39;connectionString&amp;#39; -o tsv)
-&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;##vso[task.setvariable variable=connString;isoutput=true;isreadonly=true;]$connString&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Intended to set a pipeline variable, when ran is marked as success:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">trigger&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span>- none
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span>&lt;span style="color:#ff79c6">pool&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">vmImage&lt;/span>: ubuntu-latest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span>&lt;span style="color:#ff79c6">steps&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">task&lt;/span>: AzureCLI@2
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span> &lt;span style="color:#ff79c6">displayName&lt;/span>: Get Application Insights Connection String
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inputs&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span> &lt;span style="color:#ff79c6">azureSubscription&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;MSDN Sub&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptType&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;bash&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptLocation&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;inlineScript&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inlineScript&lt;/span>: |&lt;span style="color:#f1fa8c">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> MSYS_NO_PATHCONV=1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> connString=$(az monitor app-insights component show -a appi-titan-prod -g rg-skynet-prod --query &amp;#39;connectionString&amp;#39; -o tsv)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> echo &amp;#34;##vso[task.setvariable variable=connString;isoutput=true;isreadonly=true;]$connString&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Intended to set a pipeline variable, when ran is marked as success:&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/devops_success.png" alt="AzDevOps Success Job Run">&lt;/p>
 &lt;p>despite the fact that the resource group wasn&amp;rsquo;t present:&lt;/p>
 &lt;p>From the run logs:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-text" data-lang="text">ERROR: (ResourceGroupNotFound) Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
-Code: ResourceGroupNotFound
-Message: Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>But because the last command, echo, succeeds, the exit code of the task is 0, causing AzDevOps to mark the task as success.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-text" data-lang="text">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>ERROR: (ResourceGroupNotFound) Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2&lt;/span>&lt;span>Code: ResourceGroupNotFound
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3&lt;/span>&lt;span>Message: Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>But because the last command, echo, succeeds, the exit code of the task is 0, causing AzDevOps to mark the task as success.&lt;/p>
 &lt;h2 id="making-the-task-fail">
 Making the task fail
 &lt;a class="heading-link" href="#making-the-task-fail">
@@ -37,15 +39,15 @@ Making the task fail
 &lt;/a>
 &lt;/h2>
 &lt;p>After trying everything I found in the web, the solution is to add the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">set -e
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>command at the beginning of the script. From &lt;a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html#index-set">the documentation&lt;/a>, this command instructs the system to exit immediately if a command fails.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>command at the beginning of the script. From &lt;a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html#index-set">the documentation&lt;/a>, this command instructs the system to exit immediately if a command fails.&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/devops_failed.png" alt="AzDevOps failed job run">&lt;/p>
 &lt;p>Other solutions make reference to the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">failOnStderr&lt;/span>: &lt;span style="font-weight:bold">true&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>task input parameter. This parameter on its own didn&amp;rsquo;t work for me, at least when dealing with AZ CLI commands.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">failOnStderr&lt;/span>: &lt;span style="color:#ff79c6">true&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>task input parameter. This parameter on its own didn&amp;rsquo;t work for me, at least when dealing with AZ CLI commands.&lt;/p>
 &lt;p>Finally, the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">continueOnError&lt;/span>: &lt;span style="font-weight:bold">false&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>task parameter seems to be the default behavior and doesn&amp;rsquo;t need to be added.&lt;/p></description></item><item><title>Dynamic Loops In Azure DevOps Pipelines</title><link>https://davidtriana.com/posts/2024/azdevops.loops/</link><pubDate>Fri, 26 Jan 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/azdevops.loops/</guid><description>&lt;h1 id="scenario">
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">continueOnError&lt;/span>: &lt;span style="color:#ff79c6">false&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>task parameter seems to be the default behavior and doesn&amp;rsquo;t need to be added.&lt;/p></description></item><item><title>Dynamic Loops In Azure DevOps Pipelines</title><link>https://davidtriana.com/posts/2024/azdevops.loops/</link><pubDate>Fri, 26 Jan 2024 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2024/azdevops.loops/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -58,16 +60,17 @@ Scenario
 &lt;p>Of course I can deploy both the container app and the logic app in a VNET to avoid the need of these rules, not there yet unfortunately, other requirements and limitations make it necessary to keep these public.&lt;/p>
 &lt;p>So why is not as easy?&lt;/p>
 &lt;p>The Azure Devops loop support relies on the each keyword explained &lt;a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#each-keyword">here&lt;/a>,&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">parameters&lt;/span>:
-- &lt;span style="font-weight:bold">name&lt;/span>: listOfStrings
-&lt;span style="font-weight:bold">type&lt;/span>: object
-&lt;span style="font-weight:bold">default&lt;/span>:
-- one
-- two
-&lt;span style="font-weight:bold">steps&lt;/span>:
-- ${{ each value in parameters.listOfStrings }}:
-- &lt;span style="font-weight:bold">script&lt;/span>: echo ${{ value }}
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>However, the &lt;code>${{ }}&lt;/code> syntax is not for runtime. Those expressions are expanded before running the workflow as explained &lt;a href="https://stackoverflow.com/a/75832425">here&lt;/a>,&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">parameters&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">name&lt;/span>: listOfStrings
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span> &lt;span style="color:#ff79c6">type&lt;/span>: object
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span> &lt;span style="color:#ff79c6">default&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> - one
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span> - two
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span>&lt;span style="color:#ff79c6">steps&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span>- ${{ each value in parameters.listOfStrings }}:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> - &lt;span style="color:#ff79c6">script&lt;/span>: echo ${{ value }}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>However, the &lt;code>${{ }}&lt;/code> syntax is not for runtime. Those expressions are expanded before running the workflow as explained &lt;a href="https://stackoverflow.com/a/75832425">here&lt;/a>,&lt;/p>
 &lt;h1 id="using-bash-inside-the-task-to-run-the-loop">
 Using bash inside the task to run the loop
 &lt;a class="heading-link" href="#using-bash-inside-the-task-to-run-the-loop">
@@ -77,36 +80,36 @@ Using bash inside the task to run the loop
 &lt;/h1>
 &lt;p>The way I worked around this is by using bash loops, and the same can be accomplished with PowerShell,&lt;/p>
 &lt;p>My code:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">task&lt;/span>: AzureCLI@2
-&lt;span style="font-weight:bold">displayName&lt;/span>: Add Ip Security Allow Logic Apps
-&lt;span style="font-weight:bold">name&lt;/span>: AddIpSecurityRestrictionsAllowLAs
-&lt;span style="font-weight:bold">inputs&lt;/span>:
-&lt;span style="font-weight:bold">azureSubscription&lt;/span>: myServiceConnectionName
-&lt;span style="font-weight:bold">scriptType&lt;/span>: &lt;span style="font-style:italic">&amp;#39;bash&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">scriptLocation&lt;/span>: &lt;span style="font-style:italic">&amp;#39;inlineScript&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">inlineScript&lt;/span>: |&lt;span style="font-style:italic">
-&lt;/span>&lt;span style="font-style:italic"> MSYS_NO_PATHCONV=1
-&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;Full Ip List is $(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
-&lt;/span>&lt;span style="font-style:italic"> IFS=&amp;#39;,&amp;#39; read -ra la_ips &amp;lt;&amp;lt;&amp;lt; &amp;#34;$(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
-&lt;/span>&lt;span style="font-style:italic"> for i in &amp;#34;${la_ips[@]}&amp;#34;;
-&lt;/span>&lt;span style="font-style:italic"> do
-&lt;/span>&lt;span style="font-style:italic"> DATE=$(date &amp;#39;+%Y%m%d%H%M%S&amp;#39;)
-&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;Adding rule for $i&amp;#34;
-&lt;/span>&lt;span style="font-style:italic"> az containerapp ingress access-restriction set \
-&lt;/span>&lt;span style="font-style:italic"> --name theNameOfMyContainerApp \
-&lt;/span>&lt;span style="font-style:italic"> --resource-group theNameOfTheResourceGroup \
-&lt;/span>&lt;span style="font-style:italic"> --rule-name &amp;#34;Allow My Logic App $DATE&amp;#34; \
-&lt;/span>&lt;span style="font-style:italic"> --ip-address &amp;#34;$i/32&amp;#34; \
-&lt;/span>&lt;span style="font-style:italic"> --action Allow
-&lt;/span>&lt;span style="font-style:italic"> done&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>I&amp;rsquo;m adding the date to make the name unique, and the syntax to split the string and the loop in bash is explained &lt;a href="https://stackoverflow.com/a/918931">here&lt;/a>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">task&lt;/span>: AzureCLI@2
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span> &lt;span style="color:#ff79c6">displayName&lt;/span>: Add Ip Security Allow Logic Apps
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span> &lt;span style="color:#ff79c6">name&lt;/span>: AddIpSecurityRestrictionsAllowLAs
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inputs&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">azureSubscription&lt;/span>: myServiceConnectionName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptType&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;bash&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptLocation&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;inlineScript&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inlineScript&lt;/span>: |&lt;span style="color:#f1fa8c">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> MSYS_NO_PATHCONV=1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> echo &amp;#34;Full Ip List is $(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> IFS=&amp;#39;,&amp;#39; read -ra la_ips &amp;lt;&amp;lt;&amp;lt; &amp;#34;$(GetLogicAppsOutgoingIps.logicApps_outgoing)&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> for i in &amp;#34;${la_ips[@]}&amp;#34;;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> do
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> DATE=$(date &amp;#39;+%Y%m%d%H%M%S&amp;#39;)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> echo &amp;#34;Adding rule for $i&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> az containerapp ingress access-restriction set \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> --name theNameOfMyContainerApp \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> --resource-group theNameOfTheResourceGroup \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> --rule-name &amp;#34;Allow My Logic App $DATE&amp;#34; \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> --ip-address &amp;#34;$i/32&amp;#34; \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> --action Allow
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> done&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I&amp;rsquo;m adding the date to make the name unique, and the syntax to split the string and the loop in bash is explained &lt;a href="https://stackoverflow.com/a/918931">here&lt;/a>.&lt;/p>
 &lt;p>The &lt;code>GetLogicAppsOutgoingIps.logicApps_outgoing&lt;/code> variable is set by a template that runs another AzureCLI bash script, that queries the outgoing IPs, and creates an array with that information,&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">logicAppIps=&lt;span style="font-weight:bold">$(&lt;/span> az logicapp show -n theLogicAppName -g theResourceGroupName --query &lt;span style="font-style:italic">&amp;#39;outboundIpAddresses&amp;#39;&lt;/span> -o tsv&lt;span style="font-weight:bold">)&lt;/span>
-&lt;span style="font-weight:bold">if&lt;/span> [[ $logicAppIps == &lt;span style="font-style:italic">&amp;#34;&amp;#34;&lt;/span> ]]; &lt;span style="font-weight:bold">then&lt;/span>
-exit 1
-&lt;span style="font-weight:bold">fi&lt;/span>
-echo &lt;span style="font-style:italic">&amp;#34;##vso[task.setvariable variable=logicApps_outgoing;isoutput=true;isreadonly=true;]&lt;/span>$logicAppIps&lt;span style="font-style:italic">&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>And there it is!, a dynamic loop in an Azure Devops pipeline.&lt;/p></description></item><item><title>Querying Azure DevOps Pipelines YAML Files</title><link>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</link><pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</guid><description>&lt;h1 id="scenario">
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">logicAppIps&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>&lt;span style="color:#ff79c6">$(&lt;/span> az logicapp show -n theLogicAppName -g theResourceGroupName --query &lt;span style="color:#f1fa8c">&amp;#39;outboundIpAddresses&amp;#39;&lt;/span> -o tsv&lt;span style="color:#ff79c6">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2&lt;/span>&lt;span>&lt;span style="color:#ff79c6">if&lt;/span> &lt;span style="color:#ff79c6">[[&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">$logicAppIps&lt;/span> &lt;span style="color:#ff79c6">==&lt;/span> &lt;span style="color:#f1fa8c">&amp;#34;&amp;#34;&lt;/span> &lt;span style="color:#ff79c6">]]&lt;/span>; &lt;span style="color:#ff79c6">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">exit&lt;/span> &lt;span style="color:#bd93f9">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4&lt;/span>&lt;span>&lt;span style="color:#ff79c6">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">echo&lt;/span> &lt;span style="color:#f1fa8c">&amp;#34;##vso[task.setvariable variable=logicApps_outgoing;isoutput=true;isreadonly=true;]&lt;/span>&lt;span style="color:#8be9fd;font-style:italic">$logicAppIps&lt;/span>&lt;span style="color:#f1fa8c">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>And there it is!, a dynamic loop in an Azure Devops pipeline.&lt;/p></description></item><item><title>Querying Azure DevOps Pipelines YAML Files</title><link>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</link><pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2021/querying-pipelines-yaml-files/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -123,43 +126,43 @@ Querying pipeline details with the Azure CLI
 &lt;/a>
 &lt;/h2>
 &lt;p>The &lt;a href="https://docs.microsoft.com/en-us/cli/azure/pipelines?view=azure-cli-latest#az_pipelines_show">Azure CLI allows querying pipelines&lt;/a>, for example, in PowerShell,&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">az pipelines show --id 321
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns a JSON with the details for the pipeline with Id 321&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">{
-&lt;span style="font-weight:bold">&amp;#34;__comment&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Many properties omitted for brevity&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;authoredBy&amp;#34;&lt;/span>: {
-&lt;span style="font-weight:bold">&amp;#34;descriptor&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;aad.redacted&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;directoryAlias&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Miles Dyson&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;imageUrl&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://dev.azure.com/cyberdyne/_apis/GraphProfile/MemberAvatars/aad.redacted&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;uniqueName&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;mdyson@cyberdyne.com&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://redactedurl&amp;#34;&lt;/span>
-},
-&lt;span style="font-weight:bold">&amp;#34;createdDate&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;1997-08-04T16:41:48.533000+00:00&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Skynet Infra&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;options&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;path&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;\\Infra\\CD\\Skynet&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;process&amp;#34;&lt;/span>: {
-&lt;span style="font-weight:bold">&amp;#34;type&amp;#34;&lt;/span>: 2,
-&lt;span style="font-weight:bold">&amp;#34;yamlFilename&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;&lt;/span>
-},
-&lt;span style="font-weight:bold">&amp;#34;processParameters&amp;#34;&lt;/span>: &lt;span style="font-weight:bold">null&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;project&amp;#34;&lt;/span>: {
-&lt;span style="font-weight:bold">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;lastUpdateTime&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;1997-08-04T20:43:19.643Z&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;Skynet&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;revision&amp;#34;&lt;/span>: 78,
-&lt;span style="font-weight:bold">&amp;#34;state&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;wellFormed&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;https://dev.azure.com/cyberdyne/_apis/projects/redactedguid&amp;#34;&lt;/span>,
-&lt;span style="font-weight:bold">&amp;#34;visibility&amp;#34;&lt;/span>: &lt;span style="font-style:italic">&amp;#34;private&amp;#34;&lt;/span>
-},
-}
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since we are only interested in the yamlFilename, the &amp;ndash;query parameter allows filtering, for example&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">az pipelines show --id 321 --query &lt;span style="font-weight:bold">process&lt;/span>.yamlFilename
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns the YAML file for the pipeline with Id 321&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="looping-over-all-pipelines">
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>az pipelines show --id &lt;span style="color:#bd93f9">321&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns a JSON with the details for the pipeline with Id 321&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;__comment&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;Many properties omitted for brevity&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;authoredBy&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;descriptor&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;aad.redacted&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;directoryAlias&amp;#34;&lt;/span>: &lt;span style="color:#ff79c6">null&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;Miles Dyson&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;imageUrl&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;https://dev.azure.com/cyberdyne/_apis/GraphProfile/MemberAvatars/aad.redacted&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;uniqueName&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;mdyson@cyberdyne.com&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;https://redactedurl&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;createdDate&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;1997-08-04T16:41:48.533000+00:00&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;Skynet Infra&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;options&amp;#34;&lt;/span>: &lt;span style="color:#ff79c6">null&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;path&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;\\Infra\\CD\\Skynet&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;process&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="color:#bd93f9">2&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;yamlFilename&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19&lt;/span>&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;processParameters&amp;#34;&lt;/span>: &lt;span style="color:#ff79c6">null&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;project&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;id&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;redacted-guid&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;lastUpdateTime&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;1997-08-04T20:43:19.643Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;Skynet&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;revision&amp;#34;&lt;/span>: &lt;span style="color:#bd93f9">78&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;state&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;wellFormed&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;url&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;https://dev.azure.com/cyberdyne/_apis/projects/redactedguid&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28&lt;/span>&lt;span> &lt;span style="color:#ff79c6">&amp;#34;visibility&amp;#34;&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#34;private&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29&lt;/span>&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Since we are only interested in the yamlFilename, the &amp;ndash;query parameter allows filtering, for example&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>az pipelines show --id &lt;span style="color:#bd93f9">321&lt;/span> --query &lt;span style="color:#ff79c6">process&lt;/span>.yamlFilename
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Returns the YAML file for the pipeline with Id 321&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;#34;pipelines/Cyberdyne-Infra/Skynet.yml&amp;#34;
+&lt;/code>&lt;/pre>&lt;h2 id="looping-over-all-pipelines">
 Looping over all pipelines
 &lt;a class="heading-link" href="#looping-over-all-pipelines">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -167,17 +170,17 @@ Looping over all pipelines
 &lt;/a>
 &lt;/h2>
 &lt;p>Now that we know how to get the information, we need it for every pipeline, so first, get a list of all pipeline Ids,&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">$pipelines = az pipelines list --query [].id | ConvertFrom-Json
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then iterate over the list, to get the details for each of the pipelines, and save it to a file&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="font-weight:bold">ForEach&lt;/span> ($pipeline &lt;span style="font-weight:bold">in&lt;/span> $pipelines) {az pipelines show --id $pipeline --query [id,name,process.yamlFilename]} | Out-File c:\pipelines.txt
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enjoy">
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">$pipelines&lt;/span> = az pipelines list --query [].id | &lt;span style="color:#8be9fd;font-style:italic">ConvertFrom-Json&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then iterate over the list, to get the details for each of the pipelines, and save it to a file&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">ForEach&lt;/span> (&lt;span style="color:#8be9fd;font-style:italic">$pipeline&lt;/span> &lt;span style="color:#ff79c6">in&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">$pipelines&lt;/span>) {az pipelines show --id &lt;span style="color:#8be9fd;font-style:italic">$pipeline&lt;/span> --query [id,name,process.yamlFilename]} | &lt;span style="color:#8be9fd;font-style:italic">Out-File&lt;/span> c:\pipelines.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="enjoy">
 Enjoy!
 &lt;a class="heading-link" href="#enjoy">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
 &lt;span class="sr-only">Link to heading&lt;/span>
 &lt;/a>
 &lt;/h2>
-&lt;p>Open the resulting text file in your preferred text editor, and easily find the pipelines using the YAML file of interest&lt;/p></description></item><item><title>Deploying Log4Brains ADRs in Azure Static Sites</title><link>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</link><pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</guid><description>&lt;h1 id="scenario">
+&lt;p>Open the resulting text file in your preferred text editor, and easily find the pipelines using the YAML file of interest&lt;/p></description></item><item><title>Deploying Log4Brains ADRs in Azure Static Sites</title><link>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</link><pubDate>Mon, 03 May 2021 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2021/deploying-log4brains-adr-in-azure-static-sites/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -204,9 +207,9 @@ Commit and push to AzDevOps
 &lt;/a>
 &lt;/h2>
 &lt;p>It can be &lt;a href="https://docs.microsoft.com/en-us/azure/devops/repos/git/create-new-repo?view=azure-devops">a new repository&lt;/a> or the existing repository with the application. Before push ensure the output is being ignored via you .gitignore file:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"># Log4Brains Output
+&lt;pre tabindex="0">&lt;code># Log4Brains Output
 .Log4Brains/
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="add-pipeline-yaml-file">
+&lt;/code>&lt;/pre>&lt;h2 id="add-pipeline-yaml-file">
 Add pipeline YAML File
 &lt;a class="heading-link" href="#add-pipeline-yaml-file">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -214,7 +217,7 @@ Add pipeline YAML File
 &lt;/a>
 &lt;/h2>
 &lt;p>The location doesn&amp;rsquo;t really matter. It can be at / , or you can have a Pipelines or similar folder, the location and name of the file doesn&amp;rsquo;t really matter, what matters is the content:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">trigger: none
+&lt;pre tabindex="0">&lt;code>trigger: none
 pr: none
 stages:
 - stage: build
@@ -265,7 +268,7 @@ app_location: /staticSite
 output_location: &amp;#34;&amp;#34;
 env:
 azure_static_web_apps_api_token: $(deployment_token)
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>This is a multistage pipeline, where first we build the application, or in this case, run the Log4Brains static site generator to get the html/css output and make it available via Azure DevOps Artifacts, then the second stage pulls the artifact and publishes to Azure Static WebSites.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>This is a multistage pipeline, where first we build the application, or in this case, run the Log4Brains static site generator to get the html/css output and make it available via Azure DevOps Artifacts, then the second stage pulls the artifact and publishes to Azure Static WebSites.&lt;/p>
 &lt;p>On the first stage we install node, install Log4Brains, run the build command to generate the output, then publish the output as an artifact. There is a CopyFiles task before the publish task, this task is to add a special config .json file to the output. This &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#example-configuration-file">special file&lt;/a> is not needed if you want your ADRs to be publicly available, however if you want to take advantage of the &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization">Azure Static Website authorization and authentication&lt;/a> capability, you want to copy this file, which gets created in the next step.&lt;/p>
 &lt;p>The second stage pulls the artifact and calls the AzureStaticWebApp task to get the site published. The publish token is a pipeline variable that we will set later on the create pipeline step.&lt;/p>
 &lt;p>Git commit, git push, to make the file available in the repository.&lt;/p>
@@ -278,7 +281,7 @@ Adding the Static Web Page configuration file
 &lt;/h2>
 &lt;p>Optional, only if don&amp;rsquo;t want your ADRs to be public. Azure Static Websites provide &lt;a href="https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization">authorization and authentication capabilities&lt;/a> which are configured via the staticwebapp.config.json file, and then adding authorized users via the Azure Portal.&lt;/p>
 &lt;p>I created the staticwebapp.config.json file in /, and configured it:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">{
+&lt;pre tabindex="0">&lt;code>{
 &amp;#34;routes&amp;#34;: [
 {
 &amp;#34;route&amp;#34;: &amp;#34;/*&amp;#34;,
@@ -294,7 +297,7 @@ Adding the Static Web Page configuration file
 }
 }
 }
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>What it says is that every route is only allowed to the &amp;ldquo;reader&amp;rdquo; role, and if a request comes from a not previously authenticated user, the request will be redirected to the Azure Active Directory authentication provider.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>What it says is that every route is only allowed to the &amp;ldquo;reader&amp;rdquo; role, and if a request comes from a not previously authenticated user, the request will be redirected to the Azure Active Directory authentication provider.&lt;/p>
 &lt;p>Git commit, git push, to make the file available in the repository.&lt;/p>
 &lt;h2 id="create-an-azure-static-website">
 Create an Azure Static Website
@@ -333,7 +336,7 @@ Enjoy!
 &lt;span class="sr-only">Link to heading&lt;/span>
 &lt;/a>
 &lt;/h2>
-&lt;p>And with that, the site is available, with user authentication in place. The pipeline trigger can be updated so that every time a new ADR is checked in the pipeline runs automatically.&lt;/p></description></item><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
+&lt;p>And with that, the site is available, with user authentication in place. The pipeline trigger can be updated so that every time a new ADR is checked in the pipeline runs automatically.&lt;/p></description></item><item><title>Updating Azure DevOps WorktItems programmatically</title><link>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</link><pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2020/updating-azdevops-workitems-programmatically/</guid><description>&lt;h2 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -375,7 +378,7 @@ Solution
 &lt;p>And then the token details screen looks like this,&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot03.png" alt="AzDevOps personal token details" title="AzDevOps personal token details">&lt;/a>&lt;/p>
 &lt;p>With the token in hand, we can now get to the code, which is an adaptation from the examples linked earlier.&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">using System;
+&lt;pre tabindex="0">&lt;code>using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -443,9 +446,9 @@ public double Total;
 }
 }
 }
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>At some point I decided to convert the Excel file to JSON, that is why the code has this LoadJson method. Reading the Excel file specially saved as comma separated values (CSV) should not have been much different except for this method.&lt;/p>
 &lt;p>My JSON input file looks like this:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">[
+&lt;pre tabindex="0">&lt;code>[
 {
 &amp;#34;ID&amp;#34;: &amp;#34;25071&amp;#34;,
 &amp;#34;Dev Effort&amp;#34;: &amp;#34;1&amp;#34;,
@@ -464,9 +467,9 @@ public double Total;
 &amp;#34;Test Effort&amp;#34;: &amp;#34;1&amp;#34;,
 &amp;#34;Effort&amp;#34;: &amp;#34;5&amp;#34;
 }, ...
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>And running the program with proper configuration and having the JSON file in the right place produce the sample output bellow&lt;/p>
 &lt;p>&lt;a href="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png">&lt;img src="https://davidtriana.com/images/posts/2020/AzDevOpsScreenShot04.png" alt="Program Output" title="Program Output">&lt;/a>&lt;/p>
-&lt;p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.&lt;/p></description></item><item><title>Migrating from local TFS to TFSPreview</title><link>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link><pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid><description>&lt;p>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.&lt;/p>
+&lt;p>And mission accomplished, now this WorkItems have the missing effort populated, without changing the “Done” state date.&lt;/p></description></item><item><title>Migrating from local TFS to TFSPreview</title><link>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</link><pubDate>Tue, 06 Mar 2012 23:11:21 +0000</pubDate><guid>https://davidtriana.com/posts/2012/migrating-from-local-tfs-to-tfspreview/</guid><description>&lt;p>TFSPreview, the Team Foundation on the cloud offered by Microsoft is a very good alternative, specially for distributed development teams.&lt;/p>
 &lt;p>It’s currently free and invite only but the invite codes are relatively easy to get. I asked for one in the page and got it in two days.&lt;/p>
 &lt;p>&lt;a href="http://www.tfspreview.com">www.tfspreview.com&lt;/a>&lt;/p>
 &lt;p>Account activated, TFS available but what about my existing projects in my local TFS?,&lt;/p>

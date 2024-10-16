@@ -1,169 +1,32 @@
-<!doctype html><html lang=en-us>
-<head>
-<title>
-Listing Azure Function Apps Framework Version · David Triana
-</title>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=color-scheme content="light dark">
-<meta name=author content="David Triana">
-<meta name=description content="Scenario  Link to heading   Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?
-Solution  Link to heading   A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is">
-<meta name=keywords content="blog,developer,personal">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Listing Azure Function Apps Framework Version">
-<meta name=twitter:description content="Scenario  Link to heading   Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?
-Solution  Link to heading   A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is">
-<meta property="og:title" content="Listing Azure Function Apps Framework Version">
-<meta property="og:description" content="Scenario  Link to heading   Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?
-Solution  Link to heading   A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2022-11-15T00:00:00+00:00">
-<meta property="article:modified_time" content="2022-11-15T00:00:00+00:00">
-<link rel=canonical href=https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/>
-<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
-<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
-<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=manifest href=https://davidtriana.com/site.webmanifest>
-<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
-<meta name=generator content="Hugo 0.91.2">
-</head>
-<body class="preload-transitions colorscheme-light">
-<div class=float-container>
-<a id=dark-mode-toggle class=colorscheme-toggle>
-<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
-</a>
-</div>
-<main class=wrapper>
-<nav class=navigation>
-<section class=container>
-<a class=navigation-title href=https://davidtriana.com/>
-David Triana
-</a>
-<input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle>
-<i class="fa fa-bars fa-fw" aria-hidden=true></i>
-</label>
-<ul class=navigation-list>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
-</li>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/about/>About</a>
-</li>
-</ul>
-</section>
-</nav>
-<div class=content>
-<section class="container post">
-<article>
-<header>
-<div class=post-title>
-<h1 class=title>
-<a class=title-link href=https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/>
-Listing Azure Function Apps Framework Version
-</a>
-</h1>
-</div>
-<div class=post-meta>
-<div class=date>
-<span class=posted-on>
-<i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2022-11-15T00:00:00Z>
-November 15, 2022
-</time>
-</span>
-<span class=reading-time>
-<i class="fa fa-clock-o" aria-hidden=true></i>
-</span>
-</div>
-<div class=tags>
-<i class="fa fa-tag" aria-hidden=true></i>
-<span class=tag>
-<a href=https://davidtriana.com/tags/azure/>Azure</a>
-</span></div>
-</div>
-</header>
-<div>
-<h1 id=scenario>
-Scenario
-<a class=heading-link href=#scenario>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h1>
-<p>Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?</p>
-<h1 id=solution>
-Solution
-<a class=heading-link href=#solution>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h1>
-<p>A simple <code>az functionapps list</code> should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the <code>list</code> command, and after searching for a while I found <a href=https://github.com/Azure/azure-cli/issues/21548#issuecomment-1061634921>this solution for WebApps</a>, the command for Function Apps is</p>
-<p><code>az functionapp list --query '[].id' -o tsv | xargs | xargs -I{} bash -c "az functionapp config show --ids {} --query '[].[name, resourceGroup,linuxFxVersion, netFrameworkVersion]' --out table"</code></p>
-<p>This command will list all the functions in the current subscription, provided proper permissions.</p>
-<p>The output looks like this:</p>
-<table>
-<thead>
-<tr>
-<th>Column1</th>
-<th>Column2</th>
-<th>Column3</th>
-<th>Column4</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>tseries-urban-cars</td>
-<td>cars-classifier</td>
-<td>DOTNET|6.0</td>
-<td>v6.0</td>
-</tr>
-<tr>
-<td>tseries-urban-buildings</td>
-<td>buildings-location</td>
-<td>v4.0</td>
-<td></td>
-</tr>
-<tr>
-<td>tseries-urban-weapons</td>
-<td>weapons-catalog</td>
-<td>DOTNET|6.0</td>
-<td>v6.0</td>
-</tr>
-<tr>
-<td>targets</td>
-<td>targets-catalog</td>
-<td>DOTNET|3.1</td>
-<td>v4.0</td>
-</tr>
-</tbody>
-</table>
-<p>Rows 1 and 3 were updated already, row 2 is not .NET, and the last needs to be updated</p>
-</div>
-<footer>
-</footer>
-</article>
-<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
-</section>
-</div>
-<footer class=footer>
-<section class=container>
-©
+<!doctype html><html lang=en-us><head><title>Listing Azure Function Apps Framework Version · David Triana
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=description content="
+  Scenario
+  
+    
+    Link to heading
+  
+
+Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?
+
+  Solution
+  
+    
+    Link to heading
+  
+
+A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is"><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="Listing Azure Function Apps Framework Version"><meta name=twitter:description content="Scenario Link to heading Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn’t it be nice to be able to get a list of all the functions that should be updated?
+Solution Link to heading A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is"><meta property="og:url" content="https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/"><meta property="og:site_name" content="David Triana"><meta property="og:title" content="Listing Azure Function Apps Framework Version"><meta property="og:description" content="Scenario Link to heading Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn’t it be nice to be able to get a list of all the functions that should be updated?
+Solution Link to heading A simple az functionapps list should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the list command, and after searching for a while I found this solution for WebApps, the command for Function Apps is"><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-11-15T00:00:00+00:00"><meta property="article:modified_time" content="2022-11-15T00:00:00+00:00"><meta property="article:tag" content="Azure"><link rel=canonical href=https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/><link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://davidtriana.com/css/coder-dark.min.216e36d3eaf6f4cdfd67dc1200c49a8169e6478102977b3e9ac51a064c57054c.css integrity="sha256-IW420+r29M39Z9wSAMSagWnmR4ECl3s+msUaBkxXBUw=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png><link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.136.0"></head><body class="preload-transitions colorscheme-light"><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://davidtriana.com/>David Triana
+</a><input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/about/>About</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://davidtriana.com/posts/2022/listing-azure-functionapps-framework/>Listing Azure Function Apps Framework Version</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2022-11-15T00:00:00Z>November 15, 2022
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i></span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://davidtriana.com/tags/azure/>Azure</a></span></div></div></header><div><h1 id=scenario>Scenario
+<a class=heading-link href=#scenario><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h1><p>Azure Function Apps running with .NET 3.1 will go out of support on Dec 3 2022, something that the Azure Portal reminds users every time they visit their outdated functions. If like me, you have several functions, whouldn&rsquo;t it be nice to be able to get a list of all the functions that should be updated?</p><h1 id=solution>Solution
+<a class=heading-link href=#solution><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h1><p>A simple <code>az functionapps list</code> should do the trick, however the properties that provide this information are in one of the objects, siteConfig, which is not populated by the <code>list</code> command, and after searching for a while I found <a href=https://github.com/Azure/azure-cli/issues/21548#issuecomment-1061634921>this solution for WebApps</a>, the command for Function Apps is</p><p><code>az functionapp list --query '[].id' -o tsv | xargs | xargs -I{} bash -c "az functionapp config show --ids {} --query '[].[name, resourceGroup,linuxFxVersion, netFrameworkVersion]' --out table"</code></p><p>This command will list all the functions in the current subscription, provided proper permissions.</p><p>The output looks like this:</p><table><thead><tr><th>Column1</th><th>Column2</th><th>Column3</th><th>Column4</th></tr></thead><tbody><tr><td>tseries-urban-cars</td><td>cars-classifier</td><td>DOTNET|6.0</td><td>v6.0</td></tr><tr><td>tseries-urban-buildings</td><td>buildings-location</td><td>v4.0</td><td></td></tr><tr><td>tseries-urban-weapons</td><td>weapons-catalog</td><td>DOTNET|6.0</td><td>v6.0</td></tr><tr><td>targets</td><td>targets-catalog</td><td>DOTNET|3.1</td><td>v4.0</td></tr></tbody></table><p>Rows 1 and 3 were updated already, row 2 is not .NET, and the last needs to be updated</p></div><footer></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}]})'></script></section></div><footer class=footer><section class=container>©
 2024
 David Triana
 ·
-<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.
-</section>
-</footer>
-</main>
-<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
-</body>
-</html>
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.</section></footer></main><script src=https://davidtriana.com/js/coder.min.8ff11071e01b6aa8fb0f6e05a386a3e51c110028e4bb81710bd429e8973c5cf4.js integrity="sha256-j/EQceAbaqj7D24Fo4aj5RwRACjku4FxC9Qp6Jc8XPQ="></script></body></html>

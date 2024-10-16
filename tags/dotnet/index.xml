@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>dotnet on David Triana</title><link>https://davidtriana.com/tags/dotnet/</link><description>Recent content in dotnet on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml"/><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Dotnet on David Triana</title><link>https://davidtriana.com/tags/dotnet/</link><description>Recent content in Dotnet on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml"/><item><title>Logging HTTP Requests in .NET Core API</title><link>https://davidtriana.com/posts/2023/logging-http-requests/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2023/logging-http-requests/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -20,25 +20,25 @@ Adding HTTPLogging
 &lt;ol>
 &lt;li>In program.cs inside the static main method, when declaring the services but before creating the app&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> builder.Services.AddHttpLogging(logging =&amp;gt;
+&lt;pre tabindex="0">&lt;code> builder.Services.AddHttpLogging(logging =&amp;gt;
 {
 logging.LoggingFields = HttpLoggingFields.RequestBody;
 logging.RequestBodyLogLimit = 1024;
 });
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The LoggingFields properties is a flags property, other fields can be added, here I&amp;rsquo;m only interested in the request body, other characteristics of the request like the URL and Method are being captured already by the request type logs. The Limit property, which is in bytes, is to prevent polluting the log with very long payloads, either accidental, malicious, or real with endpoints where users submit images.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>The LoggingFields properties is a flags property, other fields can be added, here I&amp;rsquo;m only interested in the request body, other characteristics of the request like the URL and Method are being captured already by the request type logs. The Limit property, which is in bytes, is to prevent polluting the log with very long payloads, either accidental, malicious, or real with endpoints where users submit images.&lt;/p>
 &lt;ol>
 &lt;li>In program.cs inside the static main method, after creating the app&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">app.UseWhen(
+&lt;pre tabindex="0">&lt;code>app.UseWhen(
 context =&amp;gt; !(
 context.Request.Path.StartsWithSegments(&amp;#34;/api/user/login&amp;#34;) ||
 context.Request.Path.StartsWithSegments(&amp;#34;/api/user/password&amp;#34;)),
 builder =&amp;gt; builder.UseHttpLogging());
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here I use the UseWhen filter, to prevent logging passwords. In general, logging secrets or any kind of confidential information should be prevented. More complex APIs might require much more sophisticated mechanisms to avoid privacy incidents while keeping the ability to troubleshoot problematic HTTP requests.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>Here I use the UseWhen filter, to prevent logging passwords. In general, logging secrets or any kind of confidential information should be prevented. More complex APIs might require much more sophisticated mechanisms to avoid privacy incidents while keeping the ability to troubleshoot problematic HTTP requests.&lt;/p>
 &lt;ol>
 &lt;li>In appsettings.json, in the Logging section, add the relevant lines for &lt;code>Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&lt;/code> based on&lt;/li>
 &lt;/ol>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback"> &amp;#34;Logging&amp;#34;: {
+&lt;pre tabindex="0">&lt;code> &amp;#34;Logging&amp;#34;: {
 &amp;#34;LogLevel&amp;#34;: {
 &amp;#34;Default&amp;#34;: &amp;#34;Information&amp;#34;,
 &amp;#34;Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware&amp;#34;: &amp;#34;Information&amp;#34;,
@@ -53,7 +53,7 @@ builder =&amp;gt; builder.UseHttpLogging());
 }
 }
 },
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The ApplicationInsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>The ApplicationInsights section is only needed if that&amp;rsquo;s where you want your logs to go to.&lt;/p>
 &lt;h1 id="finding-the-logs-in-application-insights">
 Finding the logs in Application Insights
 &lt;a class="heading-link" href="#finding-the-logs-in-application-insights">

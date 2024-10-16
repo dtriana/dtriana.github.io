@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Workbooks on David Triana</title><link>https://davidtriana.com/tags/workbooks/</link><description>Recent content in Workbooks on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Sun, 28 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/workbooks/index.xml" rel="self" type="application/rss+xml"/><item><title>Continuous delivery for Azure Workbooks using Azure DevOps</title><link>https://davidtriana.com/posts/2024/cd-workbooks/</link><pubDate>Sun, 28 Apr 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/cd-workbooks/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Workbooks on David Triana</title><link>https://davidtriana.com/tags/workbooks/</link><description>Recent content in Workbooks on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Sun, 28 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/workbooks/index.xml" rel="self" type="application/rss+xml"/><item><title>Continuous delivery for Azure Workbooks using Azure DevOps</title><link>https://davidtriana.com/posts/2024/cd-workbooks/</link><pubDate>Sun, 28 Apr 2024 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2024/cd-workbooks/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -16,98 +16,105 @@ Creating log entries to populate the workbook
 &lt;/a>
 &lt;/h2>
 &lt;p>This section is only to address the need of data to show in the workflow. Real applications are probably already creating all these logs. The code bellow is a simple console application, starting from &lt;a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/ilogger?tabs=dotnet6#console-application">Microsoft&amp;rsquo;s sample code&lt;/a>, I added console output to be able to check the outcome live while running. The program creates logs entries simulating a process that runs every 5 seconds, doing 5 tasks every time, simulating some tasks taking longer and failures every once in a while.&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-cs" data-lang="cs">&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">System.Diagnostics&lt;/span>;
-&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.ApplicationInsights.Channel&lt;/span>;
-&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.ApplicationInsights.Extensibility&lt;/span>;
-&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.Extensions.DependencyInjection&lt;/span>;
-&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">Microsoft.Extensions.Logging&lt;/span>;
-&lt;span style="font-weight:bold">using&lt;/span> &lt;span style="font-weight:bold">var&lt;/span> channel = &lt;span style="font-weight:bold">new&lt;/span> InMemoryChannel();
-&lt;span style="font-weight:bold">try&lt;/span>
-{
-IServiceCollection services = &lt;span style="font-weight:bold">new&lt;/span> ServiceCollection();
-services.Configure&amp;lt;TelemetryConfiguration&amp;gt;(config =&amp;gt; config.TelemetryChannel = channel);
-services.AddLogging(builder =&amp;gt;
-{
-&lt;span style="font-style:italic">// Only Application Insights is registered as a logger provider
-&lt;/span>&lt;span style="font-style:italic">&lt;/span> builder.AddApplicationInsights(
-configureTelemetryConfiguration: (config) =&amp;gt; config.ConnectionString = &lt;span style="font-style:italic">&amp;#34;---the connection string---&amp;#34;&lt;/span>,
-configureApplicationInsightsLoggerOptions: (options) =&amp;gt; { }
-);
-builder.AddJsonConsole(options =&amp;gt;
-{
-options.IncludeScopes = &lt;span style="font-weight:bold">true&lt;/span>;
-options.TimestampFormat = &lt;span style="font-style:italic">&amp;#34;HH:mm:ss &amp;#34;&lt;/span>;
-});
-});
-&lt;span style="">var&lt;/span> serviceProvider = services.BuildServiceProvider();
-&lt;span style="">var&lt;/span> logger = serviceProvider.GetRequiredService&amp;lt;ILogger&amp;lt;Program&amp;gt;&amp;gt;();
-&lt;span style="">var&lt;/span> cancellationTokenSource = &lt;span style="font-weight:bold">new&lt;/span> CancellationTokenSource();
-&lt;span style="font-weight:bold">await&lt;/span> MainLoop(cancellationTokenSource.Token,
-logger, 5000).ConfigureAwait(&lt;span style="font-weight:bold">false&lt;/span>);
-logger.LogInformation(&lt;span style="font-style:italic">&amp;#34;Logger is working...&amp;#34;&lt;/span>);
-}
-&lt;span style="font-weight:bold">finally&lt;/span>
-{
-&lt;span style="font-style:italic">// Explicitly call Flush() followed by Delay, as required in console apps.
-&lt;/span>&lt;span style="font-style:italic">&lt;/span> &lt;span style="font-style:italic">// This ensures that even if the application terminates, telemetry is sent to the back end.
-&lt;/span>&lt;span style="font-style:italic">&lt;/span> channel.Flush();
-&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(TimeSpan.FromMilliseconds(1000));
-}
-&lt;span style="font-weight:bold">return&lt;/span>;
-&lt;span style="font-weight:bold">static&lt;/span> &lt;span style="font-weight:bold">async&lt;/span> Task MainLoop(
-CancellationToken cancellationToken,
-ILogger&amp;lt;Program&amp;gt; logger,
-&lt;span style="">int&lt;/span> frequencyInMilliSeconds)
-{
-&lt;span style="">var&lt;/span> totalRuns=0;
-&lt;span style="font-weight:bold">while&lt;/span> (!cancellationToken.IsCancellationRequested &amp;amp;&amp;amp; totalRuns &amp;lt; 200)
-{
-&lt;span style="font-style:italic">// Create a child task that runs in parallel
-&lt;/span>&lt;span style="font-style:italic">&lt;/span> &lt;span style="">var&lt;/span> childTask = Task.Run(&lt;span style="font-weight:bold">async&lt;/span> () =&amp;gt;
-{
-&lt;span style="">var&lt;/span> transactionId = DateTime.UtcNow.ToString(&lt;span style="font-style:italic">&amp;#34;yyyyMMddHHmmssfff&amp;#34;&lt;/span>);
-&lt;span style="font-weight:bold">using&lt;/span> (logger.BeginScope(&lt;span style="font-style:italic">&amp;#34;{transactionId}&amp;#34;&lt;/span>, transactionId))
-{
-&lt;span style="">var&lt;/span> totalTimeTaken = &lt;span style="font-weight:bold">new&lt;/span> Stopwatch();
-totalTimeTaken.Start();
-logger.LogInformation(
-&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName}&amp;#34;&lt;/span>,
-&lt;span style="font-style:italic">&amp;#34;started&amp;#34;&lt;/span>);
-&lt;span style="font-weight:bold">try&lt;/span>
-{
-&lt;span style="">var&lt;/span> stopWatch = &lt;span style="font-weight:bold">new&lt;/span> Stopwatch();
-&lt;span style="font-weight:bold">for&lt;/span> (&lt;span style="">var&lt;/span> i = 1; i &amp;lt; 6; i++)
-{
-stopWatch.Restart();
-&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(RandomNumber(1000, 20000), cancellationToken);
-&lt;span style="font-weight:bold">if&lt;/span> (RandomNumber(0, 100) &amp;gt; 90) &lt;span style="font-weight:bold">throw&lt;/span> &lt;span style="font-weight:bold">new&lt;/span> Exception(&lt;span style="font-style:italic">&amp;#34;Pest finder overrun!&amp;#34;&lt;/span>);
-logger.LogInformation(
-&lt;span style="font-style:italic">&amp;#34;Pest finder task {taskNumber} took {timeTaken}ms&amp;#34;&lt;/span>,
-i,
-stopWatch.ElapsedMilliseconds);
-}
-logger.LogInformation(
-&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
-&lt;span style="font-style:italic">&amp;#34;completed&amp;#34;&lt;/span>, totalTimeTaken.ElapsedMilliseconds);
-}
-&lt;span style="font-weight:bold">catch&lt;/span> (Exception ex)
-{
-logger.LogError(ex,
-&lt;span style="font-style:italic">&amp;#34;Pest finder {eventTypeName} with error {errorMessage} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
-&lt;span style="font-style:italic">&amp;#34;completed&amp;#34;&lt;/span>, ex.Message, totalTimeTaken.ElapsedMilliseconds);
-}
-}
-});
-&lt;span style="font-weight:bold">await&lt;/span> Task.Delay(frequencyInMilliSeconds, cancellationToken).ConfigureAwait(&lt;span style="font-weight:bold">false&lt;/span>);
-totalRuns++;
-}
-}
-&lt;span style="font-weight:bold">static&lt;/span> &lt;span style="">int&lt;/span> RandomNumber(&lt;span style="">int&lt;/span> min, &lt;span style="">int&lt;/span> max)
-{
-&lt;span style="">var&lt;/span> random = &lt;span style="font-weight:bold">new&lt;/span> Random();
-&lt;span style="font-weight:bold">return&lt;/span> random.Next(min, max);
-}
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="creating-the-workbook">
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> System.Diagnostics;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> Microsoft.ApplicationInsights.Channel;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> Microsoft.ApplicationInsights.Extensibility;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> Microsoft.Extensions.DependencyInjection;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> Microsoft.Extensions.Logging;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span>&lt;span style="color:#ff79c6">using&lt;/span> var channel = &lt;span style="color:#ff79c6">new&lt;/span> InMemoryChannel();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span>&lt;span style="color:#ff79c6">try&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span> IServiceCollection services = &lt;span style="color:#ff79c6">new&lt;/span> ServiceCollection();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> services.Configure&amp;lt;TelemetryConfiguration&amp;gt;(config =&amp;gt; config.TelemetryChannel = channel);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span> services.AddLogging(builder =&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span> &lt;span style="color:#6272a4">// Only Application Insights is registered as a logger provider&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span> builder.AddApplicationInsights(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span> configureTelemetryConfiguration: (config) =&amp;gt; config.ConnectionString = &lt;span style="color:#f1fa8c">&amp;#34;---the connection string---&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18&lt;/span>&lt;span> configureApplicationInsightsLoggerOptions: (options) =&amp;gt; { }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19&lt;/span>&lt;span> );
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20&lt;/span>&lt;span> builder.AddJsonConsole(options =&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22&lt;/span>&lt;span> options.IncludeScopes = &lt;span style="color:#ff79c6">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23&lt;/span>&lt;span> options.TimestampFormat = &lt;span style="color:#f1fa8c">&amp;#34;HH:mm:ss &amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24&lt;/span>&lt;span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25&lt;/span>&lt;span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> serviceProvider = services.BuildServiceProvider();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> logger = serviceProvider.GetRequiredService&amp;lt;ILogger&amp;lt;Program&amp;gt;&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> cancellationTokenSource = &lt;span style="color:#ff79c6">new&lt;/span> CancellationTokenSource();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30&lt;/span>&lt;span> &lt;span style="color:#ff79c6">await&lt;/span> MainLoop(cancellationTokenSource.Token,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31&lt;/span>&lt;span> logger, &lt;span style="color:#bd93f9">5000&lt;/span>).ConfigureAwait(&lt;span style="color:#ff79c6">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32&lt;/span>&lt;span> logger.LogInformation(&lt;span style="color:#f1fa8c">&amp;#34;Logger is working...&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34&lt;/span>&lt;span>&lt;span style="color:#ff79c6">finally&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35&lt;/span>&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36&lt;/span>&lt;span> &lt;span style="color:#6272a4">// Explicitly call Flush() followed by Delay, as required in console apps.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37&lt;/span>&lt;span> &lt;span style="color:#6272a4">// This ensures that even if the application terminates, telemetry is sent to the back end.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38&lt;/span>&lt;span> channel.Flush();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40&lt;/span>&lt;span> &lt;span style="color:#ff79c6">await&lt;/span> Task.Delay(TimeSpan.FromMilliseconds(&lt;span style="color:#bd93f9">1000&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43&lt;/span>&lt;span>&lt;span style="color:#ff79c6">return&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">static&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">async&lt;/span> Task MainLoop(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46&lt;/span>&lt;span> CancellationToken cancellationToken,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47&lt;/span>&lt;span> ILogger&amp;lt;Program&amp;gt; logger,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48&lt;/span>&lt;span> &lt;span style="color:#8be9fd">int&lt;/span> frequencyInMilliSeconds)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49&lt;/span>&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> totalRuns=&lt;span style="color:#bd93f9">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51&lt;/span>&lt;span> &lt;span style="color:#ff79c6">while&lt;/span> (!cancellationToken.IsCancellationRequested &amp;amp;&amp;amp; totalRuns &amp;lt; &lt;span style="color:#bd93f9">200&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53&lt;/span>&lt;span> &lt;span style="color:#6272a4">// Create a child task that runs in parallel&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> childTask = Task.Run(&lt;span style="color:#8be9fd;font-style:italic">async&lt;/span> () =&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> transactionId = DateTime.UtcNow.ToString(&lt;span style="color:#f1fa8c">&amp;#34;yyyyMMddHHmmssfff&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57&lt;/span>&lt;span> &lt;span style="color:#ff79c6">using&lt;/span> (logger.BeginScope(&lt;span style="color:#f1fa8c">&amp;#34;{transactionId}&amp;#34;&lt;/span>, transactionId))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> totalTimeTaken = &lt;span style="color:#ff79c6">new&lt;/span> Stopwatch();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60&lt;/span>&lt;span> totalTimeTaken.Start();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61&lt;/span>&lt;span> logger.LogInformation(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;Pest finder {eventTypeName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;started&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64&lt;/span>&lt;span> &lt;span style="color:#ff79c6">try&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> stopWatch = &lt;span style="color:#ff79c6">new&lt;/span> Stopwatch();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67&lt;/span>&lt;span> &lt;span style="color:#ff79c6">for&lt;/span> (&lt;span style="color:#8be9fd">var&lt;/span> i = &lt;span style="color:#bd93f9">1&lt;/span>; i &amp;lt; &lt;span style="color:#bd93f9">6&lt;/span>; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69&lt;/span>&lt;span> stopWatch.Restart();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70&lt;/span>&lt;span> &lt;span style="color:#ff79c6">await&lt;/span> Task.Delay(RandomNumber(&lt;span style="color:#bd93f9">1000&lt;/span>, &lt;span style="color:#bd93f9">20000&lt;/span>), cancellationToken);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71&lt;/span>&lt;span> &lt;span style="color:#ff79c6">if&lt;/span> (RandomNumber(&lt;span style="color:#bd93f9">0&lt;/span>, &lt;span style="color:#bd93f9">100&lt;/span>) &amp;gt; &lt;span style="color:#bd93f9">90&lt;/span>) &lt;span style="color:#ff79c6">throw&lt;/span> &lt;span style="color:#ff79c6">new&lt;/span> Exception(&lt;span style="color:#f1fa8c">&amp;#34;Pest finder overrun!&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72&lt;/span>&lt;span> logger.LogInformation(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;Pest finder task {taskNumber} took {timeTaken}ms&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74&lt;/span>&lt;span> i,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75&lt;/span>&lt;span> stopWatch.ElapsedMilliseconds);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77&lt;/span>&lt;span> logger.LogInformation(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;Pest finder {eventTypeName} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;completed&amp;#34;&lt;/span>, totalTimeTaken.ElapsedMilliseconds);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81&lt;/span>&lt;span> &lt;span style="color:#ff79c6">catch&lt;/span> (Exception ex)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82&lt;/span>&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83&lt;/span>&lt;span> logger.LogError(ex,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;Pest finder {eventTypeName} with error {errorMessage} and took {totalTimeTaken}ms&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85&lt;/span>&lt;span> &lt;span style="color:#f1fa8c">&amp;#34;completed&amp;#34;&lt;/span>, ex.Message, totalTimeTaken.ElapsedMilliseconds);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88&lt;/span>&lt;span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89&lt;/span>&lt;span> &lt;span style="color:#ff79c6">await&lt;/span> Task.Delay(frequencyInMilliSeconds, cancellationToken).ConfigureAwait(&lt;span style="color:#ff79c6">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90&lt;/span>&lt;span> totalRuns++;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">93&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">94&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">static&lt;/span> &lt;span style="color:#8be9fd">int&lt;/span> RandomNumber(&lt;span style="color:#8be9fd">int&lt;/span> min, &lt;span style="color:#8be9fd">int&lt;/span> max)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">95&lt;/span>&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">96&lt;/span>&lt;span> &lt;span style="color:#8be9fd">var&lt;/span> random = &lt;span style="color:#ff79c6">new&lt;/span> Random();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">97&lt;/span>&lt;span> &lt;span style="color:#ff79c6">return&lt;/span> random.Next(min, max);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">98&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="creating-the-workbook">
 Creating the workbook
 &lt;a class="heading-link" href="#creating-the-workbook">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -121,21 +128,21 @@ Creating the workbook
 &lt;p>Workbooks are composed of blocks, added vertically one after the other. The default template adds two blocks, one text block and one query block&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-initial-template.png" alt="Default template">&lt;/p>
 &lt;p>I updated the query in the query block according to the logs I created&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">union * | where customDimensions.eventTypeName == &amp;#39;completed&amp;#39; | summarize count() by bin(timestamp, 1m), itemType
+&lt;pre tabindex="0">&lt;code class="language-KQL" data-lang="KQL">union * | where customDimensions.eventTypeName == &amp;#39;completed&amp;#39; | summarize count() by bin(timestamp, 1m), itemType
 | render barchart
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-first-query.png" alt="First query">&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-first-query.png" alt="First query">&lt;/p>
 &lt;p>And this already shows the value of workbooks!, the ability to produce very nice reports and summaries from logs, without code and without deploying an additional application. This first query shows a summary.&lt;/p>
 &lt;p>I used the +Add option to add a new query block&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-add-query.png" alt="add query">&lt;/p>
 &lt;p>and in this next query I&amp;rsquo;m getting the details of all the processes that failed&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">exceptions | project timestamp, TransactionId = customDimensions.transactionId, Error = customDimensions.errorMessage
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>To add some interactivity I configured the &amp;ldquo;export parameter&amp;rdquo; feature so that when a row from the results is selected, the selected value is made available as a parameter for the next query&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-KQL" data-lang="KQL">exceptions | project timestamp, TransactionId = customDimensions.transactionId, Error = customDimensions.errorMessage
+&lt;/code>&lt;/pre>&lt;p>To add some interactivity I configured the &amp;ldquo;export parameter&amp;rdquo; feature so that when a row from the results is selected, the selected value is made available as a parameter for the next query&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-second-query-add-parameter.png" alt="Adding parameters">&lt;/p>
 &lt;p>Next I added the last query, to show all the log entries for that process run&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">union traces,exceptions | where customDimensions.transactionId == {txid}
+&lt;pre tabindex="0">&lt;code class="language-KQL" data-lang="KQL">union traces,exceptions | where customDimensions.transactionId == {txid}
 | order by timestamp asc
 | project timestamp, message = iif(itemType==&amp;#39;trace&amp;#39;, message, customDimensions.FormattedMessage), timetaken = customDimensions.timeTaken
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>The final result looks like this&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>The final result looks like this&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/workbooks-end-result.png" alt="Final result">&lt;/p>
 &lt;p>Workbooks also allow &amp;ldquo;link&amp;rdquo; columns, with the ability to directly open Azure Portal blades or invoke actions, as shown &lt;a href="https://techcommunity.microsoft.com/t5/azure-integration-services-blog/extending-logic-apps-app-insight-integration-with-azure/ba-p/3784062">here&lt;/a> for Logic Apps Standard where the workbook includes links to the run details and to the &amp;ldquo;resubmit&amp;rdquo; action for the workflow.&lt;/p>
 &lt;h2 id="creating-the-pipeline">
@@ -153,58 +160,59 @@ Creating the pipeline
 &lt;p>This option works, however the content of the workbook is all in one single place, the serializedData property, which makes it harder to inspect when thinking about code reviews and pull requests. The option I use is the first one, the &amp;ldquo;Gallery template&amp;rdquo; option, which provides the full content of the workbook in an easy to read and inspect JSON format.&lt;/p>
 &lt;p>To use this option I save this content as a JSON file, which I then add to source control, then pull during deployment using the loadTextContent bicep function.&lt;/p>
 &lt;p>Assuming separate subscriptions per environment, my bicep template looks like this, and a critical piece is the uniqueness of the name of the workflow. This name needs to be unique, and the same between pipeline runs to ensure the workbook is updated instead of adding a new workbook. The GUID function accepts as many parameters as needed so depending on the project I might need to add more parameters to make it unique.&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-fallback" data-lang="fallback">@description(&amp;#39;The datacenter to use for the deployment.&amp;#39;)
-param location string = resourceGroup().location
-param environmentName string
-param environmentShortNameUpperCase string = toUpper(environmentName)
-param workbookSourceId string = &amp;#39;/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/microsoft.insights/components/appinsights-${environmentName}&amp;#39;
-resource existing_application_insights &amp;#39;Microsoft.Insights/components@2020-02-02&amp;#39; existing = {
-name: &amp;#39;appinsights-${environmentName}&amp;#39;
-scope: resourceGroup()
-}
-resource ProcessRunsSummaryWorkbook &amp;#39;Microsoft.Insights/workbooks@2023-06-01&amp;#39; = {
-name: guid(subscription().id, resourceGroup().id, existing_application_insights.id)
-location: location
-tags: {
-costCenter: &amp;#39;Demos&amp;#39;
-project: &amp;#39;Demos&amp;#39;
-}
-kind: &amp;#39;shared&amp;#39;
-properties: {
-category: &amp;#39;workbook&amp;#39;
-displayName: &amp;#39;Pest control runs - ${environmentShortNameUpperCase}&amp;#39;
-serializedData: loadTextContent(&amp;#39;PestControlWorkbook.json&amp;#39;)
-sourceId: workbookSourceId
-version: &amp;#39;1.0&amp;#39;
-}
-dependsOn: [
-existing_application_insights
-]
-}
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>To deploy this bicep template I use the Azure Devops deployment task&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">task&lt;/span>: AzureResourceManagerTemplateDeployment@3
-&lt;span style="font-weight:bold">displayName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Deploy Workbook&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">inputs&lt;/span>:
-&lt;span style="font-weight:bold">azureResourceManagerConnection&lt;/span>: ${{ parameters.serviceConnection }}
-&lt;span style="font-weight:bold">subscriptionId&lt;/span>: &lt;span style="font-style:italic">&amp;#39;$(subscriptionId)&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">action&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Create Or Update Resource Group&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">resourceGroupName&lt;/span>: $(resourceGroupName)
-&lt;span style="font-weight:bold">location&lt;/span>: $(resourceGroupLocation)
-&lt;span style="font-weight:bold">csmFile&lt;/span>: &lt;span style="font-style:italic">&amp;#39;$(Pipeline.Workspace)/$(artifactName)/template-workbooks.bicep&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">overrideParameters&lt;/span>: &amp;gt;-&lt;span style="font-style:italic">
-&lt;/span>&lt;span style="font-style:italic"> &lt;/span> -environmentName $(environmentShortName)
-&lt;span style="font-weight:bold">deploymentMode&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Incremental&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Which is called by a multistage pipeline that takes care of each of the environments, and where a typical stage looks like this&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">- &lt;span style="font-weight:bold">stage&lt;/span>: STAGING
-&lt;span style="font-weight:bold">displayName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;STAGING Deployment&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">variables&lt;/span>:
-- &lt;span style="font-weight:bold">template&lt;/span>: pipeline-variables.yml
-&lt;span style="font-weight:bold">parameters&lt;/span>:
-&lt;span style="font-weight:bold">environmentShortName&lt;/span>: &lt;span style="font-style:italic">&amp;#39;stg&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">subscriptionId&lt;/span>: &lt;span style="font-style:italic">&amp;#39;---my guid---&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">jobs&lt;/span>:
-- &lt;span style="font-weight:bold">template&lt;/span>: templates/iac-template.yml
-&lt;span style="font-weight:bold">parameters&lt;/span>:
-&lt;span style="font-weight:bold">azDevOpsEnvironment&lt;/span>: &lt;span style="font-style:italic">&amp;#39;Pest Control Staging&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">serviceConnection&lt;/span>: &lt;span style="font-style:italic">&amp;#39;azure-staging-service-connection&amp;#39;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>A complete example of multistage pipelines for infrastructure as code (IaC) and continuous integration (CI) and continuous delivery (CD) can be found in the &lt;a href="https://github.com/Azure/logicapps/tree/master/azure-devops-sample/.pipelines/classic">Microsoft guidance for DevOps with Azure Standard Logic Apps&lt;/a>&lt;/p></description></item></channel></rss>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bicep" data-lang="bicep">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>@&lt;span style="color:#50fa7b">description&lt;/span>(&lt;span style="color:#f1fa8c">&amp;#39;The datacenter to use for the deployment.&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">param&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">location&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">string&lt;/span> = &lt;span style="color:#50fa7b">resourceGroup&lt;/span>().&lt;span style="color:#8be9fd;font-style:italic">location&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">param&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">environmentName&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">param&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">environmentShortNameUpperCase&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">string&lt;/span> = &lt;span style="color:#50fa7b">toUpper&lt;/span>(&lt;span style="color:#8be9fd;font-style:italic">environmentName&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">param&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">workbookSourceId&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">string&lt;/span> = &lt;span style="color:#f1fa8c">&amp;#39;/subscriptions/&lt;/span>&lt;span style="color:#f1fa8c">${&lt;/span>&lt;span style="color:#50fa7b">subscription&lt;/span>().&lt;span style="color:#8be9fd;font-style:italic">subscriptionId&lt;/span>&lt;span style="color:#f1fa8c">}&lt;/span>&lt;span style="color:#f1fa8c">/resourceGroups/&lt;/span>&lt;span style="color:#f1fa8c">${&lt;/span>&lt;span style="color:#50fa7b">resourceGroup&lt;/span>().&lt;span style="color:#8be9fd;font-style:italic">name&lt;/span>&lt;span style="color:#f1fa8c">}&lt;/span>&lt;span style="color:#f1fa8c">/providers/microsoft.insights/components/appinsights-&lt;/span>&lt;span style="color:#f1fa8c">${&lt;/span>&lt;span style="color:#8be9fd;font-style:italic">environmentName&lt;/span>&lt;span style="color:#f1fa8c">}&lt;/span>&lt;span style="color:#f1fa8c">&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">resource&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">existing_application_insights&lt;/span> &lt;span style="color:#f1fa8c">&amp;#39;Microsoft.Insights/components@2020-02-02&amp;#39;&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">existing&lt;/span> = {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">name&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;appinsights-&lt;/span>&lt;span style="color:#f1fa8c">${&lt;/span>&lt;span style="color:#8be9fd;font-style:italic">environmentName&lt;/span>&lt;span style="color:#f1fa8c">}&lt;/span>&lt;span style="color:#f1fa8c">&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">scope&lt;/span>: &lt;span style="color:#50fa7b">resourceGroup&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">resource&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">ProcessRunsSummaryWorkbook&lt;/span> &lt;span style="color:#f1fa8c">&amp;#39;Microsoft.Insights/workbooks@2023-06-01&amp;#39;&lt;/span> = {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">name&lt;/span>: &lt;span style="color:#50fa7b">guid&lt;/span>(&lt;span style="color:#50fa7b">subscription&lt;/span>().&lt;span style="color:#8be9fd;font-style:italic">id&lt;/span>, &lt;span style="color:#50fa7b">resourceGroup&lt;/span>().&lt;span style="color:#8be9fd;font-style:italic">id&lt;/span>, &lt;span style="color:#8be9fd;font-style:italic">existing_application_insights&lt;/span>.&lt;span style="color:#8be9fd;font-style:italic">id&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">location&lt;/span>: &lt;span style="color:#8be9fd;font-style:italic">location&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">tags&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">costCenter&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Demos&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">project&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Demos&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">kind&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;shared&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">properties&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">category&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;workbook&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">displayName&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Pest control runs - &lt;/span>&lt;span style="color:#f1fa8c">${&lt;/span>&lt;span style="color:#8be9fd;font-style:italic">environmentShortNameUpperCase&lt;/span>&lt;span style="color:#f1fa8c">}&lt;/span>&lt;span style="color:#f1fa8c">&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">serializedData&lt;/span>: &lt;span style="color:#50fa7b">loadTextContent&lt;/span>(&lt;span style="color:#f1fa8c">&amp;#39;PestControlWorkbook.json&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">sourceId&lt;/span>: &lt;span style="color:#8be9fd;font-style:italic">workbookSourceId&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">version&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;1.0&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25&lt;/span>&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">dependsOn&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">existing_application_insights&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28&lt;/span>&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29&lt;/span>&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>To deploy this bicep template I use the Azure Devops deployment task&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">task&lt;/span>: AzureResourceManagerTemplateDeployment@3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span> &lt;span style="color:#ff79c6">displayName&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Deploy Workbook&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inputs&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span> &lt;span style="color:#ff79c6">azureResourceManagerConnection&lt;/span>: ${{ parameters.serviceConnection }}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">subscriptionId&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;$(subscriptionId)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span> &lt;span style="color:#ff79c6">action&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Create Or Update Resource Group&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span> &lt;span style="color:#ff79c6">resourceGroupName&lt;/span>: $(resourceGroupName)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span> &lt;span style="color:#ff79c6">location&lt;/span>: $(resourceGroupLocation)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span> &lt;span style="color:#ff79c6">csmFile&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;$(Pipeline.Workspace)/$(artifactName)/template-workbooks.bicep&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> &lt;span style="color:#ff79c6">overrideParameters&lt;/span>: &amp;gt;-&lt;span style="color:#f1fa8c">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> -environmentName $(environmentShortName)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#ff79c6">deploymentMode&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Incremental&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Which is called by a multistage pipeline that takes care of each of the environments, and where a typical stage looks like this&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">stage&lt;/span>: STAGING
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span> &lt;span style="color:#ff79c6">displayName&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;STAGING Deployment&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span> &lt;span style="color:#ff79c6">variables&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span> - &lt;span style="color:#ff79c6">template&lt;/span>: pipeline-variables.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">parameters&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span> &lt;span style="color:#ff79c6">environmentShortName&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;stg&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span> &lt;span style="color:#ff79c6">subscriptionId&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;---my guid---&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span> &lt;span style="color:#ff79c6">jobs&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span> - &lt;span style="color:#ff79c6">template&lt;/span>: templates/iac-template.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> &lt;span style="color:#ff79c6">parameters&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span> &lt;span style="color:#ff79c6">azDevOpsEnvironment&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;Pest Control Staging&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#ff79c6">serviceConnection&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;azure-staging-service-connection&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>A complete example of multistage pipelines for infrastructure as code (IaC) and continuous integration (CI) and continuous delivery (CD) can be found in the &lt;a href="https://github.com/Azure/logicapps/tree/master/azure-devops-sample/.pipelines/classic">Microsoft guidance for DevOps with Azure Standard Logic Apps&lt;/a>&lt;/p></description></item></channel></rss>

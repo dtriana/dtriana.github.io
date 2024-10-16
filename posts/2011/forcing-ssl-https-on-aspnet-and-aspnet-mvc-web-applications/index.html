@@ -1,153 +1,19 @@
-<!doctype html><html lang=en-us>
-<head>
-<title>
-Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications · David Triana
-</title>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=color-scheme content="light dark">
-<meta name=author content="David Triana">
-<meta name=description content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
-How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software.">
-<meta name=keywords content="blog,developer,personal">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications">
-<meta name=twitter:description content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
-How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software.">
-<meta property="og:title" content="Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications">
-<meta property="og:description" content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
-How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2011-09-20T19:56:00+00:00">
-<meta property="article:modified_time" content="2011-09-20T19:56:00+00:00">
-<link rel=canonical href=https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/>
-<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
-<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
-<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=manifest href=https://davidtriana.com/site.webmanifest>
-<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
-<meta name=generator content="Hugo 0.91.2">
-</head>
-<body class="preload-transitions colorscheme-light">
-<div class=float-container>
-<a id=dark-mode-toggle class=colorscheme-toggle>
-<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
-</a>
-</div>
-<main class=wrapper>
-<nav class=navigation>
-<section class=container>
-<a class=navigation-title href=https://davidtriana.com/>
-David Triana
-</a>
-<input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle>
-<i class="fa fa-bars fa-fw" aria-hidden=true></i>
-</label>
-<ul class=navigation-list>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
-</li>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/about/>About</a>
-</li>
-</ul>
-</section>
-</nav>
-<div class=content>
-<section class="container post">
-<article>
-<header>
-<div class=post-title>
-<h1 class=title>
-<a class=title-link href=https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/>
-Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications
-</a>
-</h1>
-</div>
-<div class=post-meta>
-<div class=date>
-<span class=posted-on>
-<i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2011-09-20T19:56:00Z>
-September 20, 2011
-</time>
-</span>
-<span class=reading-time>
-<i class="fa fa-clock-o" aria-hidden=true></i>
-</span>
-</div>
-<div class=tags>
-<i class="fa fa-tag" aria-hidden=true></i>
-<span class=tag>
-<a href=https://davidtriana.com/tags/asp.net/>ASP.NET</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/mvc/>MVC</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/web-development/>Web Development</a>
-</span></div>
-</div>
-</header>
-<div>
-<p>Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.</p>
-<p>How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like <a href=http://codebutler.github.com/firesheep/>firesheep</a>and other ready to use and easily available software.</p>
-<p>What data can be intercepted? everything posted to the web application like usernames and passwords and everything sent back to you by the web application like your session cookie. With that, the attacker can pose as you and take any action that you can on the web application.</p>
-<p>So what to do about that? Make sure your data traffic flows over HTTPS</p>
-<p>How to do that?</p>
-<p>The following steps assume that we are talking about a web application build with ASP.NET Webforms or ASP.NET MVC and exposed over the internet. For a intranet application the approach is a little different specially for the firsts steps.</p>
-<p>0-Buy a domain name</p>
-<p>Otherwise how do you plan to invite your users to your website?</p>
-<p>1-Buy an SSL Certificate for that domain</p>
-<p>You need an SSL certificate for the domain that exposes your web application, for example if your web application is to be consumed using bigbank.com then you need to buy an SSL certificate for that domain from an Certification Authority. There is no relevant technical difference between the certificates issued by the different certification authorities, however some obscure authorities may not be trusted by default on all the commercially available web browsers and that can be bad for your web site. Is not that the communication cannot be secured with any certificate but the user will get a message warning him about potential risks visiting that web site. The certificate certifies that you exists in the real world and you have administrative control over the domain. The cheapest certification authorities do this verification automatically, the more expensive ones may demand to speak with you over the phone and may require legal documents about your company before issuing the certificate, however from a technical point of view and from the point of view of most users there’s no difference between an U$40/year certificate (godaddy.com®) and a U$400/year one. (verisign.com®) . There’s another type of certificates called EV certificates that stands for Extended Validation. This certificates are extremely expensive, so expensive that makes the user’s navigator address bar go green. From the perspective of protecting the traffic this certificates have no difference with the plain SSL Certificates. This is the kind of certificate used by amazon.com® for example.</p>
-<p>2-Install the certificate</p>
-<p>Depending on your version of IIS or the kind of hosting you are using for your web application this process can be very different plus there’s thousands of articles over the internet about how to do it so just Bing “how to install an ssl certificate in __________” and fill the blank with your hosting environment and you’re good to go.</p>
-<p>3-Test your site over SSL</p>
-<p>In some hosting environments once the certificate is in place you should be able to open your web site using HTTPS instead of just HTTP. If that’s not the case then you need to make sure that the bindings are well configured in IIS for your website, for example in IIS 7.0 right clic your web site, edit bindings</p>
-<p><a href=https://davidtriana.com/images/posts/2012/05/image31.png><img src=https://davidtriana.com/images/posts/2012/05/image_thumb30.png alt=image title=image></a></p>
-<p>Then in the Site Bindings dialog clic Add, choose https for Type and choose the adequate SSL Certificate.</p>
-<p><a href=https://davidtriana.com/images/posts/2012/05/image32.png><img src=https://davidtriana.com/images/posts/2012/05/image_thumb31.png alt=image title=image></a></p>
-<p>4-Make sure the pages are served over HTTPS</p>
-<p>Now the web application is available over https, however it depends on the user to type https every time he uses the web application. The programmer can hardcode the links in the application so they are HTTPS but the user can always change that to http from the address bar so what to do about it? You need to programmatically check if the request is over HTTPS and if it’s not then make it HTTPS.</p>
-<p>  On ASP.NET Webforms one way to do that is to override the OnInit event. This can be done in the .master page:</p>
-<p>protected override void OnInit(EventArgs e)<br>
-{<br>
-       if (!Request.IsSecureConnection)<br>
-       {<br>
-           Response.Redirect(Request.Url.AbsoluteUri.ToLower().Replace("<a href=http://%22>http://"</a>, &ldquo;<a href=https://%22>https://")</a>), true);<br>
-       }<br>
-       base.OnInit(e);<br>
-}</p>
-<p>On ASP.NET MVC there’s a build in actionfilter:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>\[RequireHttps\]
-</code></pre></div><p>However that filter result in a runtime exception when the action is requested over HTTP so the best solution I’ve found so far and I’m currently using in a commercial web site that I maintain consist on a custom ActionFilterAttribute that does something very similar to the Redirect in the Webforms solution but with the elegance of MVC., on the post there is two solutions, use the second one. As the author explains the first one can mess up QueryString data.</p>
-<p><a href=http://weblogs.asp.net/dwahlin/archive/2009/08/25/requiring-ssl-for-asp-net-mvc-controllers.aspx>Requiring SSL For ASP.NET MVC Controllers</a></p>
-</div>
-<footer>
-</footer>
-</article>
-<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
-</section>
-</div>
-<footer class=footer>
-<section class=container>
-©
+<!doctype html><html lang=en-us><head><title>Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications · David Triana
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=description content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
+How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software."><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications"><meta name=twitter:description content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
+How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software."><meta property="og:url" content="https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/"><meta property="og:site_name" content="David Triana"><meta property="og:title" content="Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications"><meta property="og:description" content="Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.
+How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like firesheepand other ready to use and easily available software."><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2011-09-20T19:56:00+00:00"><meta property="article:modified_time" content="2011-09-20T19:56:00+00:00"><meta property="article:tag" content="ASP.NET"><meta property="article:tag" content="MVC"><meta property="article:tag" content="Web Development"><link rel=canonical href=https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/><link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://davidtriana.com/css/coder-dark.min.216e36d3eaf6f4cdfd67dc1200c49a8169e6478102977b3e9ac51a064c57054c.css integrity="sha256-IW420+r29M39Z9wSAMSagWnmR4ECl3s+msUaBkxXBUw=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png><link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.136.0"></head><body class="preload-transitions colorscheme-light"><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://davidtriana.com/>David Triana
+</a><input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/about/>About</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://davidtriana.com/posts/2011/forcing-ssl-https-on-aspnet-and-aspnet-mvc-web-applications/>Forcing SSL (https) on ASP.NET and ASP.NET MVC Web Applications</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2011-09-20T19:56:00Z>September 20, 2011
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i></span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://davidtriana.com/tags/asp.net/>ASP.NET</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/mvc/>MVC</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/web-development/>Web Development</a></span></div></div></header><div><p>Frequently is very desirable that the request and the pages served to the user from the Web Application are delivered under https. Why?, because otherwise the data is transmitted in plain text over the wire or over the air if using WiFi and can be intercepted by other people.</p><p>How hard it will be to intercept the data? trivial to a motivated attacker, oppressive government or dedicated law enforcement agency. In fact, lately is trivial to anyone with tools like <a href=http://codebutler.github.com/firesheep/>firesheep</a>and other ready to use and easily available software.</p><p>What data can be intercepted? everything posted to the web application like usernames and passwords and everything sent back to you by the web application like your session cookie. With that, the attacker can pose as you and take any action that you can on the web application.</p><p>So what to do about that? Make sure your data traffic flows over HTTPS</p><p>How to do that?</p><p>The following steps assume that we are talking about a web application build with ASP.NET Webforms or ASP.NET MVC and exposed over the internet. For a intranet application the approach is a little different specially for the firsts steps.</p><p>0-Buy a domain name</p><p>Otherwise how do you plan to invite your users to your website?</p><p>1-Buy an SSL Certificate for that domain</p><p>You need an SSL certificate for the domain that exposes your web application, for example if your web application is to be consumed using bigbank.com then you need to buy an SSL certificate for that domain from an Certification Authority. There is no relevant technical difference between the certificates issued by the different certification authorities, however some obscure authorities may not be trusted by default on all the commercially available web browsers and that can be bad for your web site. Is not that the communication cannot be secured with any certificate but the user will get a message warning him about potential risks visiting that web site. The certificate certifies that you exists in the real world and you have administrative control over the domain. The cheapest certification authorities do this verification automatically, the more expensive ones may demand to speak with you over the phone and may require legal documents about your company before issuing the certificate, however from a technical point of view and from the point of view of most users there’s no difference between an U$40/year certificate (godaddy.com®) and a U$400/year one. (verisign.com®) . There’s another type of certificates called EV certificates that stands for Extended Validation. This certificates are extremely expensive, so expensive that makes the user’s navigator address bar go green. From the perspective of protecting the traffic this certificates have no difference with the plain SSL Certificates. This is the kind of certificate used by amazon.com® for example.</p><p>2-Install the certificate</p><p>Depending on your version of IIS or the kind of hosting you are using for your web application this process can be very different plus there’s thousands of articles over the internet about how to do it so just Bing “how to install an ssl certificate in __________” and fill the blank with your hosting environment and you’re good to go.</p><p>3-Test your site over SSL</p><p>In some hosting environments once the certificate is in place you should be able to open your web site using HTTPS instead of just HTTP. If that’s not the case then you need to make sure that the bindings are well configured in IIS for your website, for example in IIS 7.0 right clic your web site, edit bindings</p><p><a href=https://davidtriana.com/images/posts/2012/05/image31.png><img src=https://davidtriana.com/images/posts/2012/05/image_thumb30.png alt=image title=image></a></p><p>Then in the Site Bindings dialog clic Add, choose https for Type and choose the adequate SSL Certificate.</p><p><a href=https://davidtriana.com/images/posts/2012/05/image32.png><img src=https://davidtriana.com/images/posts/2012/05/image_thumb31.png alt=image title=image></a></p><p>4-Make sure the pages are served over HTTPS</p><p>Now the web application is available over https, however it depends on the user to type https every time he uses the web application. The programmer can hardcode the links in the application so they are HTTPS but the user can always change that to http from the address bar so what to do about it? You need to programmatically check if the request is over HTTPS and if it’s not then make it HTTPS.</p><p>  On ASP.NET Webforms one way to do that is to override the OnInit event. This can be done in the .master page:</p><p>protected override void OnInit(EventArgs e)<br>{<br>       if (!Request.IsSecureConnection)<br>       {<br>           Response.Redirect(Request.Url.AbsoluteUri.ToLower().Replace("<a href=http://%22>http://"</a>, &ldquo;<a href=https://%22>https://&rdquo;)</a>), true);<br>       }<br>       base.OnInit(e);<br>}</p><p>On ASP.NET MVC there’s a build in actionfilter:</p><pre tabindex=0><code>\[RequireHttps\]
+</code></pre><p>However that filter result in a runtime exception when the action is requested over HTTP so the best solution I’ve found so far and I’m currently using in a commercial web site that I maintain consist on a custom ActionFilterAttribute that does something very similar to the Redirect in the Webforms solution but with the elegance of MVC., on the post there is two solutions, use the second one. As the author explains the first one can mess up QueryString data.</p><p><a href=http://weblogs.asp.net/dwahlin/archive/2009/08/25/requiring-ssl-for-asp-net-mvc-controllers.aspx>Requiring SSL For ASP.NET MVC Controllers</a></p></div><footer></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}]})'></script></section></div><footer class=footer><section class=container>©
 2024
 David Triana
 ·
-<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.
-</section>
-</footer>
-</main>
-<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
-</body>
-</html>
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.</section></footer></main><script src=https://davidtriana.com/js/coder.min.8ff11071e01b6aa8fb0f6e05a386a3e51c110028e4bb81710bd429e8973c5cf4.js integrity="sha256-j/EQceAbaqj7D24Fo4aj5RwRACjku4FxC9Qp6Jc8XPQ="></script></body></html>

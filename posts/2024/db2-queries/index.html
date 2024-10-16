@@ -1,140 +1,38 @@
-<!doctype html><html lang=en-us>
-<head>
-<title>
-Logic Apps Standard DB2 Query and Parameters · David Triana
-</title>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=color-scheme content="light dark">
-<meta name=author content="David Triana">
-<meta name=description content="Scenario  Link to heading   In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
+<!doctype html><html lang=en-us><head><title>Logic Apps Standard DB2 Query and Parameters · David Triana
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=description content="
+  Scenario
+  
+    
+    Link to heading
+  
+
+In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
+
 While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.
-Adjusting the query and parameter  Link to heading   The way it worked for me is using the ?">
-<meta name=keywords content="blog,developer,personal">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Logic Apps Standard DB2 Query and Parameters">
-<meta name=twitter:description content="Scenario  Link to heading   In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
+
+  Adjusting the query and parameter
+  
+    
+    Link to heading
+  
+
+The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition."><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="Logic Apps Standard DB2 Query and Parameters"><meta name=twitter:description content="Scenario Link to heading In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
 While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.
-Adjusting the query and parameter  Link to heading   The way it worked for me is using the ?">
-<meta property="og:title" content="Logic Apps Standard DB2 Query and Parameters">
-<meta property="og:description" content="Scenario  Link to heading   In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
+Adjusting the query and parameter Link to heading The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition."><meta property="og:url" content="https://davidtriana.com/posts/2024/db2-queries/"><meta property="og:site_name" content="David Triana"><meta property="og:title" content="Logic Apps Standard DB2 Query and Parameters"><meta property="og:description" content="Scenario Link to heading In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.
 While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.
-Adjusting the query and parameter  Link to heading   The way it worked for me is using the ?">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://davidtriana.com/posts/2024/db2-queries/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2024-01-12T00:00:00+00:00">
-<meta property="article:modified_time" content="2024-01-12T00:00:00+00:00">
-<link rel=canonical href=https://davidtriana.com/posts/2024/db2-queries/>
-<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
-<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
-<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=manifest href=https://davidtriana.com/site.webmanifest>
-<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
-<meta name=generator content="Hugo 0.91.2">
-</head>
-<body class="preload-transitions colorscheme-light">
-<div class=float-container>
-<a id=dark-mode-toggle class=colorscheme-toggle>
-<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
-</a>
-</div>
-<main class=wrapper>
-<nav class=navigation>
-<section class=container>
-<a class=navigation-title href=https://davidtriana.com/>
-David Triana
-</a>
-<input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle>
-<i class="fa fa-bars fa-fw" aria-hidden=true></i>
-</label>
-<ul class=navigation-list>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
-</li>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/about/>About</a>
-</li>
-</ul>
-</section>
-</nav>
-<div class=content>
-<section class="container post">
-<article>
-<header>
-<div class=post-title>
-<h1 class=title>
-<a class=title-link href=https://davidtriana.com/posts/2024/db2-queries/>
-Logic Apps Standard DB2 Query and Parameters
-</a>
-</h1>
-</div>
-<div class=post-meta>
-<div class=date>
-<span class=posted-on>
-<i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2024-01-12T00:00:00Z>
-January 12, 2024
-</time>
-</span>
-<span class=reading-time>
-<i class="fa fa-clock-o" aria-hidden=true></i>
-</span>
-</div>
-<div class=tags>
-<i class="fa fa-tag" aria-hidden=true></i>
-<span class=tag>
-<a href=https://davidtriana.com/tags/azure/>Azure</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/logic-apps-standard/>Logic Apps Standard</a>
-</span></div>
-</div>
-</header>
-<div>
-<h1 id=scenario>
-Scenario
-<a class=heading-link href=#scenario>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h1>
-<p>In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.</p>
-<p><img src=https://davidtriana.com/images/posts/2024/add_db2_actions.png alt="DB2 Shapes"></p>
-<p>While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.</p>
-<h1 id=adjusting-the-query-and-parameter>
-Adjusting the query and parameter
-<a class=heading-link href=#adjusting-the-query-and-parameter>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h1>
-<p>The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition.</p>
-<p><img src=https://davidtriana.com/images/posts/2024/db2_query.png alt="DB2 Query"></p>
-<p>This was after trying named parameters, the @ sign, and reading the links on the first two pages of Bing results for this question without any luck. This solution worked for me, however it might be different for you depending on the underlying database and its configuration, in my case this is against an Informix 14 database.</p>
-</div>
-<footer>
-</footer>
-</article>
-<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
-</section>
-</div>
-<footer class=footer>
-<section class=container>
-©
+Adjusting the query and parameter Link to heading The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition."><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-01-12T00:00:00+00:00"><meta property="article:modified_time" content="2024-01-12T00:00:00+00:00"><meta property="article:tag" content="Azure"><meta property="article:tag" content="Logic Apps Standard"><link rel=canonical href=https://davidtriana.com/posts/2024/db2-queries/><link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://davidtriana.com/css/coder-dark.min.216e36d3eaf6f4cdfd67dc1200c49a8169e6478102977b3e9ac51a064c57054c.css integrity="sha256-IW420+r29M39Z9wSAMSagWnmR4ECl3s+msUaBkxXBUw=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png><link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.136.0"></head><body class="preload-transitions colorscheme-light"><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://davidtriana.com/>David Triana
+</a><input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/about/>About</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://davidtriana.com/posts/2024/db2-queries/>Logic Apps Standard DB2 Query and Parameters</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2024-01-12T00:00:00Z>January 12, 2024
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i></span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://davidtriana.com/tags/azure/>Azure</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/logic-apps-standard/>Logic Apps Standard</a></span></div></div></header><div><h1 id=scenario>Scenario
+<a class=heading-link href=#scenario><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h1><p>In Logic Apps Standard we now have this in-app DB2 actions, no need for managed connections, just make DB2 calls directly from the Logic App.</p><p><img src=https://davidtriana.com/images/posts/2024/add_db2_actions.png alt="DB2 Shapes"></p><p>While using these shapes, the execute query in particular, it took me a while to figure out how to set the parameter for the query.</p><h1 id=adjusting-the-query-and-parameter>Adjusting the query and parameter
+<a class=heading-link href=#adjusting-the-query-and-parameter><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h1><p>The way it worked for me is using the ? sign for the parameter, and a numeric index for the parameter definition.</p><p><img src=https://davidtriana.com/images/posts/2024/db2_query.png alt="DB2 Query"></p><p>This was after trying named parameters, the @ sign, and reading the links on the first two pages of Bing results for this question without any luck. This solution worked for me, however it might be different for you depending on the underlying database and its configuration, in my case this is against an Informix 14 database.</p></div><footer></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}]})'></script></section></div><footer class=footer><section class=container>©
 2024
 David Triana
 ·
-<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.
-</section>
-</footer>
-</main>
-<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
-</body>
-</html>
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.</section></footer></main><script src=https://davidtriana.com/js/coder.min.8ff11071e01b6aa8fb0f6e05a386a3e51c110028e4bb81710bd429e8973c5cf4.js integrity="sha256-j/EQceAbaqj7D24Fo4aj5RwRACjku4FxC9Qp6Jc8XPQ="></script></body></html>

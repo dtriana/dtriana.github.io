@@ -1,549 +1,367 @@
-<!doctype html><html lang=en-us>
-<head>
-<title>
-Deploying Logic Apps Standard Without App Settings Secrets · David Triana
-</title>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=color-scheme content="light dark">
-<meta name=author content="David Triana">
-<meta name=description content="Scenario  Link to heading   Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don&rsquo;t like there in plain text in the settings.">
-<meta name=keywords content="blog,developer,personal">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Deploying Logic Apps Standard Without App Settings Secrets">
-<meta name=twitter:description content="Scenario  Link to heading   Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don&rsquo;t like there in plain text in the settings.">
-<meta property="og:title" content="Deploying Logic Apps Standard Without App Settings Secrets">
-<meta property="og:description" content="Scenario  Link to heading   Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don&rsquo;t like there in plain text in the settings.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://davidtriana.com/posts/2024/logic-app-no-secrets/"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2024-10-15T00:00:00+00:00">
-<meta property="article:modified_time" content="2024-10-15T00:00:00+00:00">
-<link rel=canonical href=https://davidtriana.com/posts/2024/logic-app-no-secrets/>
-<link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
-<link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32>
-<link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16>
-<link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png>
-<link rel=manifest href=https://davidtriana.com/site.webmanifest>
-<link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5>
-<meta name=generator content="Hugo 0.91.2">
-</head>
-<body class="preload-transitions colorscheme-light">
-<div class=float-container>
-<a id=dark-mode-toggle class=colorscheme-toggle>
-<i class="fa fa-adjust fa-fw" aria-hidden=true></i>
-</a>
-</div>
-<main class=wrapper>
-<nav class=navigation>
-<section class=container>
-<a class=navigation-title href=https://davidtriana.com/>
-David Triana
-</a>
-<input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle>
-<i class="fa fa-bars fa-fw" aria-hidden=true></i>
-</label>
-<ul class=navigation-list>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/posts/>Blog</a>
-</li>
-<li class=navigation-item>
-<a class=navigation-link href=https://davidtriana.com/about/>About</a>
-</li>
-</ul>
-</section>
-</nav>
-<div class=content>
-<section class="container post">
-<article>
-<header>
-<div class=post-title>
-<h1 class=title>
-<a class=title-link href=https://davidtriana.com/posts/2024/logic-app-no-secrets/>
-Deploying Logic Apps Standard Without App Settings Secrets
-</a>
-</h1>
-</div>
-<div class=post-meta>
-<div class=date>
-<span class=posted-on>
-<i class="fa fa-calendar" aria-hidden=true></i>
-<time datetime=2024-10-15T00:00:00Z>
-October 15, 2024
-</time>
-</span>
-<span class=reading-time>
-<i class="fa fa-clock-o" aria-hidden=true></i>
-</span>
-</div>
-<div class=tags>
-<i class="fa fa-tag" aria-hidden=true></i>
-<span class=tag>
-<a href=https://davidtriana.com/tags/azure/>Azure</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/logic-apps/>Logic Apps</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/bicep/>Bicep</a>
-</span>
-<span class=separator>•</span>
-<span class=tag>
-<a href=https://davidtriana.com/tags/iac/>IaC</a>
-</span></div>
-</div>
-</header>
-<div>
-<h1 id=scenario>
-Scenario
-<a class=heading-link href=#scenario>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h1>
-<p>Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some <a href=https://learn.microsoft.com/en-us/azure/azure-monitor/app/connection-strings#is-the-connection-string-a-secret>including the official documentation</a> is not really a secret, still, something I don&rsquo;t like there in plain text in the settings.</p>
-<p>This is how it looks like after creating one using the portal, mid Oct 2024, in the East US region:</p>
-<p><img src=https://davidtriana.com/images/posts/2024/no-secrets-default.png alt="Default App Settings Deployed from the Portal"></p>
-<h2 id=solution>
-Solution
-<a class=heading-link href=#solution>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<p>With the <a href=https://learn.microsoft.com/en-us/azure/logic-apps/create-single-tenant-workflows-azure-portal#set-up-managed-identity-access-to-your-storage-account>recent announcement of support for managed identities in Logic Apps</a>, combined with the existing support for <a href="https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references?tabs=azure-cli">Function Apps</a> and <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-ad-authentication?tabs=nodejs#configure-and-enable-microsoft-entra-id-based-authentication">Application Insights</a>, I came up with a Bicep template which deploys the full underlying infrastructure without any secrets in App Settings:</p>
-<p><img src=https://davidtriana.com/images/posts/2024/no-secrets-without-secrets.png alt="App Settings Without Secrets"></p>
-<p>Here the storage account connection string used in the WEBSITE_CONTENTAZUREFILECONNECTIONSTRING setting is now a KeyVault reference, which is populated and refreshed by the platform using RBAC and a user managed identity assigned to the Logic App.</p>
-<p>The earlier AzureWebjobsStorage setting, which also had the same connection string is no longer there, replaced by settings which rely on managed identities and RBAC to gain access to the storage account.</p>
-<p>Finally, the instrumentation key for App Insights is now a reference to a KeyVault secret.</p>
-<h2 id=challenges>
-Challenges
-<a class=heading-link href=#challenges>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<h3 id=rbac-propagation>
-RBAC Propagation
-<a class=heading-link href=#rbac-propagation>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h3>
-<p>The first challenge is with RBAC propagation. Logic Apps need access to the storage account. This is verified during deployment, failing the deployment if, for instance, the permission in KeyVault for the Logic App to access the secret which contains the connection string is not there yet. I tried using dependsOn, outputs, modules, and while it worked every once in a while it was not consistent, every 2/3 times I was getting the error:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>Unable to resolve Azure Files Settings from Key Vault. Details: Unable to resolve setting: WEBSITE_CONTENTAZUREFILECONNECTIONSTRING with error: AccessToKeyVaultDenied.
-</code></pre></div><p>Even directly in the Azure Portal, assigning the role to myself I had to refresh the page and wait for up to a minute to be able to query the secrets in KeyVault.</p>
-<p>There is an <a href=https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_skip_contentshare_validation>application setting</a> that allows the deployment to succeed by disabling the validation, but with this the file share is not created automatically, I tried creating it manually but failed to make it work.</p>
-<p>Adding a two minutes wait via deployment scripts gave me a consistent experience. I have deployed this Bicep at least 4 times in new resource groups in different regions with consistent success.</p>
-<h3 id=azure-roles>
-Azure Roles
-<a class=heading-link href=#azure-roles>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h3>
-<p>This Bicep works fine as long as the identity used to run the deployment has the proper roles. I&rsquo;m testing against an Azure subscription for which I&rsquo;m the owner, however in a realistic scenario I won&rsquo;t have that privilege. In a realistic corporate scenario the script will be run by Azure DevOps or GitHub actions. For those deployment pipelines to succeed, their identities need to be able to <a href=https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-steps#step-4-check-your-prerequisites>assign roles</a> and <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep?tabs=CLI#configure-the-minimum-permissions">run scripts</a> in addition to the permissions to deploy the resources.</p>
-<h3 id=system-assigned-vs-user-assigned>
-System assigned vs user assigned
-<a class=heading-link href=#system-assigned-vs-user-assigned>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h3>
-<p>I prefer system assigned identities over user assigned. Simpler to setup, simpler to use and permissions deleted automatically when the parent resource is deleted. The problem here with system assigned is that the identity won&rsquo;t be available until after the logic is deployed, but I need the identity in advance, to assign the RBAC in KeyVault. User assigned identities makes this feasible since the managed identity can be created independently of the resources which are going to use it.</p>
-<h2 id=the-bicep-templates>
-The Bicep Templates
-<a class=heading-link href=#the-bicep-templates>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<h3 id=secretsbicep>
-secrets.bicep
-<a class=heading-link href=#secretsbicep>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h3>
-<p>Since I struggled so much with RBAC propagation I ended up leaving this portion of the script on its own module, and a more maintainable and reusable solution will have more modules than this one.</p>
-<p>The secrets module takes care of creating the secrets in KeyVault, in particular the storage account connection string and the Application Insights instrumentation Key. After that it gives RBAC permissions to the managed identity to read those secrets, then waits for 2 minutes.</p>
-<p>The RBAC permissions are set at the individual secret level. While this enforces the minimal privilege principle, alternatively the permission can be set at the KeyVault level, allowing access to all the secrets, which will be much more convenient specially since in addition to these secrets there might be others used by the workflows.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>param projectName string
-param environmentName string
-param locationName string
-param storageAccountName string
-param keyVaultName string
+<!doctype html><html lang=en-us><head><title>Deploying Logic Apps Standard Without App Settings Secrets · David Triana
+</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=description content="
+  Scenario
+  
+    
+    Link to heading
+  
 
-// Azure Built-in roles Ref: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-var keyVaultSecretsUserRoleDefinitionId = &#39;4633458b-17de-408a-b874-0445c86b69e6&#39;
-
-resource keyVault &#39;Microsoft.KeyVault/vaults@2023-07-01&#39; existing = {
-  name: keyVaultName
-}
-
-resource storageAccount &#39;Microsoft.Storage/storageAccounts@2022-05-01&#39; existing = {
-  name: storageAccountName
-}
-
-resource appInsights &#39;microsoft.insights/components@2020-02-02-preview&#39; existing = {
-  name: &#39;appi-${projectName}-${environmentName}-${locationName}&#39;
-}
-
-resource managedIdentity &#39;Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview&#39; existing = {
-  name: &#39;mi-${projectName}-${environmentName}-${locationName}&#39;
-}
-
-@description(&#39;Adds the storage account connection string as a secret in KeyVault&#39;)
-resource storageAccountConnStringSecret &#39;Microsoft.KeyVault/vaults/secrets@2023-07-01&#39; = {
-  name: &#39;${storageAccount.name}-connectionString&#39;
-  parent: keyVault
-  tags: {
-    ResourceType: &#39;StorageAccount&#39;
-    ResourceName: storageAccount.name
-  }
-  properties: {
-    contentType: &#39;string&#39;
-    value: &#39;DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(storageAccount.id,&#39;2019-06-01&#39;).keys[0].value};EndpointSuffix=core.windows.net&#39;
-  }
-}
-
-@description(&#39;Gives permissions to the Managed Identity to retrieve the connection string from KeyVault&#39;)
-resource logicAppKeyVaultConnectionStringPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(keyVaultSecretsUserRoleDefinitionId, keyVault.id, managedIdentity.id, storageAccount.id)
-  scope: storageAccountConnStringSecret
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, keyVaultSecretsUserRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-@description(&#39;Adds the App Insights Instrumentation Key as a secret in KeyVault&#39;)
-resource appInsightsSecret &#39;Microsoft.KeyVault/vaults/secrets@2023-07-01&#39; = {
-  name: &#39;${appInsights.name}-instrumentationKey&#39;
-  parent: keyVault
-  tags: {
-    ResourceType: &#39;AppInsights&#39;
-    ResourceName: appInsights.name
-  }
-  properties: {
-    contentType: &#39;string&#39;
-    value: appInsights.properties.InstrumentationKey
-  }
-}
-
-@description(&#39;Gives permissions to the Managed Identity to retrieve the AppInsights Instrumentation Key from KeyVault&#39;)
-resource logicAppKeyVaultInstrumentationKeyPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(keyVaultSecretsUserRoleDefinitionId, keyVault.id, managedIdentity.id, appInsights.id)
-  scope: appInsightsSecret
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, keyVaultSecretsUserRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-@description(&#39;Wait for 2 minutes to allow RBAC propagation to complete&#39;)
-resource deploymentScript &#39;Microsoft.Resources/deploymentScripts@2023-08-01&#39; = {
-  name: &#39;inlineCLI&#39;
-  location: locationName
-  kind: &#39;AzurePowerShell&#39;
-  properties: {
-    azPowerShellVersion: &#39;12.2&#39;
-    scriptContent: &#39;Start-Sleep -Seconds 120&#39;
-    retentionInterval: &#39;PT1H&#39;
-  }
-}
-</code></pre></div><h2 id=infrastructurebicep>
-infrastructure.bicep
-<a class=heading-link href=#infrastructurebicep>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<p>This is the main script, which deploys all resources, configures application settings and setups RBAC roles for the storage account</p>
-<div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>param subscriptionId string = subscription().id
-param projectName string = &#39;atlantis&#39;
-param environmentName string = &#39;dev&#39;
-param locationName string = resourceGroup().location
-param storageAccountName string = &#39;st${projectName}${environmentName}${locationName}&#39;
-param hostingPlanName string = &#39;app-${projectName}-${environmentName}-${locationName}&#39;
-param logicAppName string = &#39;logic-${projectName}-${environmentName}-${locationName}&#39;
-param keyVaultName string = &#39;kv-${projectName}-${environmentName}-${locationName}&#39;
-var isProduction = environmentName == &#39;prod&#39;
-
-// Azure Built-in roles Ref: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-var storageAccountContributorRoleDefinitionId = &#39;17d1049b-9a84-46fb-8f53-869881c3d3ab&#39;
-var storageBlobDataOwnerRoleDefinitionId = &#39;b7e6dc6d-f1e8-4753-8033-0f276bb0955b&#39;
-var storageTableDataContributorRoleDefinitionId = &#39;0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3&#39;
-var storageQueueDataContributorRoleDefinitionId = &#39;974c5e8b-45b9-4653-ba55-5f855dd0fb88&#39;
-var monitoringMetricsPublisherRoleDefinitionId = &#39;3913510d-42f4-4e42-8a64-420c390055eb&#39;
-
-resource managedIdentity &#39;Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview&#39; = {
-  name: &#39;mi-${projectName}-${environmentName}-${locationName}&#39;
-  location: locationName
-}
-
-resource keyVault &#39;Microsoft.KeyVault/vaults@2023-07-01&#39; = {
-  name: keyVaultName
-  location: locationName
-  properties: {
-    sku: {
-      name: &#39;standard&#39;
-      family: &#39;A&#39;
-    }
-    tenantId: subscription().tenantId
-    enableSoftDelete: isProduction
-    enableRbacAuthorization: true
-  }
-}
-
-resource storageAccount &#39;Microsoft.Storage/storageAccounts@2022-05-01&#39; = {
-  name: storageAccountName
-  location: locationName
-  tags: {}
-  sku: {
-    name: &#39;Standard_LRS&#39;
-  }
-  properties: {
-    supportsHttpsTrafficOnly: true
-    minimumTlsVersion: &#39;TLS1_2&#39;
-    defaultToOAuthAuthentication: true
-  }
-  kind: &#39;StorageV2&#39;
-}
-
-module secrets &#39;secrets.bicep&#39; = {
-  name: &#39;secrets-${environmentName}&#39;
-  params: {
-    projectName: projectName
-    environmentName: environmentName
-    locationName: locationName
-    storageAccountName: storageAccountName
-    keyVaultName: keyVaultName
-  }
-  dependsOn: [
-    managedIdentity
-    keyVault
-    storageAccount
-    appInsights
-  ]
-}
-
-resource hostingPlan &#39;Microsoft.Web/serverfarms@2022-09-01&#39; = {
-  name: hostingPlanName
-  location: locationName
-  kind: &#39;windows&#39;
-  sku: {
-    name: &#39;WS1&#39;
-    tier: &#39;WorkflowStandard&#39;
-  }
-}
-
-resource logicApp &#39;Microsoft.Web/sites@2022-09-01&#39; = {
-  name: logicAppName
-  kind: &#39;functionapp,workflowapp&#39;
-  location: locationName
-  tags: {
-    &#39;hidden-link: /app-insights-resource-id&#39;: &#39;/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Insights/components/${logicAppName}&#39;
-  }
-  properties: {
-    publicNetworkAccess: &#39;Enabled&#39;
-    httpsOnly: true
-    serverFarmId: hostingPlan.id
-    keyVaultReferenceIdentity: managedIdentity.id
-  }
-  identity: {
-    type: &#39;UserAssigned&#39;
-    userAssignedIdentities: {
-      &#39;${managedIdentity.id}&#39;: {}
-    }
-  }
-}
-
-resource logAnalyticsWS &#39;Microsoft.OperationalInsights/workspaces@2023-09-01&#39; = {
-  name: &#39;log-${projectName}-${environmentName}-${locationName}&#39;
-  location: locationName
-}
-
-resource appInsights &#39;microsoft.insights/components@2020-02-02-preview&#39; = {
-  name: &#39;appi-${projectName}-${environmentName}-${locationName}&#39;
-  location: locationName
-  kind: &#39;web&#39;
-  properties: {
-    Request_Source: &#39;IbizaWebAppExtensionCreate&#39;
-    Flow_Type: &#39;Redfield&#39;
-    Application_Type: &#39;web&#39;
-    DisableLocalAuth: true
-    WorkspaceResourceId: logAnalyticsWS.id
-  }
-}
-
-resource logicAppStorageAccountPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(storageAccountContributorRoleDefinitionId, keyVault.id, storageAccount.id, managedIdentity.id)
-  scope: storageAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, storageAccountContributorRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-resource logicAppStorageBlobPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(storageBlobDataOwnerRoleDefinitionId, keyVault.id, storageAccount.id, managedIdentity.id)
-  scope: storageAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, storageBlobDataOwnerRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-resource logicAppStorageTablesPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(storageTableDataContributorRoleDefinitionId, keyVault.id, storageAccount.id, managedIdentity.id)
-  scope: storageAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, storageTableDataContributorRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-resource logicAppQueuePermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(storageQueueDataContributorRoleDefinitionId, keyVault.id, storageAccount.id, managedIdentity.id)
-  scope: storageAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, storageQueueDataContributorRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-resource logicAppMonitoringPermission &#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39; = {
-  name: guid(monitoringMetricsPublisherRoleDefinitionId, keyVault.id, appInsights.id, managedIdentity.id)
-  scope: appInsights
-  properties: {
-    roleDefinitionId: subscriptionResourceId(&#39;Microsoft.Authorization/roleDefinitions&#39;, monitoringMetricsPublisherRoleDefinitionId)
-    principalId: managedIdentity.properties.principalId
-  }
-}
-
-resource siteconfig &#39;Microsoft.Web/sites/config@2022-09-01&#39; = {
-  parent: logicApp
-  name: &#39;web&#39;
-  kind: &#39;string&#39;
-  properties: {
-  appSettings: [
-    {
-      name: &#39;FUNCTIONS_EXTENSION_VERSION&#39;
-      value: &#39;~4&#39;
-    }
-    {
-      name: &#39;FUNCTIONS_WORKER_RUNTIME&#39;
-      value: &#39;node&#39;
-    }
-    {
-      name: &#39;WEBSITE_NODE_DEFAULT_VERSION&#39;
-      value: &#39;~20&#39;
-    }
-    {
-      name: &#39;APPINSIGHTS_INSTRUMENTATIONKEY&#39;
-      value: &#39;@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${appInsights.name}-instrumentationKey)&#39;
-    }
-    {
-      name: &#39;APPLICATIONINSIGHTS_AUTHENTICATION_STRING&#39;
-      value: &#39;Authorization=AAD;ClientId=${managedIdentity.properties.clientId}&#39;
-    }
-    {
-      name: &#39;WEBSITE_CONTENTAZUREFILECONNECTIONSTRING&#39;
-      value: &#39;@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=${storageAccount.name}-connectionString)&#39;
-    }
-    {
-      name: &#39;WEBSITE_CONTENTSHARE&#39;
-      value: &#39;${toLower(storageAccountName)}-contentshare&#39;
-    }
-    {
-      name: &#39;AzureFunctionsJobHost__extensionBundle__id&#39;
-      value: &#39;Microsoft.Azure.Functions.ExtensionBundle.Workflows&#39;
-    }
-    {
-      name: &#39;AzureFunctionsJobHost__extensionBundle__version&#39;
-      value: &#39;[1.*, 2.0.0)&#39;
-    }
-    {
-      name: &#39;APP_KIND&#39;
-      value: &#39;workflowApp&#39;
-    }
-    {
-      name:&#39;AzureWebJobsStorage__blobServiceUri&#39;
-      value: storageAccount.properties.primaryEndpoints.blob
-    }
-    {
-      name:&#39;AzureWebJobsStorage__queueServiceUri&#39;
-      value: storageAccount.properties.primaryEndpoints.queue
-    }
-    {
-      name:&#39;AzureWebJobsStorage__tableServiceUri&#39;
-      value: storageAccount.properties.primaryEndpoints.table
-    }
-    {
-      name:&#39;AzureWebJobsStorage__credential&#39;
-      value: &#39;managedIdentity&#39;
-    }
-    {
-      name:&#39;AzureWebJobsStorage__managedIdentityResourceId&#39;
-      value: managedIdentity.id
-    }
-  ]
-  }
-  dependsOn: [
-    secrets
-  ]
-}
-</code></pre></div><h2 id=outcome>
-Outcome
-<a class=heading-link href=#outcome>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<p>The script runs without errors or warnings, and the infrastructure is now available.</p>
-<p><img src=https://davidtriana.com/images/posts/2024/no-secrets-deployed.png alt="Infrastructure deployed"></p>
-<h2 id=workflow-test>
-Workflow Test
-<a class=heading-link href=#workflow-test>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<p>While the fact that the deployment worked and the logic app is able to show the runtime version without error notifications is a good sign, nothing like a simple test, so I created the simplest workflow then verified run history with per action state.</p>
-<p><img src=https://davidtriana.com/images/posts/2024/no-secrets-workflow-test.png alt="Simple workflow state and history"></p>
-<h2 id=application-insights>
-Application Insights
-<a class=heading-link href=#application-insights>
-<i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
-<span class=sr-only>Link to heading</span>
-</a>
-</h2>
-<p>Telemetry is being captured by Application Insights.</p>
-<p><img src=https://davidtriana.com/images/posts/2024/no-secrets-appinsights-test.png alt="Telemetry in app insights"></p>
-</div>
-<footer>
-</footer>
-</article>
-<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
-<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:'\\[',right:'\\]',display:!0}]})"></script>
-</section>
-</div>
-<footer class=footer>
-<section class=container>
-©
+Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don&rsquo;t like there in plain text in the settings."><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="Deploying Logic Apps Standard Without App Settings Secrets"><meta name=twitter:description content="Scenario Link to heading Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don’t like there in plain text in the settings."><meta property="og:url" content="https://davidtriana.com/posts/2024/logic-app-no-secrets/"><meta property="og:site_name" content="David Triana"><meta property="og:title" content="Deploying Logic Apps Standard Without App Settings Secrets"><meta property="og:description" content="Scenario Link to heading Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some including the official documentation is not really a secret, still, something I don’t like there in plain text in the settings."><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-15T00:00:00+00:00"><meta property="article:modified_time" content="2024-10-15T00:00:00+00:00"><meta property="article:tag" content="Azure"><meta property="article:tag" content="Logic Apps"><meta property="article:tag" content="Bicep"><meta property="article:tag" content="IaC"><link rel=canonical href=https://davidtriana.com/posts/2024/logic-app-no-secrets/><link rel=preload href="https://davidtriana.com/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=https://davidtriana.com/css/coder.min.7f9d180e3b3bebba9ba80d55eed1255c35e00764872854736d6ad7db38884ffc.css integrity="sha256-f50YDjs767qbqA1V7tElXDXgB2SHKFRzbWrX2ziIT/w=" crossorigin=anonymous media=screen><link rel=stylesheet href=https://davidtriana.com/css/coder-dark.min.216e36d3eaf6f4cdfd67dc1200c49a8169e6478102977b3e9ac51a064c57054c.css integrity="sha256-IW420+r29M39Z9wSAMSagWnmR4ECl3s+msUaBkxXBUw=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://davidtriana.com/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=https://davidtriana.com/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=https://davidtriana.com/images/apple-touch-icon.png><link rel=mask-icon href=https://davidtriana.com/images/safari-pinned-tab.svg color=#5bbad5><meta name=generator content="Hugo 0.136.0"></head><body class="preload-transitions colorscheme-light"><div class=float-container><a id=dark-mode-toggle class=colorscheme-toggle><i class="fa fa-adjust fa-fw" aria-hidden=true></i></a></div><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://davidtriana.com/>David Triana
+</a><input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://davidtriana.com/about/>About</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://davidtriana.com/posts/2024/logic-app-no-secrets/>Deploying Logic Apps Standard Without App Settings Secrets</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2024-10-15T00:00:00Z>October 15, 2024
+</time></span><span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i></span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag><a href=https://davidtriana.com/tags/azure/>Azure</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/logic-apps/>Logic Apps</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/bicep/>Bicep</a>
+</span><span class=separator>•</span>
+<span class=tag><a href=https://davidtriana.com/tags/iac/>IaC</a></span></div></div></header><div><h1 id=scenario>Scenario
+<a class=heading-link href=#scenario><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h1><p>Logic Apps Standard use Application Settings. By default these settings have secrets, particularly the key in the connection string for the storage account used to keep the code and the state and run history of all the workflows. In addition, if using Application Insights integration, there is the instrumentation key which according to some <a href=https://learn.microsoft.com/en-us/azure/azure-monitor/app/connection-strings#is-the-connection-string-a-secret>including the official documentation</a> is not really a secret, still, something I don&rsquo;t like there in plain text in the settings.</p><p>This is how it looks like after creating one using the portal, mid Oct 2024, in the East US region:</p><p><img src=https://davidtriana.com/images/posts/2024/no-secrets-default.png alt="Default App Settings Deployed from the Portal"></p><h2 id=solution>Solution
+<a class=heading-link href=#solution><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>With the <a href=https://learn.microsoft.com/en-us/azure/logic-apps/create-single-tenant-workflows-azure-portal#set-up-managed-identity-access-to-your-storage-account>recent announcement of support for managed identities in Logic Apps</a>, combined with the existing support for <a href="https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references?tabs=azure-cli">Function Apps</a> and <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/azure-ad-authentication?tabs=nodejs#configure-and-enable-microsoft-entra-id-based-authentication">Application Insights</a>, I came up with a Bicep template which deploys the full underlying infrastructure without any secrets in App Settings:</p><p><img src=https://davidtriana.com/images/posts/2024/no-secrets-without-secrets.png alt="App Settings Without Secrets"></p><p>Here the storage account connection string used in the WEBSITE_CONTENTAZUREFILECONNECTIONSTRING setting is now a KeyVault reference, which is populated and refreshed by the platform using RBAC and a user managed identity assigned to the Logic App.</p><p>The earlier AzureWebjobsStorage setting, which also had the same connection string is no longer there, replaced by settings which rely on managed identities and RBAC to gain access to the storage account.</p><p>Finally, the instrumentation key for App Insights is now a reference to a KeyVault secret.</p><h2 id=challenges>Challenges
+<a class=heading-link href=#challenges><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><h3 id=rbac-propagation>RBAC Propagation
+<a class=heading-link href=#rbac-propagation><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>The first challenge is with RBAC propagation. Logic Apps need access to the storage account. This is verified during deployment, failing the deployment if, for instance, the permission in KeyVault for the Logic App to access the secret which contains the connection string is not there yet. I tried using dependsOn, outputs, modules, and while it worked every once in a while it was not consistent, every 2/3 times I was getting the error:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>Unable to resolve Azure Files Settings from Key Vault. Details: Unable to resolve setting: WEBSITE_CONTENTAZUREFILECONNECTIONSTRING with error: AccessToKeyVaultDenied.
+</span></span></code></pre></div><p>Even directly in the Azure Portal, assigning the role to myself I had to refresh the page and wait for up to a minute to be able to query the secrets in KeyVault.</p><p>There is an <a href=https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_skip_contentshare_validation>application setting</a> that allows the deployment to succeed by disabling the validation, but with this the file share is not created automatically, I tried creating it manually but failed to make it work.</p><p>Adding a two minutes wait via deployment scripts gave me a consistent experience. I have deployed this Bicep at least 4 times in new resource groups in different regions with consistent success.</p><h3 id=azure-roles>Azure Roles
+<a class=heading-link href=#azure-roles><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>This Bicep works fine as long as the identity used to run the deployment has the proper roles. I&rsquo;m testing against an Azure subscription for which I&rsquo;m the owner, however in a realistic scenario I won&rsquo;t have that privilege. In a realistic corporate scenario the script will be run by Azure DevOps or GitHub actions. For those deployment pipelines to succeed, their identities need to be able to <a href=https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-steps#step-4-check-your-prerequisites>assign roles</a> and <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep?tabs=CLI#configure-the-minimum-permissions">run scripts</a> in addition to the permissions to deploy the resources.</p><h3 id=system-assigned-vs-user-assigned>System assigned vs user assigned
+<a class=heading-link href=#system-assigned-vs-user-assigned><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>I prefer system assigned identities over user assigned. Simpler to setup, simpler to use and permissions deleted automatically when the parent resource is deleted. The problem here with system assigned is that the identity won&rsquo;t be available until after the logic is deployed, but I need the identity in advance, to assign the RBAC in KeyVault. User assigned identities makes this feasible since the managed identity can be created independently of the resources which are going to use it.</p><h2 id=the-bicep-templates>The Bicep Templates
+<a class=heading-link href=#the-bicep-templates><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><h3 id=secretsbicep>secrets.bicep
+<a class=heading-link href=#secretsbicep><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h3><p>Since I struggled so much with RBAC propagation I ended up leaving this portion of the script on its own module, and a more maintainable and reusable solution will have more modules than this one.</p><p>The secrets module takes care of creating the secrets in KeyVault, in particular the storage account connection string and the Application Insights instrumentation Key. After that it gives RBAC permissions to the managed identity to read those secrets, then waits for 2 minutes.</p><p>The RBAC permissions are set at the individual secret level. While this enforces the minimal privilege principle, alternatively the permission can be set at the KeyVault level, allowing access to all the secrets, which will be much more convenient specially since in addition to these secrets there might be others used by the workflows.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bicep data-lang=bicep><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>projectName</span> <span style=color:#8be9fd;font-style:italic>string</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>environmentName</span> <span style=color:#8be9fd;font-style:italic>string</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>locationName</span> <span style=color:#8be9fd;font-style:italic>string</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>storageAccountName</span> <span style=color:#8be9fd;font-style:italic>string</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>keyVaultName</span> <span style=color:#8be9fd;font-style:italic>string</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span><span style=color:#6272a4>// Azure Built-in roles Ref: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>keyVaultSecretsUserRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;4633458b-17de-408a-b874-0445c86b69e6&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>keyVault</span> <span style=color:#f1fa8c>&#39;Microsoft.KeyVault/vaults@2023-07-01&#39;</span> <span style=color:#8be9fd;font-style:italic>existing</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>keyVaultName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>storageAccount</span> <span style=color:#f1fa8c>&#39;Microsoft.Storage/storageAccounts@2022-05-01&#39;</span> <span style=color:#8be9fd;font-style:italic>existing</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>storageAccountName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>appInsights</span> <span style=color:#f1fa8c>&#39;microsoft.insights/components@2020-02-02-preview&#39;</span> <span style=color:#8be9fd;font-style:italic>existing</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;appi-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>managedIdentity</span> <span style=color:#f1fa8c>&#39;Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview&#39;</span> <span style=color:#8be9fd;font-style:italic>existing</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;mi-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span>@<span style=color:#50fa7b>description</span>(<span style=color:#f1fa8c>&#39;Adds the storage account connection string as a secret in KeyVault&#39;</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>storageAccountConnStringSecret</span> <span style=color:#f1fa8c>&#39;Microsoft.KeyVault/vaults/secrets@2023-07-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>name</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-connectionString&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span>  <span style=color:#8be9fd;font-style:italic>parent</span>: <span style=color:#8be9fd;font-style:italic>keyVault</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span><span>  <span style=color:#8be9fd;font-style:italic>tags</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span><span>    <span style=color:#8be9fd;font-style:italic>ResourceType</span>: <span style=color:#f1fa8c>&#39;StorageAccount&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span><span>    <span style=color:#8be9fd;font-style:italic>ResourceName</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>name</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35</span><span>    <span style=color:#8be9fd;font-style:italic>contentType</span>: <span style=color:#f1fa8c>&#39;string&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">36</span><span>    <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;DefaultEndpointsProtocol=https;AccountName=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>storageAccountName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>;AccountKey=</span><span style=color:#f1fa8c>${</span><span style=color:#50fa7b>listKeys</span>(<span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>,<span style=color:#f1fa8c>&#39;2019-06-01&#39;</span>).<span style=color:#8be9fd;font-style:italic>keys</span>[<span style=color:#8be9fd;font-style:italic>0</span>].<span style=color:#8be9fd;font-style:italic>value</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>;EndpointSuffix=core.windows.net&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">37</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">38</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">39</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">40</span><span>@<span style=color:#50fa7b>description</span>(<span style=color:#f1fa8c>&#39;Gives permissions to the Managed Identity to retrieve the connection string from KeyVault&#39;</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">41</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppKeyVaultConnectionStringPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">42</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>keyVaultSecretsUserRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">43</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>storageAccountConnStringSecret</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">44</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">45</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>keyVaultSecretsUserRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">46</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">47</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">48</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">49</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">50</span><span>@<span style=color:#50fa7b>description</span>(<span style=color:#f1fa8c>&#39;Adds the App Insights Instrumentation Key as a secret in KeyVault&#39;</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">51</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>appInsightsSecret</span> <span style=color:#f1fa8c>&#39;Microsoft.KeyVault/vaults/secrets@2023-07-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">52</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>name</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-instrumentationKey&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">53</span><span>  <span style=color:#8be9fd;font-style:italic>parent</span>: <span style=color:#8be9fd;font-style:italic>keyVault</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">54</span><span>  <span style=color:#8be9fd;font-style:italic>tags</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">55</span><span>    <span style=color:#8be9fd;font-style:italic>ResourceType</span>: <span style=color:#f1fa8c>&#39;AppInsights&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">56</span><span>    <span style=color:#8be9fd;font-style:italic>ResourceName</span>: <span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>name</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">57</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">58</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">59</span><span>    <span style=color:#8be9fd;font-style:italic>contentType</span>: <span style=color:#f1fa8c>&#39;string&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">60</span><span>    <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>InstrumentationKey</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">61</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">62</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">63</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">64</span><span>@<span style=color:#50fa7b>description</span>(<span style=color:#f1fa8c>&#39;Gives permissions to the Managed Identity to retrieve the AppInsights Instrumentation Key from KeyVault&#39;</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">65</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppKeyVaultInstrumentationKeyPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">66</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>keyVaultSecretsUserRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">67</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>appInsightsSecret</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">68</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">69</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>keyVaultSecretsUserRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">70</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">71</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">72</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">73</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">74</span><span>@<span style=color:#50fa7b>description</span>(<span style=color:#f1fa8c>&#39;Wait for 2 minutes to allow RBAC propagation to complete&#39;</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">75</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>deploymentScript</span> <span style=color:#f1fa8c>&#39;Microsoft.Resources/deploymentScripts@2023-08-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">76</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;inlineCLI&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">77</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">78</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;AzurePowerShell&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">79</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">80</span><span>    <span style=color:#8be9fd;font-style:italic>azPowerShellVersion</span>: <span style=color:#f1fa8c>&#39;12.2&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">81</span><span>    <span style=color:#8be9fd;font-style:italic>scriptContent</span>: <span style=color:#f1fa8c>&#39;Start-Sleep -Seconds 120&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">82</span><span>    <span style=color:#8be9fd;font-style:italic>retentionInterval</span>: <span style=color:#f1fa8c>&#39;PT1H&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">83</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">84</span><span>}
+</span></span></code></pre></div><h2 id=infrastructurebicep>infrastructure.bicep
+<a class=heading-link href=#infrastructurebicep><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>This is the main script, which deploys all resources, configures application settings and setups RBAC roles for the storage account</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bicep data-lang=bicep><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>subscriptionId</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#50fa7b>subscription</span>().<span style=color:#8be9fd;font-style:italic>id</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>projectName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;atlantis&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>environmentName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;dev&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>locationName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#50fa7b>resourceGroup</span>().<span style=color:#8be9fd;font-style:italic>location</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>storageAccountName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;st</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>hostingPlanName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;app-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>logicAppName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;logic-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8</span><span><span style=color:#8be9fd;font-style:italic>param</span> <span style=color:#8be9fd;font-style:italic>keyVaultName</span> <span style=color:#8be9fd;font-style:italic>string</span> = <span style=color:#f1fa8c>&#39;kv-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>isProduction</span> = <span style=color:#8be9fd;font-style:italic>environmentName</span> <span style=color:#ff79c6>==</span> <span style=color:#f1fa8c>&#39;prod&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11</span><span><span style=color:#6272a4>// Azure Built-in roles Ref: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>storageAccountContributorRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;17d1049b-9a84-46fb-8f53-869881c3d3ab&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>storageBlobDataOwnerRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;b7e6dc6d-f1e8-4753-8033-0f276bb0955b&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>storageTableDataContributorRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>storageQueueDataContributorRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;974c5e8b-45b9-4653-ba55-5f855dd0fb88&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>monitoringMetricsPublisherRoleDefinitionId</span> = <span style=color:#f1fa8c>&#39;3913510d-42f4-4e42-8a64-420c390055eb&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>managedIdentity</span> <span style=color:#f1fa8c>&#39;Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;mi-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>keyVault</span> <span style=color:#f1fa8c>&#39;Microsoft.KeyVault/vaults@2023-07-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>keyVaultName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27</span><span>    <span style=color:#8be9fd;font-style:italic>sku</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;standard&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29</span><span>      <span style=color:#8be9fd;font-style:italic>family</span>: <span style=color:#f1fa8c>&#39;A&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31</span><span>    <span style=color:#8be9fd;font-style:italic>tenantId</span>: <span style=color:#50fa7b>subscription</span>().<span style=color:#8be9fd;font-style:italic>tenantId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32</span><span>    <span style=color:#8be9fd;font-style:italic>enableSoftDelete</span>: <span style=color:#8be9fd;font-style:italic>isProduction</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33</span><span>    <span style=color:#8be9fd;font-style:italic>enableRbacAuthorization</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>storageAccount</span> <span style=color:#f1fa8c>&#39;Microsoft.Storage/storageAccounts@2022-05-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>storageAccountName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40</span><span>  <span style=color:#8be9fd;font-style:italic>tags</span>: {}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41</span><span>  <span style=color:#8be9fd;font-style:italic>sku</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42</span><span>    <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;Standard_LRS&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45</span><span>    <span style=color:#8be9fd;font-style:italic>supportsHttpsTrafficOnly</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46</span><span>    <span style=color:#8be9fd;font-style:italic>minimumTlsVersion</span>: <span style=color:#f1fa8c>&#39;TLS1_2&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47</span><span>    <span style=color:#8be9fd;font-style:italic>defaultToOAuthAuthentication</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;StorageV2&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52</span><span><span style=color:#8be9fd;font-style:italic>module</span> <span style=color:#8be9fd;font-style:italic>secrets</span> <span style=color:#f1fa8c>&#39;secrets.bicep&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;secrets-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54</span><span>  <span style=color:#8be9fd;font-style:italic>params</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55</span><span>    <span style=color:#8be9fd;font-style:italic>projectName</span>: <span style=color:#8be9fd;font-style:italic>projectName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56</span><span>    <span style=color:#8be9fd;font-style:italic>environmentName</span>: <span style=color:#8be9fd;font-style:italic>environmentName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57</span><span>    <span style=color:#8be9fd;font-style:italic>locationName</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58</span><span>    <span style=color:#8be9fd;font-style:italic>storageAccountName</span>: <span style=color:#8be9fd;font-style:italic>storageAccountName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59</span><span>    <span style=color:#8be9fd;font-style:italic>keyVaultName</span>: <span style=color:#8be9fd;font-style:italic>keyVaultName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61</span><span>  <span style=color:#8be9fd;font-style:italic>dependsOn</span>: [
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62</span><span>    <span style=color:#8be9fd;font-style:italic>managedIdentity</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63</span><span>    <span style=color:#8be9fd;font-style:italic>keyVault</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64</span><span>    <span style=color:#8be9fd;font-style:italic>storageAccount</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65</span><span>    <span style=color:#8be9fd;font-style:italic>appInsights</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66</span><span>  ]
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>hostingPlan</span> <span style=color:#f1fa8c>&#39;Microsoft.Web/serverfarms@2022-09-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>hostingPlanName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;windows&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73</span><span>  <span style=color:#8be9fd;font-style:italic>sku</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74</span><span>    <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;WS1&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75</span><span>    <span style=color:#8be9fd;font-style:italic>tier</span>: <span style=color:#f1fa8c>&#39;WorkflowStandard&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicApp</span> <span style=color:#f1fa8c>&#39;Microsoft.Web/sites@2022-09-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>logicAppName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;functionapp,workflowapp&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83</span><span>  <span style=color:#8be9fd;font-style:italic>tags</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84</span><span>    <span style=color:#f1fa8c>&#39;hidden-link: /app-insights-resource-id&#39;</span>: <span style=color:#f1fa8c>&#39;/subscriptions/</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>subscriptionId</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>/resourceGroups/</span><span style=color:#f1fa8c>${</span><span style=color:#50fa7b>resourceGroup</span>().<span style=color:#8be9fd;font-style:italic>name</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>/providers/Microsoft.Insights/components/</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>logicAppName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87</span><span>    <span style=color:#8be9fd;font-style:italic>publicNetworkAccess</span>: <span style=color:#f1fa8c>&#39;Enabled&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88</span><span>    <span style=color:#8be9fd;font-style:italic>httpsOnly</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89</span><span>    <span style=color:#8be9fd;font-style:italic>serverFarmId</span>: <span style=color:#8be9fd;font-style:italic>hostingPlan</span>.<span style=color:#8be9fd;font-style:italic>id</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90</span><span>    <span style=color:#8be9fd;font-style:italic>keyVaultReferenceIdentity</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92</span><span>  <span style=color:#8be9fd;font-style:italic>identity</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93</span><span>    <span style=color:#8be9fd;font-style:italic>type</span>: <span style=color:#f1fa8c>&#39;UserAssigned&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94</span><span>    <span style=color:#8be9fd;font-style:italic>userAssignedIdentities</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95</span><span>      <span style=color:#f1fa8c>&#39;</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>: {}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">100</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logAnalyticsWS</span> <span style=color:#f1fa8c>&#39;Microsoft.OperationalInsights/workspaces@2023-09-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">101</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;log-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">102</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">103</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">104</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">105</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>appInsights</span> <span style=color:#f1fa8c>&#39;microsoft.insights/components@2020-02-02-preview&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">106</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;appi-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>projectName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>environmentName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>locationName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">107</span><span>  <span style=color:#8be9fd;font-style:italic>location</span>: <span style=color:#8be9fd;font-style:italic>locationName</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">108</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;web&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">109</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">110</span><span>    <span style=color:#8be9fd;font-style:italic>Request_Source</span>: <span style=color:#f1fa8c>&#39;IbizaWebAppExtensionCreate&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">111</span><span>    <span style=color:#8be9fd;font-style:italic>Flow_Type</span>: <span style=color:#f1fa8c>&#39;Redfield&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">112</span><span>    <span style=color:#8be9fd;font-style:italic>Application_Type</span>: <span style=color:#f1fa8c>&#39;web&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">113</span><span>    <span style=color:#8be9fd;font-style:italic>DisableLocalAuth</span>: <span style=color:#ff79c6>true</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">114</span><span>    <span style=color:#8be9fd;font-style:italic>WorkspaceResourceId</span>: <span style=color:#8be9fd;font-style:italic>logAnalyticsWS</span>.<span style=color:#8be9fd;font-style:italic>id</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">115</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">116</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">117</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">118</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppStorageAccountPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">119</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>storageAccountContributorRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">120</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">121</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">122</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>storageAccountContributorRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">123</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">124</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">125</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">126</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">127</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppStorageBlobPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">128</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>storageBlobDataOwnerRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">129</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">130</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">131</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>storageBlobDataOwnerRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">132</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">133</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">134</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">135</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">136</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppStorageTablesPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">137</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>storageTableDataContributorRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">138</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">139</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">140</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>storageTableDataContributorRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">141</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">142</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">143</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">144</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">145</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppQueuePermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">146</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>storageQueueDataContributorRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">147</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">148</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">149</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>storageQueueDataContributorRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">150</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">151</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">152</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">153</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">154</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>logicAppMonitoringPermission</span> <span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleAssignments@2022-04-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">155</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#50fa7b>guid</span>(<span style=color:#8be9fd;font-style:italic>monitoringMetricsPublisherRoleDefinitionId</span>, <span style=color:#8be9fd;font-style:italic>keyVault</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>id</span>, <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">156</span><span>  <span style=color:#8be9fd;font-style:italic>scope</span>: <span style=color:#8be9fd;font-style:italic>appInsights</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">157</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">158</span><span>    <span style=color:#8be9fd;font-style:italic>roleDefinitionId</span>: <span style=color:#50fa7b>subscriptionResourceId</span>(<span style=color:#f1fa8c>&#39;Microsoft.Authorization/roleDefinitions&#39;</span>, <span style=color:#8be9fd;font-style:italic>monitoringMetricsPublisherRoleDefinitionId</span>)
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">159</span><span>    <span style=color:#8be9fd;font-style:italic>principalId</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>principalId</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">160</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">161</span><span>}
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">162</span><span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">163</span><span><span style=color:#8be9fd;font-style:italic>resource</span> <span style=color:#8be9fd;font-style:italic>siteconfig</span> <span style=color:#f1fa8c>&#39;Microsoft.Web/sites/config@2022-09-01&#39;</span> = {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">164</span><span>  <span style=color:#8be9fd;font-style:italic>parent</span>: <span style=color:#8be9fd;font-style:italic>logicApp</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">165</span><span>  <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;web&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">166</span><span>  <span style=color:#8be9fd;font-style:italic>kind</span>: <span style=color:#f1fa8c>&#39;string&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">167</span><span>  <span style=color:#8be9fd;font-style:italic>properties</span>: {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">168</span><span>  <span style=color:#8be9fd;font-style:italic>appSettings</span>: [
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">169</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">170</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;FUNCTIONS_EXTENSION_VERSION&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">171</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;~4&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">172</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">173</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">174</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;FUNCTIONS_WORKER_RUNTIME&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">175</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;node&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">176</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">177</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">178</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;WEBSITE_NODE_DEFAULT_VERSION&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">179</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;~20&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">180</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">181</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">182</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;APPINSIGHTS_INSTRUMENTATIONKEY&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">183</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;@Microsoft.KeyVault(VaultName=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>keyVaultName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>;SecretName=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>appInsights</span>.<span style=color:#8be9fd;font-style:italic>name</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-instrumentationKey)&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">184</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">185</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">186</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;APPLICATIONINSIGHTS_AUTHENTICATION_STRING&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">187</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;Authorization=AAD;ClientId=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>clientId</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">188</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">189</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">190</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;WEBSITE_CONTENTAZUREFILECONNECTIONSTRING&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">191</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;@Microsoft.KeyVault(VaultName=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>keyVaultName</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>;SecretName=</span><span style=color:#f1fa8c>${</span><span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>name</span><span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-connectionString)&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">192</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">193</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">194</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;WEBSITE_CONTENTSHARE&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">195</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;</span><span style=color:#f1fa8c>${</span><span style=color:#50fa7b>toLower</span>(<span style=color:#8be9fd;font-style:italic>storageAccountName</span>)<span style=color:#f1fa8c>}</span><span style=color:#f1fa8c>-contentshare&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">196</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">197</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">198</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;AzureFunctionsJobHost__extensionBundle__id&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">199</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;Microsoft.Azure.Functions.ExtensionBundle.Workflows&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">200</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">201</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">202</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;AzureFunctionsJobHost__extensionBundle__version&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">203</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;[1.*, 2.0.0)&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">204</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">205</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">206</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#f1fa8c>&#39;APP_KIND&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">207</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;workflowApp&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">208</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">209</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">210</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>:<span style=color:#f1fa8c>&#39;AzureWebJobsStorage__blobServiceUri&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">211</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>primaryEndpoints</span>.<span style=color:#8be9fd;font-style:italic>blob</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">212</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">213</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">214</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>:<span style=color:#f1fa8c>&#39;AzureWebJobsStorage__queueServiceUri&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">215</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>primaryEndpoints</span>.<span style=color:#8be9fd;font-style:italic>queue</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">216</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">217</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">218</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>:<span style=color:#f1fa8c>&#39;AzureWebJobsStorage__tableServiceUri&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">219</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#8be9fd;font-style:italic>storageAccount</span>.<span style=color:#8be9fd;font-style:italic>properties</span>.<span style=color:#8be9fd;font-style:italic>primaryEndpoints</span>.<span style=color:#8be9fd;font-style:italic>table</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">220</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">221</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">222</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>:<span style=color:#f1fa8c>&#39;AzureWebJobsStorage__credential&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">223</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#f1fa8c>&#39;managedIdentity&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">224</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">225</span><span>    {
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">226</span><span>      <span style=color:#8be9fd;font-style:italic>name</span>:<span style=color:#f1fa8c>&#39;AzureWebJobsStorage__managedIdentityResourceId&#39;</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">227</span><span>      <span style=color:#8be9fd;font-style:italic>value</span>: <span style=color:#8be9fd;font-style:italic>managedIdentity</span>.<span style=color:#8be9fd;font-style:italic>id</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">228</span><span>    }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">229</span><span>  ]
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">230</span><span>  }
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">231</span><span>  <span style=color:#8be9fd;font-style:italic>dependsOn</span>: [
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">232</span><span>    <span style=color:#8be9fd;font-style:italic>secrets</span>
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">233</span><span>  ]
+</span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">234</span><span>}
+</span></span></code></pre></div><h2 id=outcome>Outcome
+<a class=heading-link href=#outcome><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>The script runs without errors or warnings, and the infrastructure is now available.</p><p><img src=https://davidtriana.com/images/posts/2024/no-secrets-deployed.png alt="Infrastructure deployed"></p><h2 id=workflow-test>Workflow Test
+<a class=heading-link href=#workflow-test><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>While the fact that the deployment worked and the logic app is able to show the runtime version without error notifications is a good sign, nothing like a simple test, so I created the simplest workflow then verified run history with per action state.</p><p><img src=https://davidtriana.com/images/posts/2024/no-secrets-workflow-test.png alt="Simple workflow state and history"></p><h2 id=application-insights>Application Insights
+<a class=heading-link href=#application-insights><i class="fa fa-link" aria-hidden=true title="Link to heading"></i>
+<span class=sr-only>Link to heading</span></a></h2><p>Telemetry is being captured by Application Insights.</p><p><img src=https://davidtriana.com/images/posts/2024/no-secrets-appinsights-test.png alt="Telemetry in app insights"></p></div><footer></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}]})'></script></section></div><footer class=footer><section class=container>©
 2024
 David Triana
 ·
-<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.
-</section>
-</footer>
-</main>
-<script src=https://davidtriana.com/js/coder.min.feb19891e099ae3b6acdd502ba6e51d722353e69bb0f9478ed80a05450af78d2.js integrity="sha256-/rGYkeCZrjtqzdUCum5R1yI1Pmm7D5R47YCgVFCveNI="></script>
-</body>
-</html>
+<a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a> & <a rel=me href=https://twit.social/@david>Mastodon</a>.</section></footer></main><script src=https://davidtriana.com/js/coder.min.8ff11071e01b6aa8fb0f6e05a386a3e51c110028e4bb81710bd429e8973c5cf4.js integrity="sha256-j/EQceAbaqj7D24Fo4aj5RwRACjku4FxC9Qp6Jc8XPQ="></script></body></html>

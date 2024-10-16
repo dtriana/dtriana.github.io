@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bash on David Triana</title><link>https://davidtriana.com/tags/bash/</link><description>Recent content in Bash on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><managingEditor>david@davidtriana.com (David Triana)</managingEditor><webMaster>david@davidtriana.com (David Triana)</webMaster><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/bash/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><author>david@davidtriana.com (David Triana)</author><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bash on David Triana</title><link>https://davidtriana.com/tags/bash/</link><description>Recent content in Bash on David Triana</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>2022 David Triana All rights reserved</copyright><lastBuildDate>Fri, 13 Sep 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://davidtriana.com/tags/bash/index.xml" rel="self" type="application/rss+xml"/><item><title>Failing failed bash Azure DevOps tasks</title><link>https://davidtriana.com/posts/2024/failing-failed-bash/</link><pubDate>Fri, 13 Sep 2024 00:00:00 +0000</pubDate><guid>https://davidtriana.com/posts/2024/failing-failed-bash/</guid><description>&lt;h1 id="scenario">
 Scenario
 &lt;a class="heading-link" href="#scenario">
 &lt;i class="fa fa-link" aria-hidden="true" title="Link to heading">&lt;/i>
@@ -6,29 +6,31 @@ Scenario
 &lt;/a>
 &lt;/h1>
 &lt;p>Automating infrastructure as code or continuous delivery with AzDevOps pipelines sometimes requires bash scripts when Arm/Bicep or the built-in tasks fell short. Bash scripts work great, however one issue that surprised me in a production release a few weeks ago is the fact that the failure of one of the commands in the script is not enough to mark the task as failed. For example, this YAML pipeline:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">trigger&lt;/span>:
-- none
-&lt;span style="font-weight:bold">pool&lt;/span>:
-&lt;span style="font-weight:bold">vmImage&lt;/span>: ubuntu-latest
-&lt;span style="font-weight:bold">steps&lt;/span>:
-- &lt;span style="font-weight:bold">task&lt;/span>: AzureCLI@2
-&lt;span style="font-weight:bold">displayName&lt;/span>: Get Application Insights Connection String
-&lt;span style="font-weight:bold">inputs&lt;/span>:
-&lt;span style="font-weight:bold">azureSubscription&lt;/span>: &lt;span style="font-style:italic">&amp;#39;MSDN Sub&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">scriptType&lt;/span>: &lt;span style="font-style:italic">&amp;#39;bash&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">scriptLocation&lt;/span>: &lt;span style="font-style:italic">&amp;#39;inlineScript&amp;#39;&lt;/span>
-&lt;span style="font-weight:bold">inlineScript&lt;/span>: |&lt;span style="font-style:italic">
-&lt;/span>&lt;span style="font-style:italic"> MSYS_NO_PATHCONV=1
-&lt;/span>&lt;span style="font-style:italic"> connString=$(az monitor app-insights component show -a appi-titan-prod -g rg-skynet-prod --query &amp;#39;connectionString&amp;#39; -o tsv)
-&lt;/span>&lt;span style="font-style:italic"> echo &amp;#34;##vso[task.setvariable variable=connString;isoutput=true;isreadonly=true;]$connString&amp;#34;&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Intended to set a pipeline variable, when ran is marked as success:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">trigger&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2&lt;/span>&lt;span>- none
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4&lt;/span>&lt;span>&lt;span style="color:#ff79c6">pool&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5&lt;/span>&lt;span> &lt;span style="color:#ff79c6">vmImage&lt;/span>: ubuntu-latest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6&lt;/span>&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7&lt;/span>&lt;span>&lt;span style="color:#ff79c6">steps&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8&lt;/span>&lt;span>- &lt;span style="color:#ff79c6">task&lt;/span>: AzureCLI@2
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9&lt;/span>&lt;span> &lt;span style="color:#ff79c6">displayName&lt;/span>: Get Application Insights Connection String
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inputs&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11&lt;/span>&lt;span> &lt;span style="color:#ff79c6">azureSubscription&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;MSDN Sub&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptType&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;bash&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13&lt;/span>&lt;span> &lt;span style="color:#ff79c6">scriptLocation&lt;/span>: &lt;span style="color:#f1fa8c">&amp;#39;inlineScript&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14&lt;/span>&lt;span> &lt;span style="color:#ff79c6">inlineScript&lt;/span>: |&lt;span style="color:#f1fa8c">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> MSYS_NO_PATHCONV=1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> connString=$(az monitor app-insights component show -a appi-titan-prod -g rg-skynet-prod --query &amp;#39;connectionString&amp;#39; -o tsv)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17&lt;/span>&lt;span>&lt;span style="color:#f1fa8c"> echo &amp;#34;##vso[task.setvariable variable=connString;isoutput=true;isreadonly=true;]$connString&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Intended to set a pipeline variable, when ran is marked as success:&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/devops_success.png" alt="AzDevOps Success Job Run">&lt;/p>
 &lt;p>despite the fact that the resource group wasn&amp;rsquo;t present:&lt;/p>
 &lt;p>From the run logs:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-text" data-lang="text">ERROR: (ResourceGroupNotFound) Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
-Code: ResourceGroupNotFound
-Message: Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>But because the last command, echo, succeeds, the exit code of the task is 0, causing AzDevOps to mark the task as success.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-text" data-lang="text">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>ERROR: (ResourceGroupNotFound) Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2&lt;/span>&lt;span>Code: ResourceGroupNotFound
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3&lt;/span>&lt;span>Message: Resource group &amp;#39;rg-skynet-prod&amp;#39; could not be found.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>But because the last command, echo, succeeds, the exit code of the task is 0, causing AzDevOps to mark the task as success.&lt;/p>
 &lt;h2 id="making-the-task-fail">
 Making the task fail
 &lt;a class="heading-link" href="#making-the-task-fail">
@@ -37,12 +39,12 @@ Making the task fail
 &lt;/a>
 &lt;/h2>
 &lt;p>After trying everything I found in the web, the solution is to add the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">set -e
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>command at the beginning of the script. From &lt;a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html#index-set">the documentation&lt;/a>, this command instructs the system to exit immediately if a command fails.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> -e
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>command at the beginning of the script. From &lt;a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html#index-set">the documentation&lt;/a>, this command instructs the system to exit immediately if a command fails.&lt;/p>
 &lt;p>&lt;img src="https://davidtriana.com/images/posts/2024/devops_failed.png" alt="AzDevOps failed job run">&lt;/p>
 &lt;p>Other solutions make reference to the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">failOnStderr&lt;/span>: &lt;span style="font-weight:bold">true&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>task input parameter. This parameter on its own didn&amp;rsquo;t work for me, at least when dealing with AZ CLI commands.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">failOnStderr&lt;/span>: &lt;span style="color:#ff79c6">true&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>task input parameter. This parameter on its own didn&amp;rsquo;t work for me, at least when dealing with AZ CLI commands.&lt;/p>
 &lt;p>Finally, the&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="font-weight:bold">continueOnError&lt;/span>: &lt;span style="font-weight:bold">false&lt;/span>
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>task parameter seems to be the default behavior and doesn&amp;rsquo;t need to be added.&lt;/p></description></item></channel></rss>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">continueOnError&lt;/span>: &lt;span style="color:#ff79c6">false&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>task parameter seems to be the default behavior and doesn&amp;rsquo;t need to be added.&lt;/p></description></item></channel></rss>
